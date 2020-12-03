@@ -1,15 +1,31 @@
 plugins {
   id 'org.owasp.dependencycheck' version '6.0.3'
   id 'io.gatling.gradle' version '3.4.2'
+  id 'scala'
+  id 'groovy'
+  id 'com.gradle.plugin-publish' version '0.9.8'
 }
 
 repositories {
   jcenter()
 }
 
+apply plugin: 'scala'
+group 'uk.gov.hmcts.reform'
 version = '1.0'
-//sourceCompatibility = "11"
-//targetCompatibility = "11"
+sourceCompatibility = "11"
+targetCompatibility = "11"
+
+ScalaCompileOptions.metaClass.daemonServer = true
+ScalaCompileOptions.metaClass.fork = true
+ScalaCompileOptions.metaClass.useAnt = false
+ScalaCompileOptions.metaClass.useCompileDaemon = false
+
+dependencies {
+  gatling "org.scala-lang:scala-library:2.12.12"
+  gatling "io.gatling:gatling-app:3.4.2"
+  gatling "io.gatling.highcharts:gatling-charts-highcharts:3.4.2"
+}
 
 gatling {
   toolVersion '3.4.2'
@@ -19,3 +35,5 @@ gatling {
     include "**/Fact_Jenkins.scala"
   }
 }
+
+ext ['netty.version'] = '4.0.51.Final'
