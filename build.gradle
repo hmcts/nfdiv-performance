@@ -7,6 +7,7 @@ repositories {
   jcenter()
 }
 
+version = '1.0'
 sourceCompatibility = "11"
 targetCompatibility = "11"
 
@@ -18,3 +19,5 @@ gatling {
     include "**/simulations/Fact_Jenkins.scala"
   }
 }
+
+ext ['netty.version'] = '4.0.51.Final'
