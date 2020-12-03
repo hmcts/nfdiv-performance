@@ -11,11 +11,6 @@ version = '1.0'
 sourceCompatibility = "11"
 targetCompatibility = "11"
 
-dependencies {
-  gatling "io.gatling:gatling-app:3.4.2"
-  gatling "io.gatling.highcharts:gatling-charts-highcharts:3.4.2"
-}
-
 gatling {
   toolVersion '3.4.2'
   scalaVersion '2.12.12'
