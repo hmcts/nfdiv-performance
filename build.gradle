@@ -1,7 +1,12 @@
 plugins {
   id 'org.owasp.dependencycheck' version '6.0.3'
   id 'io.gatling.gradle' version '3.4.2'
+  id "scala"
 }
+
+apply plugin: "scala"
+
+ScalaCompileOptions.metaClass.useAnt = false
 
 repositories {
   jcenter()
@@ -11,12 +16,19 @@ version = '1.0'
 sourceCompatibility = "11"
 targetCompatibility = "11"
 
+sourceSets {
+  gatling {
+    scala.srcDirs = ["src/gatling/scala"]
+    resources.srcDirs = ["src/gatling/resources"]
+  }
+}
+
 gatling {
   toolVersion '3.4.2'
   scalaVersion '2.12.12'
   jvmArgs = ['-Xms1024m', '-Xmx2048m']
   simulations = {
-    include "simulations/Fact_Jenkins.scala"
+    include "**/Fact_Jenkins.scala"
   }
 }
 
