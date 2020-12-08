@@ -1,16 +1,18 @@
 plugins {
   id 'org.owasp.dependencycheck' version '6.0.3'
   id 'io.gatling.gradle' version '3.4.2'
+  id "scala"
 }
 
-repositories {
-  jcenter()
-}
-
+apply plugin: "scala"
 version = '1.0'
 
 sourceCompatibility = "11"
 targetCompatibility = "11"
+
+repositories {
+  jcenter()
+}
 
 sourceSets {
   gatling {
