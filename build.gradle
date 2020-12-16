@@ -2,9 +2,12 @@ plugins {
   id 'org.owasp.dependencycheck' version '6.0.3'
   id 'io.gatling.gradle' version '3.4.2'
   id "scala"
+  id 'groovy'
+  id 'com.gradle.plugin-publish' version '0.9.8'
 }
 
 apply plugin: "scala"
+group 'uk.gov.hmcts.reform'
 version = '1.0'
 
 sourceCompatibility = "11"
@@ -14,10 +17,36 @@ repositories {
   jcenter()
 }
 
+jar {
+  manifest {
+    attributes 'Main-Class': 'io.gatling.app.Gatling'
+  }
+  from {
+    configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+  from sourceSets.test.output
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
+
 sourceSets {
   gatling {
     scala.srcDirs = ["src/gatling/simulations/"]
   }
+}
+
+ext {
+  gatlingVersion = '3.4.2'
+  scalaVersion = '2.12.12'
+}
+
+dependencies {
+  compile group:"org.yaml", name: "snakeyaml", version:"1.26"
+  testCompile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
+  testCompile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
+  testCompile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
+  gatling group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
+  gatling 'com.warrenstrange:googleauth:1.5.0'
+  gatling group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
 }
 
 gatling {
