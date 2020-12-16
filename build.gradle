@@ -1,13 +1,14 @@
 plugins {
-  id 'org.owasp.dependencycheck' version '6.0.3'
-  id 'io.gatling.gradle' version '3.4.2'
-  id "scala"
+  id "org.owasp.dependencycheck" version "6.0.2"
+  id 'scala'
+  id 'com.github.lkishalmi.gatling' version '3.0.2'
+  //id 'java-gradle-plugin'
   id 'groovy'
   id 'com.gradle.plugin-publish' version '0.9.8'
   id 'maven-publish'
 }
 
-apply plugin: "scala"
+apply plugin: 'scala'
 group 'uk.gov.hmcts.reform'
 version = '1.0'
 
@@ -16,12 +17,6 @@ targetCompatibility = "11"
 
 repositories {
   jcenter()
-}
-
-sourceSets {
-  gatling {
-    scala.srcDirs = ["src/gatling/simulations/"]
-  }
 }
 
 jar {
@@ -45,16 +40,19 @@ dependencies {
   testCompile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
   testCompile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
   testCompile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
-  gatling group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
-  gatlingImplementation 'com.warrenstrange:googleauth:1.5.0'
-  gatlingRuntimeOnly group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
+  gatlingCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
+  gatlingCompile 'com.warrenstrange:googleauth:1.5.0'
+  gatlingRuntime group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
 }
 
+/*dependencyCheck {
+    suppressionFile = 'config/owasp/suppressions.xml'
+}*/
+
 gatling {
-  toolVersion '3.3.1'
-  scalaVersion '2.13.3'
-  jvmArgs = ['-Xms1024m', '-Xmx2048m']
-  simulations = {
-    include "simulations/Fact_Jenkins.scala"
-  }
+  toolVersion = '3.2.0'
+  scalaVersion = '2.12.8'
+  simulations = [
+          'simulations.Fact_Jenkins'
+  ]
 }
