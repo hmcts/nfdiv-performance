@@ -20,6 +20,12 @@ repositories {
   jcenter()
 }
 
+sourceSets {
+  gatling {
+    scala.srcDirs = ["src/gatling/simulations/"]
+  }
+}
+
 jar {
   manifest {
     attributes 'Main-Class': 'io.gatling.app.Gatling'
@@ -53,7 +59,7 @@ dependencies {
 gatling {
   toolVersion = '3.2.0'
   scalaVersion = '2.12.8'
-  simulations = [
-          'simulations.Fact_Jenkins'
-  ]
+  simulations = {
+    include "simulations/Fact_Jenkins.scala"
+  }
 }
