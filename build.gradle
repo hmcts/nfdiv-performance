@@ -4,6 +4,7 @@ plugins {
   id "scala"
   id 'groovy'
   id 'com.gradle.plugin-publish' version '0.9.8'
+  id 'maven-publish'
 }
 
 apply plugin: "scala"
@@ -17,6 +18,12 @@ repositories {
   jcenter()
 }
 
+sourceSets {
+  gatling {
+    scala.srcDirs = ["src/gatling/simulations/"]
+  }
+}
+
 jar {
   manifest {
     attributes 'Main-Class': 'io.gatling.app.Gatling'
@@ -28,15 +35,9 @@ jar {
   exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
 
-sourceSets {
-  gatling {
-    scala.srcDirs = ["src/gatling/simulations/"]
-  }
-}
-
 ext {
-  gatlingVersion = '3.4.2'
-  scalaVersion = '2.12.12'
+  gatlingVersion = '3.3.1'
+  scalaVersion = '2.13.3'
 }
 
 dependencies {
@@ -44,14 +45,14 @@ dependencies {
   testCompile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
   testCompile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
   testCompile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
-  gatling group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
-  gatling 'com.warrenstrange:googleauth:1.5.0'
-  gatling group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
+  gatlingCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
+  gatlingCompile 'com.warrenstrange:googleauth:1.5.0'
+  gatlingRuntime group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
 }
 
 gatling {
-  toolVersion '3.4.2'
-  scalaVersion '2.12.12'
+  toolVersion '3.2.0'
+  scalaVersion '2.12.8'
   jvmArgs = ['-Xms1024m', '-Xmx2048m']
   simulations = {
     include "simulations/Fact_Jenkins.scala"
