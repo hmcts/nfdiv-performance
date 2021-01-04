@@ -57,8 +57,8 @@ dependencies {
 }*/
 
 gatling {
-  toolVersion = '3.2.0'
-  scalaVersion = '2.12.8'
+  toolVersion = '3.3.1'
+  scalaVersion = '2.13.3'
   simulations = {
     include "simulations/Fact_Jenkins.scala"
   }
