@@ -18,13 +18,20 @@ sourceSets {
   }
 }
 
+ext {
+  gatlingVersion = '3.3.1'
+  scalaVersion = '2.12.12'
+}
+
 dependencies {
-  gatling "org.scala-lang:scala-library:2.12.12"
+  gatling "org.scala-lang:scala-library:${scalaVersion}"
+  gatling "io.gatling:gatling-app:${gatlingVersion}"
+  gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingVersion}"
 }
 
 gatling {
-  toolVersion = '3.3.1'
-  scalaVersion = '2.12.12'
+  toolVersion = '${gatlingVersion}'
+  scalaVersion = '${scalaVersion}'
   simulations = {
     include "simulations/NFD_Pipeline.scala"
   }
