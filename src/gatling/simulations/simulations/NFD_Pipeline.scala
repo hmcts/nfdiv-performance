@@ -2,10 +2,10 @@ package simulations
 
 import io.gatling.core.Predef._
 import io.gatling.core.scenario.Simulation
-import scenarios.FactScenario
+import scenarios._
 import utils.Environment
 
-class Fact_Jenkins extends Simulation {
+class NFD_Pipeline extends Simulation {
 
   val BaseURL = Environment.baseURL
 
@@ -15,12 +15,13 @@ class Fact_Jenkins extends Simulation {
     .inferHtmlResources()
     .silentResources
 
-  val FactSimulation = scenario( "FactSimulation")
-    .exec(FactScenario.FactNameKnown)
-    .exec(FactScenario.FactNameNotKnown)
+  val NFDSimulation = scenario( "NFDSimulation")
+    .exec(NFD_GetCall.NFD_API_GET_CALL)
+    .exec(NFD_PostCall.NFD_API_POST_CALL)
+    .exec(NFD_DivorceApplication.DivorceApplication)
 
   setUp(
-    FactSimulation.inject(atOnceUsers(1))
+    NFDSimulation.inject(atOnceUsers(1))
   ).protocols(httpProtocol)
     .assertions(global.successfulRequests.percent.is(100))
 

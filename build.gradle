@@ -21,6 +21,6 @@ gatling {
   toolVersion = '3.3.1'
   scalaVersion = '2.13.3'
   simulations = {
-    include "simulations/Fact_Jenkins.scala"
+    include "simulations/NFD_Pipeline.scala"
   }
 }
