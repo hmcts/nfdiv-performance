@@ -1,16 +1,26 @@
 plugins {
   id "org.owasp.dependencycheck" version "6.0.2"
-  id 'io.gatling.gradle' version '3.5.0'
   id 'scala'
+  id 'io.gatling.gradle' version '3.5.0'
+  id 'groovy'
+  id 'com.gradle.plugin-publish' version '0.9.8'
 }
 
 apply plugin: 'scala'
 group 'uk.gov.hmcts.reform'
 version = '1.0'
 
+sourceCompatibility = "11"
+targetCompatibility = "11"
+
 repositories {
   jcenter()
 }
+
+ScalaCompileOptions.metaClass.daemonServer = true
+ScalaCompileOptions.metaClass.fork = true
+ScalaCompileOptions.metaClass.useAnt = false
+ScalaCompileOptions.metaClass.useCompileDaemon = false
 
 ext {
   gatlingVersion = '3.3.1'
