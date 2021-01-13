@@ -2,7 +2,7 @@ package scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import utils.{Environment, CsrfCheck}
+import utils.Environment
 
 import scala.language.postfixOps
 import scala.concurrent.duration._
@@ -25,7 +25,6 @@ object NFD_DivorceApplication {
         .get(BaseURL + "/")
         .headers(CommonHeader)
         .headers(GetHeader)
-        .check(CsrfCheck.save)
         .check(regex("Some text check")))
     }
 
@@ -36,7 +35,6 @@ object NFD_DivorceApplication {
         .post(BaseURL + "/name/submit")
         .headers(CommonHeader)
         .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
         .formParam("name", "Jon")
         .check(regex("Some text check"))
         .check(regex("a href=./get-case/([0-9]+)").find.saveAs("appId")))
