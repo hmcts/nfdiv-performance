@@ -1,9 +1,12 @@
 plugins {
   id "org.owasp.dependencycheck" version "6.0.2"
   id 'scala'
+  //id 'com.github.lkishalmi.gatling' version '3.0.2'
   id 'io.gatling.gradle' version '3.5.0'
+  //id 'java-gradle-plugin'
   id 'groovy'
   id 'com.gradle.plugin-publish' version '0.9.8'
+  id 'maven-publish'
 }
 
 apply plugin: 'scala'
@@ -17,10 +20,22 @@ repositories {
   jcenter()
 }
 
-ScalaCompileOptions.metaClass.daemonServer = true
-ScalaCompileOptions.metaClass.fork = true
-ScalaCompileOptions.metaClass.useAnt = false
-ScalaCompileOptions.metaClass.useCompileDaemon = false
+sourceSets {
+  gatling {
+    scala.srcDirs = ["src/gatling/simulations/"]
+  }
+}
+
+jar {
+  manifest {
+    attributes 'Main-Class': 'io.gatling.app.Gatling'
+  }
+  from {
+    configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) }
+  }
+  from sourceSets.test.output
+  exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+}
 
 ext {
   gatlingVersion = '3.3.1'
@@ -28,16 +43,18 @@ ext {
 }
 
 dependencies {
-  gatling "org.scala-lang:scala-library:${scalaVersion}"
-  gatling "io.gatling:gatling-app:${gatlingVersion}"
-  gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingVersion}"
+  compile group:"org.yaml", name: "snakeyaml", version:"1.26"
+  testCompile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
+  testCompile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
+  testCompile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
+  gatlingCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
+  gatlingCompile 'com.warrenstrange:googleauth:1.5.0'
+  gatlingRuntime group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
 }
 
-sourceSets {
-  gatling {
-    scala.srcDirs = ["src/gatling/simulations/"]
-  }
-}
+/*dependencyCheck {
+    suppressionFile = 'config/owasp/suppressions.xml'
+}*/
 
 gatling {
   toolVersion = '3.3.1'
