@@ -4,6 +4,7 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import utils.{Environment, CsrfCheck}
 
+import scala.language.postfixOps
 import scala.concurrent.duration._
 
 object NFD_DivorceApplication {

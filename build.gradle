@@ -1,6 +1,7 @@
 plugins {
   id "org.owasp.dependencycheck" version "6.0.2"
   id 'io.gatling.gradle' version '3.5.0'
+  id 'scala'
 }
 
 apply plugin: 'scala'
@@ -17,9 +18,13 @@ sourceSets {
   }
 }
 
+dependencies {
+  gatling "org.scala-lang:scala-library:2.12.12"
+}
+
 gatling {
   toolVersion = '3.3.1'
-  scalaVersion = '2.13.3'
+  scalaVersion = '2.12.12'
   simulations = {
     include "simulations/NFD_Pipeline.scala"
   }

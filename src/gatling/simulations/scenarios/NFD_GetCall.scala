@@ -2,8 +2,10 @@ package scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import scala.concurrent.duration._
 import utils.Environment
+
+import scala.language.postfixOps
+import scala.concurrent.duration._
 
 object NFD_GetCall {
 
