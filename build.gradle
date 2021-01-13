@@ -12,12 +12,6 @@ repositories {
   jcenter()
 }
 
-sourceSets {
-  gatling {
-    scala.srcDirs = ["src/gatling/simulations/"]
-  }
-}
-
 ext {
   gatlingVersion = '3.3.1'
   scalaVersion = '2.12.12'
@@ -29,9 +23,15 @@ dependencies {
   gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingVersion}"
 }
 
+sourceSets {
+  gatling {
+    scala.srcDirs = ["src/gatling/simulations/"]
+  }
+}
+
 gatling {
-  toolVersion = '${gatlingVersion}'
-  scalaVersion = '${scalaVersion}'
+  toolVersion = '3.3.1'
+  scalaVersion = '2.12.12'
   simulations = {
     include "simulations/NFD_Pipeline.scala"
   }
