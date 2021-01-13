@@ -6,7 +6,7 @@ plugins {
   //id 'java-gradle-plugin'
   id 'groovy'
   id 'com.gradle.plugin-publish' version '0.9.8'
-  id 'maven-publish'
+  //id 'maven-publish'
 }
 
 apply plugin: 'scala'
@@ -25,7 +25,7 @@ sourceSets {
     scala.srcDirs = ["src/gatling/simulations/"]
   }
 }
-
+/*
 jar {
   manifest {
     attributes 'Main-Class': 'io.gatling.app.Gatling'
@@ -51,7 +51,7 @@ dependencies {
   gatlingCompile 'com.warrenstrange:googleauth:1.5.0'
   gatlingRuntime group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
 }
-
+*/
 /*dependencyCheck {
     suppressionFile = 'config/owasp/suppressions.xml'
 }*/
