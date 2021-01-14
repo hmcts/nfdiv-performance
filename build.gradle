@@ -1,14 +1,14 @@
 plugins {
-  id "org.owasp.dependencycheck" version "6.0.2"
+  id 'org.owasp.dependencycheck' version '6.0.1'
   id 'scala'
-  //id 'com.github.lkishalmi.gatling' version '3.0.2'
-  id 'io.gatling.gradle' version '3.5.0'
+  id 'com.github.lkishalmi.gatling' version '3.0.2'
   //id 'java-gradle-plugin'
   id 'groovy'
   id 'com.gradle.plugin-publish' version '0.9.8'
   id 'maven-publish'
 }
 
+//apply plugin: 'java'
 apply plugin: 'scala'
 group 'uk.gov.hmcts.reform'
 version = '1.0'
@@ -16,26 +16,24 @@ version = '1.0'
 sourceCompatibility = "11"
 targetCompatibility = "11"
 
+tasks.withType(JavaExec) {
+  jvmArgs = ['-Xms1024m', '-Xmx2048m']
+  /* Use the following args to build a report when a test was terminated
+  args = [
+      "--reports-only", "fact-20201109092032896",
+      '--results-folder', file('build/reports/gatling').absolutePath,
+      ]
+  */
+}
+
 repositories {
   jcenter()
 }
 
-sourceSets {
-  gatling {
-    scala.srcDirs = ["src/gatling/simulations/"]
-  }
-}
-
-jar {
-  manifest {
-    attributes 'Main-Class': 'io.gatling.app.Gatling'
-  }
-  from {
-    configurations.testCompile.collect { it.isDirectory() ? it : zipTree(it) }
-  }
-  from sourceSets.test.output
-  exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
-}
+ScalaCompileOptions.metaClass.daemonServer = true
+ScalaCompileOptions.metaClass.fork = true
+ScalaCompileOptions.metaClass.useAnt = false
+ScalaCompileOptions.metaClass.useCompileDaemon = false
 
 ext {
   gatlingVersion = '3.3.1'
@@ -43,23 +41,36 @@ ext {
 }
 
 dependencies {
-  compile group:"org.yaml", name: "snakeyaml", version:"1.26"
-  testCompile group: 'org.scala-lang', name: 'scala-library', version: scalaVersion
-  testCompile group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
-  testCompile group: 'io.gatling', name: 'gatling-app', version: gatlingVersion
-  gatlingCompile group: 'io.rest-assured', name: 'rest-assured', version: '4.3.1'
-  gatlingCompile 'com.warrenstrange:googleauth:1.5.0'
-  gatlingRuntime group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: gatlingVersion
+  gatling "org.scala-lang:scala-library:${scalaVersion}"
+  gatling "io.gatling:gatling-app:${gatlingVersion}"
+  gatling "io.gatling.highcharts:gatling-charts-highcharts:${gatlingVersion}"
+  //gatlingImplementation "groupio.rest-assured:rest-assured:4.3.1"
+  gatling "com.warrenstrange:googleauth:1.5.0"
 }
-
-/*dependencyCheck {
-    suppressionFile = 'config/owasp/suppressions.xml'
-}*/
 
 gatling {
-  toolVersion = '3.3.1'
-  scalaVersion = '2.12.12'
-  simulations = {
-    include "simulations/NFD_Pipeline.scala"
-  }
+  toolVersion '3.3.1'
+  scalaVersion '2.12.12'
+  simulations = [
+          'simulations.NFD_Pipeline'
+  ]
 }
+
+test {
+  testLogging {
+    showStandardStreams = true
+  }
+  dependsOn("publishToMavenLocal")
+  systemProperty "com.github.lkishalmi.gatling.version", project.version
+}
+
+pluginBundle {
+  website = 'https://github.com/lkishalmi/gradle-gatling-plugin'
+  vcsUrl = 'https://github.com/lkishalmi/gradle-gatling-plugin'
+  description = 'Gatling Simulation Execution'
+  tags = ['gatling', 'load test', 'stress test', 'performance test', 'scala']
+
+
+}
+
+ext ['netty.version'] = '4.0.51.Final'
