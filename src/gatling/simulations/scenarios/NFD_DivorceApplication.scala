@@ -29,7 +29,7 @@ object NFD_DivorceApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    group("DivorceApp_020_LanguagePrefSubmit") {
+    .group("DivorceApp_020_LanguagePrefSubmit") {
       exec(http("Language Preference Submit")
         .post(BaseURL + "/screening-questions/language-preference")
         .headers(CommonHeader)
