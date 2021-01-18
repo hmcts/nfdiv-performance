@@ -2,9 +2,9 @@ package scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import utils.Environment
+import utils.{Environment, CsrfCheck}
 
-import scala.language.postfixOps
+//import scala.language.postfixOps
 import scala.concurrent.duration._
 
 object NFD_DivorceApplication {
@@ -15,39 +15,28 @@ object NFD_DivorceApplication {
   val MaxThinkTime = Environment.maxThinkTime
 
   val CommonHeader = Environment.commonHeader
-  val GetHeader = Environment.getHeader
   val PostHeader = Environment.postHeader
 
   val DivorceApplication =
 
-    group("DivorceApplication_010_Homepage") {
-      exec(http("Homepage")
-        .get(BaseURL + "/")
+    group("DivorceApp_010_StartApplication") {
+      exec(http("Start Application")
+        .get(BaseURL + "/screening-questions/language-preference")
         .headers(CommonHeader)
-        .headers(GetHeader)
-        .check(regex("Some text check")))
+        .check(CsrfCheck.save)
+        .check(regex("What language do you want us to use")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    group("DivorceApplication_020_NameSubmit") {
-      exec(http("Name Submit")
-        .post(BaseURL + "/name/submit")
+    group("DivorceApp_020_LanguagePrefSubmit") {
+      exec(http("Language Preference Submit")
+        .post(BaseURL + "/screening-questions/language-preference")
         .headers(CommonHeader)
         .headers(PostHeader)
-        .formParam("name", "Jon")
-        .check(regex("Some text check"))
-        .check(regex("a href=./get-case/([0-9]+)").find.saveAs("appId")))
-    }
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    group("DivorceApplication_030_GetCase") {
-      exec(http("Get Case")
-        .get(BaseURL + "/get-case/${appId}")
-        .headers(CommonHeader)
-        .headers(GetHeader)
-        .check(regex("Here are ypur case details")))
+        .formParam("_csrf", "${csrf}")
+        .formParam("languagePreferenceWelsh", "No")
+        .check(regex("Has your marriage broken down")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)

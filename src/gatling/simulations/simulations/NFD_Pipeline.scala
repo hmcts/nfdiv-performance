@@ -1,6 +1,7 @@
 package simulations
 
 import io.gatling.core.Predef._
+import io.gatling.http.Predef._
 import io.gatling.core.scenario.Simulation
 import scenarios._
 import utils.Environment
@@ -16,9 +17,17 @@ class NFD_Pipeline extends Simulation {
     .silentResources
 
   val NFDSimulation = scenario( "NFDSimulation")
-    .exec(NFD_GetCall.NFD_API_GET_CALL)
-    .exec(NFD_PostCall.NFD_API_POST_CALL)
-    .exec(NFD_DivorceApplication.DivorceApplication)
+    .exitBlockOnFail {
+      exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(
+        CreateUser.CreateCitizen,
+        Homepage.NFDHomepage,
+        Login.NFDLogin,
+        NFD_DivorceApplication.DivorceApplication,
+        Logout.NFDLogout)
+    }
+    .exec(DeleteUser.DeleteCitizen)
 
   setUp(
     NFDSimulation.inject(atOnceUsers(1))
