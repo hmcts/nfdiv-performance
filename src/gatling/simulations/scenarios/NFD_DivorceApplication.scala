@@ -24,7 +24,7 @@ object NFD_DivorceApplication {
         .get(BaseURL + "/screening-questions/language-preference")
         .headers(CommonHeader)
         .check(CsrfCheck.save)
-        .check(regex("What language do you want us to use")))
+        .check(substring("What language do you want us to use")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
