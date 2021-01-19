@@ -17,7 +17,7 @@ object Logout {
       exec(http("Logout")
         .get(BaseURL + "/logout")
         .headers(CommonHeader)
-        .check(regex("Sign in or create an account")))
+        .check(substring("Sign in or create an account")))
 
     }
 

@@ -30,7 +30,7 @@ object Login {
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
-        .check(regex("Let's get our divorce on!")))
+        .check(substring("Let's get our divorce on!")))
 
     }
 

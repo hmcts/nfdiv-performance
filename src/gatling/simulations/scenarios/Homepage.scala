@@ -24,7 +24,7 @@ object Homepage {
         .headers(CommonHeader)
         .header("sec-fetch-site", "none")
         .check(CsrfCheck.save)
-        .check(regex("Sign in or create an account")))
+        .check(substring("Sign in or create an account")))
 
     }
 

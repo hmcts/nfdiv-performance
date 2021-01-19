@@ -4,7 +4,6 @@ import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import utils.{Environment, CsrfCheck}
 
-//import scala.language.postfixOps
 import scala.concurrent.duration._
 
 object NFD_DivorceApplication {
@@ -36,7 +35,19 @@ object NFD_DivorceApplication {
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
         .formParam("languagePreferenceWelsh", "No")
-        .check(regex("Has your marriage broken down")))
+        .check(substring("Has your marriage broken down")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_030_MarriageBrokenDownSubmit") {
+      exec(http("Marriage Broken")
+        .post(BaseURL + "/screening-questions/has-marriage-broken")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("screenHasMarriageBroken", "Yes")
+        .check(substring("Do you have an address")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
