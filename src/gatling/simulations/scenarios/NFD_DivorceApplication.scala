@@ -19,37 +19,30 @@ object NFD_DivorceApplication {
   val DivorceApplication =
 
     group("DivorceApp_010_StartApplication") {
-      exec(http("Start Application")
-        .get(BaseURL + "/screening-questions/language-preference")
+      exec(http("Start-No Fault Divorce Application")
+        .get(BaseURL + "/irretrievable-breakdown")
         .headers(CommonHeader)
         .check(CsrfCheck.save)
-        .check(substring("What language do you want us to use")))
+        .check(substring("Has your marriage irretrievably broken down")))
     }
-
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_020_LanguagePrefSubmit") {
-      exec(http("Language Preference Submit")
-        .post(BaseURL + "/screening-questions/language-preference")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
-        .formParam("languagePreferenceWelsh", "No")
-        .check(substring("Has your marriage broken down")))
-    }
+    group("DivorceApp_020_YourDetails") {
+          exec(http("Your Details")
+            .get(BaseURL + "/your-details")
+            .headers(CommonHeader)
+            .check(CsrfCheck.save)
+            .check(substring("Who are you applying to divorce?")))
+        }
+   .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    .group("DivorceApp_030_MarriageBrokenDownSubmit") {
-      exec(http("Marriage Broken")
-        .post(BaseURL + "/screening-questions/has-marriage-broken")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
-        .formParam("screenHasMarriageBroken", "Yes")
-        .check(substring("Do you have an address")))
-    }
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+   group("DivorceApp_030_MarrigeBrokenDown?") {
+             exec(http("Has your marriage irretrievably broken down")
+               .get(BaseURL + "/irretrievable-breakdown")
+               .headers(CommonHeader)
+               .check(CsrfCheck.save)
+               .check(substring("Has your marriage irretrievably broken down (it cannot be saved)?")))
+           }
+   .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
 }
