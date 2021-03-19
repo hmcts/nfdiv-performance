@@ -17,16 +17,7 @@ object NFD_DivorceApplication {
   val PostHeader = Environment.postHeader
 
   val DivorceApplication =
-    group("DivorceApp_010_StartApplication") {
-      exec(http("Start-No Fault Divorce Application")
-        .get(BaseURL + "/your-details")
-        .headers(CommonHeader)
-        .check(CsrfCheck.save)
-        .check(substring("Who are you applying to divorce?")))
-    }
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    .group("DivorceApp_010_YourDetailsSubmit") {
+    group("DivorceApp_010_YourDetailsSubmit") {
       exec(http("Your Details Submit")
         .post(BaseURL + "/your-details")
         .headers(CommonHeader)
