@@ -96,14 +96,36 @@ object NFD_DivorceApplication {
     }
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-      .group("DivorceApp_070_InTheUKSubmit") {
-        exec(http("In The UK Submit")
-          .post(BaseURL + "/in-the-uk")
-          .headers(CommonHeader)
-          .headers(PostHeader)
-          .formParam("_csrf", "${csrf}")
-          .formParam("inTheUk", Case.YesOrNo.Yes)
-          .check(substring("Check if you can get a divorce in England and Wales")))
-      }
-      .pause(MinThinkTime seconds, MaxThinkTime seconds)
+    .group("DivorceApp_070_InTheUKSubmit") {
+      exec(http("In The UK Submit")
+        .post(BaseURL + "/in-the-uk")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("inTheUk", Case.YesOrNo.Yes)
+        .check(substring("Check if you can get a divorce in England and Wales")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_080_CheckJurisdictionSubmit") {
+      exec(http("Check Jurisdiction Submit")
+        .post(BaseURL + "/check-jurisdiction")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .check(substring("Where your lives are based")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_090_WhereYourLivesAreBasedSubmit") {
+      exec(http("Where Your Lives Are Based Submit")
+        .post(BaseURL + "/where-your-lives-are-based")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("yourLifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
+        .formParam("partnersLifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
+        .check(substring("You can use the English or Welsh court....")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
 }
