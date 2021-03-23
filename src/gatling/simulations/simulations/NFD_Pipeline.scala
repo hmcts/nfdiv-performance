@@ -25,6 +25,7 @@ class NFD_Pipeline extends Simulation {
         Homepage.NFDHomepage,
         Login.NFDLogin,
         NFD_DivorceApplication.DivorceApplication,
+        NFD_DivorceApplication_Jurisdiction.Jurisdiction,
         Logout.NFDLogout)
     }
     .exec(DeleteUser.DeleteCitizen)

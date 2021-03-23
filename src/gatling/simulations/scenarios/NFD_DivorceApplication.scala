@@ -2,7 +2,7 @@ package scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import utils.{Case, Environment, CsrfCheck}
+import utils.{Case, Environment}
 
 import scala.concurrent.duration._
 
@@ -93,30 +93,42 @@ object NFD_DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("inTheUk", Case.YesOrNo.Yes)
+        .formParam("inTheUk", Case.YesOrNo.No)
+        .check(substring("Is your original marriage certificate in English?")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_080_OriginalMarriageCertificateSubmit") {
+      exec(http("Original Marriage Certificate Submit")
+        .post(BaseURL + "/certificate-in-english")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("certificateInEnglish", Case.YesOrNo.No)
+        .check(substring("Do you have a ‘certified translation’ of your marriage certificate?")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_090_CertifiedTranslationCertificateSubmit") {
+      exec(http("Certified Translation Certificate Submit")
+        .post(BaseURL + "/certified-translation")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("certifiedTranslation", Case.YesOrNo.Yes)
+        .check(substring("Where you got married")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_100_WhereYouGotMarriedSubmit") {
+      exec(http("Where You Got Married Submit")
+        .post(BaseURL + "/country-and-place")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("ceremonyCountry", "France")
+        .formParam("ceremonyPlace", "Paris")
         .check(substring("Check if you can get a divorce in England and Wales")))
-    }
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    .group("DivorceApp_080_CheckJurisdictionSubmit") {
-      exec(http("Check Jurisdiction Submit")
-        .post(BaseURL + "/check-jurisdiction")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
-        .check(substring("Where your lives are based")))
-    }
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    .group("DivorceApp_090_WhereYourLivesAreBasedSubmit") {
-      exec(http("Where Your Lives Are Based Submit")
-        .post(BaseURL + "/where-your-lives-are-based")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
-        .formParam("yourLifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
-        .formParam("partnersLifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
-        .check(substring("You can use the English or Welsh court....")))
     }
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 }
