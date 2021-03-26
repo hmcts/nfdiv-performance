@@ -2,7 +2,8 @@ package scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import utils.Environment
+import utils.{CsrfCheck, Environment}
+
 import scala.concurrent.duration._
 
 object Login {
@@ -30,7 +31,8 @@ object Login {
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
-        .check(substring("Apply for a divorce")))
+        .check(CsrfCheck.save)
+        .check(substring("Who are you applying to divorce?")))
 
     }
 
