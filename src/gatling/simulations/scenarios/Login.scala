@@ -31,7 +31,8 @@ object Login {
         .formParam("save", "Sign in")
         .formParam("selfRegistrationEnabled", "true")
         .formParam("_csrf", "${csrf}")
-        .check(substring("Check your answers so far")))
+        .check(CsrfCheck.save)
+        .check(substring("Who are you applying to divorce?")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
