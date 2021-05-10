@@ -236,7 +236,100 @@ object NFD_DivorceApplication {
         .formParam("yourAddressCounty", "County")
         .formParam("yourAddressPostcode", "E1 1AA")
         .formParam("yourInternationalAddress", "")
-        .check(substring("Enter your wife's email address")))
+        .check(regex("Enter your wife(&.+;)s email address")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_200_EnterTheirEmailAddress") {
+      exec(http("Enter your wife's email address")
+        .post(BaseURL + "/their-email-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("respondentEmailAddress", "test@test.com")
+        .check(regex("Do you have your wife(&.+;)s postal address?")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_210_DoYouKnowTheirAddress") {
+      exec(http("Do you have your wife's postal address?")
+        .post(BaseURL + "/do-you-have-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("knowPartnersAddress", Case.YesOrNo.Yes)
+        .check(substring("Enter your wife’s postal address")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_220_TheirAddress") {
+      exec(http("Enter your wife’s postal address")
+        .post(BaseURL + "/enter-their-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("isTheirAddressInternational", Case.YesOrNo.No)
+        .formParam("theirAddress1", "2 Address, Road")
+        .formParam("theirAddressTown", "Town")
+        .formParam("theirAddressCounty", "County")
+        .formParam("theirAddressPostcode", "E1 1AB")
+        .check(substring("Other court cases")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_230_OtherCourtCases") {
+      exec(http("Other court cases")
+        .post(BaseURL + "/other-court-cases")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("legalProceedings", Case.YesOrNo.No)
+        .check(substring("Dividing your money and property")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_240_DividingYourMoneyAndProperty") {
+      exec(http("Dividing your money and property")
+        .post(BaseURL + "/dividing-money-property")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .check(substring("Do you want to apply for a financial order?")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_250_ApplyForFinancialOrder") {
+      exec(http("Do you want to apply for a financial order?")
+        .post(BaseURL + "/do-you-want-to-apply-financial-order")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applyForFinancialOrder", Case.YesOrNo.No)
+        .check(substring("Upload your documents")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_260_DocumentUpload") {
+      exec(http("Upload your documents")
+        .post(BaseURL + "/document-manager?_csrf=${csrf}")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .bodyPart(RawFileBodyPart("files[]", "2MB.pdf")
+          .fileName("2MB.pdf")
+          .transferEncoding("binary"))
+        .asMultipartForm
+        .check(status.is(200)))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_270_DocumentUploadSubmit") {
+      exec(http("Upload your documents")
+        .post(BaseURL + "/upload-your-documents")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("uploadedFiles", "[{\"id\":\"1234\",\"name\":\"2MB.pdf\"}]")
+        .check(substring("Check your answers")))
     }
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
