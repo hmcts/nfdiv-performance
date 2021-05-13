@@ -5,9 +5,9 @@ import io.gatling.http.Predef._
 
 object Environment {
 
-  val baseURL = "https://nfdiv.aat.platform.hmcts.net"
-  val idamURL = "https://idam-web-public.aat.platform.hmcts.net"
-  val idamAPIURL = "https://idam-api.aat.platform.hmcts.net"
+  val baseURL = "https://nfdiv-apply-for-divorce.perftest.platform.hmcts.net"
+  val idamURL = "https://idam-web-public.perftest.platform.hmcts.net"
+  val idamAPIURL = "https://idam-api.perftest.platform.hmcts.net"
 
   val minThinkTime = 1
   val maxThinkTime = 2
@@ -27,7 +27,7 @@ object Environment {
   )
 
   val postHeader = Map(
-    "content-type" -> "application/x-www-form-urlencoded",
+    "content-type" -> "application/x-www-form-urlencoded"
   )
 
 }
