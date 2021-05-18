@@ -63,7 +63,7 @@ object NFD_DivorceApplication {
         .formParam("_csrf", "${csrf}")
         .formParam("relationshipDate-day", Common.getDay())
         .formParam("relationshipDate-month", Common.getMonth())
-        .formParam("relationshipDate-year", Common.getDobYear())
+        .formParam("relationshipDate-year", Common.getMarriageYear())
         .check(CsrfCheck.save)
         .check(substring("Do you have your marriage certificate with you?")))
     }
@@ -82,18 +82,18 @@ object NFD_DivorceApplication {
     }
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-      .group("DivorceApp_045_HowDoYouWantToApply") {
-        active
-        .exec(http("How do you want to apply")
-          .post(BaseURL + "/how-do-you-want-to-apply")
-          .headers(CommonHeader)
-          .headers(PostHeader)
-          .formParam("_csrf", "${csrf}")
-          .formParam("applicationType", "soleApplication")
-          .check(CsrfCheck.save)
-          .check(substring("Do you need help paying the fee for your divorce?")))
-      }
-      .pause(MinThinkTime seconds, MaxThinkTime seconds)
+    .group("DivorceApp_045_HowDoYouWantToApply") {
+      active
+      .exec(http("How do you want to apply")
+        .post(BaseURL + "/how-do-you-want-to-apply")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicationType", "soleApplication")
+        .check(CsrfCheck.save)
+        .check(substring("Do you need help paying the fee for your divorce?")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_050_HelpWithYourFeeSubmit") {
       active
@@ -143,6 +143,7 @@ object NFD_DivorceApplication {
         .formParam("yourLifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
         .formParam("applicant2LifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
+        .check(regex("""<input class="govuk-input" id="connections" name="connections" type="hidden" value="(.+)"""").saveAs("connectionId"))
         .check(substring("You can use English or Welsh courts to apply for a divorce")))
     }
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
@@ -154,6 +155,7 @@ object NFD_DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
+        .formParam("connections", "${connectionId}")
         .check(CsrfCheck.save)
         .check(substring("Enter your name")))
     }

@@ -30,7 +30,7 @@ object Common {
   }
 
   //Dob >= 25 years
-  def getDobYear(): String = {
+  def getMarriageYear(): String = {
     now.minusYears(25 + rnd.nextInt(70)).format(patternYear)
   }
 
