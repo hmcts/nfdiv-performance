@@ -16,6 +16,8 @@ object NFD_DivorceApplication {
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
 
+  val postcodeFeeder = csv("postcodes.csv").random
+
   val DivorceApplication =
     group("DivorceApp_010_YourDetailsSubmit") {
       exec(http("Your Details Submit")
@@ -122,7 +124,7 @@ object NFD_DivorceApplication {
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
         .formParam("yourLifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
-        .formParam("partnersLifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
+        .formParam("applicant2LifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
         .check(substring("You can use English or Welsh courts to apply for a divorce")))
     }
@@ -145,9 +147,9 @@ object NFD_DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("yourFirstNames", Common.randomString(5))
+        .formParam("yourFirstNames", "${forename}")
         .formParam("yourMiddleNames", "")
-        .formParam("yourLastNames", Common.randomString(5))
+        .formParam("yourLastNames", "${surname}")
         .check(CsrfCheck.save)
         .check(substring("Enter your wife’s name")))
     }
@@ -173,8 +175,8 @@ object NFD_DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("fullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
-        .formParam("partnersFullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
+        .formParam("fullNameOnCertificate", "${forename}" + " " + "${surname}")
+        .formParam("applicant2FullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
         .check(CsrfCheck.save)
         .check(substring("Changes to your name")))
     }
@@ -228,7 +230,7 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your postal address")))
     }
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+      .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_165_EnterYourPostCode") {
       exec(http("Enter your post code")
@@ -277,7 +279,7 @@ object NFD_DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("knowPartnersAddress", Case.YesOrNo.Yes)
+        .formParam("knowApplicant2Address", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
         .check(substring("Enter your wife’s postal address")))
     }
