@@ -258,14 +258,17 @@ object NFD_DivorceApplication {
       .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_165_EnterYourPostCode") {
-      exec(http("Enter your post code")
-        .post(BaseURL + "/postcode-lookup")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
-        .formParam("postcode", "BS6 6PE"))
+      active
+      .feed(postcodeFeeder)
+        .exec(http("Enter your postal address")
+          .post(BaseURL + "/postcode-lookup")
+          .headers(CommonHeader)
+          .headers(PostHeader)
+          .formParam("_csrf", "${csrf}")
+          .formParam("postcode", "${postcode}")
+          .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"(.*?)","postcode":"(.+?)"""").ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
     }
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+      .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_170_EnterYourPostalAddress") {
       active
@@ -274,12 +277,12 @@ object NFD_DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("yourAddress1", "Address, Road")
-        .formParam("yourAddress2", "")
+        .formParam("yourAddress1", "${addressLines(0)}")
+        .formParam("yourAddress2", "${addressLines(1)}")
         .formParam("yourAddress3", "")
-        .formParam("yourAddressTown", "Town")
-        .formParam("yourAddressCounty", "County")
-        .formParam("yourAddressPostcode", "BS6 6PE")
+        .formParam("yourAddressTown", "${addressLines(2)}")
+        .formParam("yourAddressCounty", "${addressLines(3)}")
+        .formParam("yourAddressPostcode", "${addressLines(4)}")
         .formParam("yourAddressCountry", "UK")
         .check(CsrfCheck.save)
         .check(regex("Enter your wife(&.+;)s email address")))
