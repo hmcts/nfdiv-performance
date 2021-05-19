@@ -304,7 +304,6 @@ object NFD_DivorceApplication {
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_210_DoYouKnowTheirAddress") {
-      active
       .exec(http("Do you have your wife's postal address?")
         .post(BaseURL + "/do-you-have-address")
         .headers(CommonHeader)
@@ -328,8 +327,8 @@ object NFD_DivorceApplication {
           .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"(.*?)","postcode":"(.+?)"""")
             .ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
     }
-      .exec(active)
-      .pause(MinThinkTime seconds, MaxThinkTime seconds)
+    .exec(active)
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_230_TheirAddress") {
       exec(http("Enter your wife’s postal address")
