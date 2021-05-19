@@ -200,13 +200,21 @@ object NFD_02DivorceApplication {
     .group("DivorceApp_270_DocumentUpload") {
       exec(http("Upload your documents")
         .post(BaseURL + "/document-manager?_csrf=${csrf}")
-        .headers(CommonHeader)
-        .headers(PostHeader)
+        .header("accept", "application/json")
+        .header("accept-encoding", "gzip, deflate, br")
+        .header("accept-language", "en-GB,en;q=0.9")
+        .header("content-type", "multipart/form-data")
+        .header("sec-fetch-dest", "empty")
+        .header("sec-fetch-mode", "cors")
+        .header("sec-fetch-site", "same-origin")
+        .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36")
+        .header("x-requested-with", "XMLHttpRequest")
         .bodyPart(RawFileBodyPart("files[]", "2MB.pdf")
           .fileName("2MB.pdf")
           .transferEncoding("binary"))
         .asMultipartForm
-        .check(status.is(200)))
+        .check(status.is(200))
+        .check(regex(""""id":"(.+)","name":"2MB.pdf"""").saveAs("documentId")))
     }
     .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
@@ -217,7 +225,7 @@ object NFD_02DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("uploadedFiles", "[{\"id\":\"1234\",\"name\":\"2MB.pdf\"}]")
+        .formParam("uploadedFiles", "[{\"id\":\"" + "${documentId}" + "\",\"name\":\"2MB.pdf\"}]")
         .formParam("cannotUploadDocuments", "")
         .check(substring("Check your answers")))
     }
