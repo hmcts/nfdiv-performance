@@ -19,16 +19,13 @@ object NFD_DivorceApplication {
   val postcodeFeeder = csv("postcodes.csv").random
 
   val active =
-    group("DivorceApp_000_Active") {
-      exec(http("Active")
-      .get(BaseURL + "/active")
-      .headers(CommonHeader))
-    }
+    exec(http("DivorceApp_000_Active")
+    .get(BaseURL + "/active")
+    .headers(CommonHeader))
 
   val DivorceApplication =
     group("DivorceApp_010_YourDetailsSubmit") {
-      active
-      .exec(http("Your Details Submit")
+      exec(http("Your Details Submit")
         .post(BaseURL + "/your-details")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -38,12 +35,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Has your marriage irretrievably broken down (it cannot be saved)?")))
     }
-
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_020_MarriageBrokenDownSubmit") {
-      active
-      .exec(http("Marriage Broken Down Submit")
+      exec(http("Marriage Broken Down Submit")
         .post(BaseURL + "/irretrievable-breakdown")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -52,11 +48,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("When did you get married?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_030_DateFromCertificateSubmit") {
-      active
-      .exec(http("Date From Certificate Submit")
+      exec(http("Date From Certificate Submit")
         .post(BaseURL + "/date-from-certificate")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -67,11 +63,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you have your marriage certificate with you?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_040_HasMarriageCertificateSubmit") {
-      active
-      .exec(http("Has Marriage Certificate Submit")
+      exec(http("Has Marriage Certificate Submit")
         .post(BaseURL + "/do-you-have-your-certificate")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -80,11 +76,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("How do you want to apply for the divorce?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_045_HowDoYouWantToApply") {
-      active
-      .exec(http("How do you want to apply")
+    .group("DivorceApp_050_HowDoYouWantToApply") {
+      exec(http("How do you want to apply")
         .post(BaseURL + "/how-do-you-want-to-apply")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -93,11 +89,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you need help paying the fee for your divorce?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_050_HelpWithYourFeeSubmit") {
-      active
-      .exec(http("Help With Your Fee Submit")
+    .group("DivorceApp_060_HelpWithYourFeeSubmit") {
+      exec(http("Help With Your Fee Submit")
         .post(BaseURL + "/help-with-your-fee")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -106,11 +102,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Did you get married in the UK?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_060_InTheUKSubmit") {
-      active
-      .exec(http("In The UK Submit")
+    .group("DivorceApp_70_InTheUKSubmit") {
+      exec(http("In The UK Submit")
         .post(BaseURL + "/in-the-uk")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -119,11 +115,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Check if you can get a divorce in England and Wales")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_070_CheckJurisdictionSubmit") {
-      active
-      .exec(http("Check Jurisdiction Submit")
+    .group("DivorceApp_080_CheckJurisdictionSubmit") {
+      exec(http("Check Jurisdiction Submit")
         .post(BaseURL + "/check-jurisdiction")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -131,11 +127,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Where your lives are based")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_080_WhereYourLivesAreBasedSubmit") {
-      active
-      .exec(http("Where Your Lives Are Based Submit")
+    .group("DivorceApp_090_WhereYourLivesAreBasedSubmit") {
+      exec(http("Where Your Lives Are Based Submit")
         .post(BaseURL + "/where-your-lives-are-based")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -146,11 +142,11 @@ object NFD_DivorceApplication {
         .check(regex("""<input class="govuk-input" id="connections" name="connections" type="hidden" value="(.+)"""").saveAs("connectionId"))
         .check(substring("You can use English or Welsh courts to apply for a divorce")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_090_CanUseEnglishWelshCourt") {
-      active
-      .exec(http("English or Welsh courts")
+    .group("DivorceApp_100_CanUseEnglishWelshCourt") {
+      exec(http("English or Welsh courts")
         .post(BaseURL + "/you-can-use-english-welsh-courts")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -159,11 +155,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your name")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_100_EnterYourName") {
-      active
-      .exec(http("Enter your name")
+    .group("DivorceApp_110_EnterYourName") {
+      exec(http("Enter your name")
         .post(BaseURL + "/enter-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -174,11 +170,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your wife’s name")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_110_EnterTheirName") {
-      active
-      .exec(http("Enter Their name")
+    .group("DivorceApp_120_EnterTheirName") {
+      exec(http("Enter Their name")
         .post(BaseURL + "/enter-their-name")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -189,11 +185,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Your names on your marriage certificate")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_120_NamesOnYourMarriageCertificate?") {
-      active
-      .exec(http("Names on your marriage certificate")
+    .group("DivorceApp_130_NamesOnYourMarriageCertificate?") {
+      exec(http("Names on your marriage certificate")
         .post(BaseURL + "/your-names-on-certificate")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -203,11 +199,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Changes to your name")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_130_ChangesToYourName?") {
-      active
-      .exec(http("Changes to your name")
+    .group("DivorceApp_140_ChangesToYourName?") {
+      exec(http("Changes to your name")
         .post(BaseURL + "/changes-to-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -217,11 +213,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("How the court will contact you")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_140_HowTheCourtWillContactYou?") {
-      active
-      .exec(http("How the court will contact you")
+    .group("DivorceApp_150_HowTheCourtWillContactYou?") {
+      exec(http("How the court will contact you")
         .post(BaseURL + "/how-the-court-will-contact-you")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -231,11 +227,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("What language do you want to receive emails and documents in?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_150_LanguageToReceiveEmailsAndDocumentsIn?") {
-      active
-      .exec(http("English or Welsh?")
+    .group("DivorceApp_160_LanguageToReceiveEmailsAndDocumentsIn?") {
+      exec(http("English or Welsh?")
         .post(BaseURL + "/english-or-welsh")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -244,11 +240,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you need your contact details kept private from your wife?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_160_DetailsKeptPrivate?") {
-      active
-      .exec(http("Keep contact details private from your wife?")
+    .group("DivorceApp_170_DetailsKeptPrivate?") {
+      exec(http("Keep contact details private from your wife?")
         .post(BaseURL + "/address-private")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -257,24 +253,25 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your postal address")))
     }
-      .pause(MinThinkTime seconds, MaxThinkTime seconds)
+    .exec(active)
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_165_EnterYourPostCode") {
-      active
-      .feed(postcodeFeeder)
-        .exec(http("Enter your postal address")
+    .group("DivorceApp_180_EnterYourPostcode") {
+      feed(postcodeFeeder)
+        .exec(http("Enter your postcode")
           .post(BaseURL + "/postcode-lookup")
           .headers(CommonHeader)
           .headers(PostHeader)
           .formParam("_csrf", "${csrf}")
           .formParam("postcode", "${postcode}")
-          .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"(.*?)","postcode":"(.+?)"""").ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
+          .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"(.*?)","postcode":"(.+?)"""")
+            .ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
     }
-      .pause(MinThinkTime seconds, MaxThinkTime seconds)
+    .exec(active)
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_170_EnterYourPostalAddress") {
-      active
-      .exec(http("Enter your postal address")
+    .group("DivorceApp_190_EnterYourPostalAddress") {
+      exec(http("Enter your postal address")
         .post(BaseURL + "/enter-your-address")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -289,20 +286,21 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(regex("Enter your wife(&.+;)s email address")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_180_EnterTheirEmailAddress") {
-      active
-      .exec(http("Enter your wife's email address")
+    .group("DivorceApp_200_EnterTheirEmailAddress") {
+      exec(http("Enter your wife's email address")
         .post(BaseURL + "/their-email-address")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applicant2EmailAddress", "test@test.com")
+        .formParam("applicant2EmailAddress", Common.randomString(5) + "@test.com")
         .formParam("doNotKnowApplicant2EmailAddress", "")
         .check(CsrfCheck.save)
         .check(regex("Do you have your wife(&.+;)s postal address?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_190_DoYouKnowTheirAddress") {
@@ -316,31 +314,44 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your wife’s postal address")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_200_TheirAddress") {
-      active
-      .exec(http("Enter your wife’s postal address")
+    .group("DivorceApp_180_EnterTheirPostcode") {
+      feed(postcodeFeeder)
+        .exec(http("Enter their postcode")
+          .post(BaseURL + "/postcode-lookup")
+          .headers(CommonHeader)
+          .headers(PostHeader)
+          .formParam("_csrf", "${csrf}")
+          .formParam("postcode", "${postcode}")
+          .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"(.*?)","postcode":"(.+?)"""")
+            .ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
+    }
+      .exec(active)
+      .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_220_TheirAddress") {
+      exec(http("Enter your wife’s postal address")
         .post(BaseURL + "/enter-their-address")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("isTheirAddressInternational", Case.YesOrNo.No)
-        .formParam("theirAddress1", "2 Address, Road")
-        .formParam("theirAddress2", "")
+        .formParam("theirAddress1", "${addressLines(0)}")
+        .formParam("theirAddress2", "${addressLines(1)}")
         .formParam("theirAddress3", "")
-        .formParam("theirAddressTown", "Town")
-        .formParam("theirAddressCounty", "County")
-        .formParam("theirAddressPostcode", "E1 1AB")
+        .formParam("theirAddressTown", "${addressLines(2)}")
+        .formParam("theirAddressCounty", "${addressLines(3)}")
+        .formParam("theirAddressPostcode", "${addressLines(4)}")
         .formParam("theirAddressCountry", "UK")
         .check(CsrfCheck.save)
         .check(substring("Other court cases")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_210_OtherCourtCases") {
-      active
-      .exec(http("Other court cases")
+    .group("DivorceApp_230_OtherCourtCases") {
+      exec(http("Other court cases")
         .post(BaseURL + "/other-court-cases")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -350,11 +361,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Dividing your money and property")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_220_DividingYourMoneyAndProperty") {
-      active
-      .exec(http("Dividing your money and property")
+    .group("DivorceApp_240_DividingYourMoneyAndProperty") {
+      exec(http("Dividing your money and property")
         .post(BaseURL + "/dividing-money-property")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -362,11 +373,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you want to apply for a financial order?")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_230_ApplyForFinancialOrder") {
-      active
-      .exec(http("Do you want to apply for a financial order?")
+    .group("DivorceApp_250_ApplyForFinancialOrder") {
+      exec(http("Do you want to apply for a financial order?")
         .post(BaseURL + "/do-you-want-to-apply-financial-order")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -376,11 +387,11 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Upload your documents")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_240_DocumentUpload") {
-      active
-      .exec(http("Upload your documents")
+    .group("DivorceApp_260_DocumentUpload") {
+      exec(http("Upload your documents")
         .post(BaseURL + "/document-manager?_csrf=${csrf}")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -390,11 +401,11 @@ object NFD_DivorceApplication {
         .asMultipartForm
         .check(status.is(200)))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_250_DocumentUploadSubmit") {
-      active
-      .exec(http("Upload your documents")
+    .group("DivorceApp_270_DocumentUploadSubmit") {
+      exec(http("Upload your documents")
         .post(BaseURL + "/upload-your-documents")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -403,11 +414,11 @@ object NFD_DivorceApplication {
         .formParam("cannotUploadDocuments", "")
         .check(substring("Check your answers")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_260_CheckYourAnswers") {
-      active
-      .exec(http("Check your answers")
+    .group("DivorceApp_280_CheckYourAnswers") {
+      exec(http("Check your answers")
         .post(BaseURL + "/check-your-answers")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -417,17 +428,18 @@ object NFD_DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Pay your divorce fee")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_270_PayYourFee") {
-      active
-      .exec(http("Pay your fee")
+    .group("DivorceApp_290_PayYourFee") {
+      exec(http("Pay your fee")
         .post(BaseURL + "/pay-your-fee")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
         .check(substring("Check your answers")))
     }
+    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
 }
