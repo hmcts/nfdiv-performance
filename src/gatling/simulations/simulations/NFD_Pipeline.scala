@@ -14,17 +14,21 @@ class NFD_Pipeline extends Simulation {
   val BaseURL = Environment.baseURL
 
   /* TEST TYPE DEFINITION */
-  /* perftest = performance test against the perftest environment */
-  /* pipeline = nightly pipeline against the AAT environment  */
-  val testType = scala.util.Properties.envOrElse("TEST_TYPE", "**INVALID**")
-  //val testType = System.getProperty("TEST_TYPE", "")
+  /* pipeline = nightly pipeline against the AAT environment (see the Jenkins_nightly file) */
+  /* perftest = performance test against the perftest environment (default if not specified) */
+  val testType = scala.util.Properties.envOrElse("TEST_TYPE", "perftest")
 
-  val env = testType match{
+  //set the environment based on the test type
+  val environment = testType match{
     case "perftest" => "perftest"
     case "pipeline" => "aat"
     case _ => "**INVALID**"
   }
+  /* ******************************** */
 
+  /* ADDITIONAL COMMAND LINE ARGUMENT OPTIONS */
+  val debugMode = System.getProperty("debug", "off") //runs a single user e.g. ./gradle gatlingRun -Ddebug=on
+  val env = System.getProperty("env", environment) //manually override the environment aat|perftest e.g. ./gradle gatlingRun -Denv=aat
   /* ******************************** */
 
   /* PERFORMANCE TEST CONFIGURATION */
@@ -36,7 +40,7 @@ class NFD_Pipeline extends Simulation {
   /* ******************************** */
 
   /* PIPELINE CONFIGURATION */
-  val numberOfPipelineUsers:Double = 2
+  val numberOfPipelineUsers:Double = 10
   /* ******************************** */
 
   val httpProtocol = Environment.HttpProtocol
@@ -48,7 +52,7 @@ class NFD_Pipeline extends Simulation {
   before{
     println(s"Test Type: ${testType}")
     println(s"Test Environment: ${env}")
-    println(s"Test Duration: ${testDurationMins} minutes")
+    println(s"Debug Mode: ${debugMode}")
   }
 
   val NFDSimulation = scenario( "NFDSimulation")
@@ -75,11 +79,16 @@ class NFD_Pipeline extends Simulation {
   def simulationProfile(simulationType: String): Seq[OpenInjectionStep] = {
     simulationType match {
       case "perftest" =>
-        Seq(
-          rampUsersPerSec(0.00) to (divorceRatePerSec) during (rampUpDurationMins minutes),
-          constantUsersPerSec(divorceRatePerSec) during (testDurationMins minutes),
-          rampUsersPerSec(divorceRatePerSec) to (0.00) during (rampDownDurationMins minutes)
-        )
+        if (debugMode == "off") {
+          Seq(
+            rampUsersPerSec(0.00) to (divorceRatePerSec) during (rampUpDurationMins minutes),
+            constantUsersPerSec(divorceRatePerSec) during (testDurationMins minutes),
+            rampUsersPerSec(divorceRatePerSec) to (0.00) during (rampDownDurationMins minutes)
+          )
+        }
+        else{
+          Seq(atOnceUsers(1))
+        }
       case "pipeline" =>
         Seq(rampUsers(numberOfPipelineUsers.toInt) during (2 minutes))
       case _ =>
