@@ -15,7 +15,7 @@ class NFD_Simulation extends Simulation {
 
   /* TEST TYPE DEFINITION */
   /* pipeline = nightly pipeline against the AAT environment (see the Jenkins_nightly file) */
-  /* perftest = performance test against the perftest environment (default if not specified) */
+  /* perftest (default) = performance test against the perftest environment */
   val testType = scala.util.Properties.envOrElse("TEST_TYPE", "perftest")
 
   //set the environment based on the test type
@@ -27,7 +27,7 @@ class NFD_Simulation extends Simulation {
   /* ******************************** */
 
   /* ADDITIONAL COMMAND LINE ARGUMENT OPTIONS */
-  val debugMode = System.getProperty("debug", "off") //runs a single user e.g. ./gradle gatlingRun -Ddebug=on
+  val debugMode = System.getProperty("debug", "off") //runs a single user e.g. ./gradle gatlingRun -Ddebug=on (default: off)
   val env = System.getProperty("env", environment) //manually override the environment aat|perftest e.g. ./gradle gatlingRun -Denv=aat
   /* ******************************** */
 
