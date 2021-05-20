@@ -38,7 +38,7 @@ object NFD_02DivorceApplication {
     .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_160_LanguageToReceiveEmailsAndDocumentsIn?") {
+    .group("DivorceApp_160_LanguageToReceiveEmailsAndDocs?") {
       exec(http("English or Welsh?")
         .post(BaseURL + "/english-or-welsh")
         .headers(CommonHeader)
