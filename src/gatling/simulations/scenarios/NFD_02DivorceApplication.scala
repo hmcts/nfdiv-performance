@@ -75,7 +75,6 @@ object NFD_02DivorceApplication {
           .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"*(.*?)"*,"postcode":"(.+?)"""")
             .ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
     }
-    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_190_EnterYourPostalAddress") {
@@ -135,7 +134,6 @@ object NFD_02DivorceApplication {
           .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"*(.*?)"*,"postcode":"(.+?)"""")
             .ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
     }
-    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_230_TheirAddress") {
@@ -216,7 +214,6 @@ object NFD_02DivorceApplication {
         .check(status.is(200))
         .check(regex(""""id":"(.+)","name":"2MB.pdf"""").saveAs("documentId")))
     }
-    .exec(active)
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_280_DocumentUploadSubmit") {
