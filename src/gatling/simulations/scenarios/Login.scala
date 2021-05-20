@@ -33,7 +33,6 @@ object Login {
         .formParam("_csrf", "${csrf}")
         .check(CsrfCheck.save)
         .check(substring("Who are you applying to divorce?")))
-
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)

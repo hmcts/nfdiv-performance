@@ -8,6 +8,8 @@ object Common {
 
   val rnd = new Random()
   val now = LocalDate.now()
+  val patternDay = DateTimeFormatter.ofPattern("dd")
+  val patternMonth = DateTimeFormatter.ofPattern("MM")
   val patternYear = DateTimeFormatter.ofPattern("yyyy")
   val patternDate = DateTimeFormatter.ofPattern("yyyyMMdd")
 
@@ -20,15 +22,15 @@ object Common {
   }
 
   def getDay(): String = {
-    (1 + rnd.nextInt(28)).toString
+    (1 + rnd.nextInt(28)).toString.format(patternDay).reverse.padTo(2, '0').reverse //pads single-digit dates with a leading zero
   }
 
   def getMonth(): String = {
-    (1 + rnd.nextInt(12)).toString
+    (1 + rnd.nextInt(12)).toString.format(patternMonth).reverse.padTo(2, '0').reverse //pads single-digit dates with a leading zero
   }
 
   //Dob >= 25 years
-  def getDobYear(): String = {
+  def getMarriageYear(): String = {
     now.minusYears(25 + rnd.nextInt(70)).format(patternYear)
   }
 

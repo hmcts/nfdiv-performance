@@ -10,8 +10,10 @@ object CreateUser {
 
   val newUserFeeder = Iterator.continually(Map(
     "emailAddress" -> ("perftest" + Common.getDate() + "@perftest-" + Common.randomString(10) + ".com"),
+    "forename" -> Common.randomString(5),
     "password" -> "Pa55word11",
-    "role" -> "citizen"
+    "role" -> "citizen",
+    "surname" -> Common.randomString(5)
   ))
 
   val CreateCitizen =
