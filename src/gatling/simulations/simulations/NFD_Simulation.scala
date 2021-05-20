@@ -9,7 +9,7 @@ import scenarios._
 import utils.Environment
 import scala.concurrent.duration._
 
-class NFD_Pipeline extends Simulation {
+class NFD_Simulation extends Simulation {
 
   val BaseURL = Environment.baseURL
 
