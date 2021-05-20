@@ -16,7 +16,8 @@ class NFD_Pipeline extends Simulation {
   /* TEST TYPE DEFINITION */
   /* perftest = performance test against the perftest environment */
   /* pipeline = nightly pipeline against the AAT environment  */
-  val testType = System.getProperty("TEST_TYPE", "")
+  val testType = scala.util.Properties.envOrElse("TEST_TYPE", "**INVALID**")
+  //val testType = System.getProperty("TEST_TYPE", "")
 
   val env = testType match{
     case "perftest" => "perftest"
