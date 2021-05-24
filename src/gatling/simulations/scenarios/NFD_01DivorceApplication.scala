@@ -133,7 +133,7 @@ object NFD_01DivorceApplication {
         .formParam("applicant2LifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
         .check(regex("""<input class="govuk-input" id="connections" name="connections" type="hidden" value="(.+)"""").saveAs("connectionId"))
-        .check(substring("You can use English or Welsh courts to apply for a divorce")))
+        .check(substring("You can use English or Welsh courts to get a divorce")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
