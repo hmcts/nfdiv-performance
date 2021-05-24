@@ -16,11 +16,6 @@ object NFD_01DivorceApplication {
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
 
-  val active =
-    exec(http("DivorceApp_000_Active")
-    .get(BaseURL + "/active")
-    .headers(CommonHeader))
-
   val ApplicationQuestions1 =
     group("DivorceApp_010_YourDetailsSubmit") {
       exec(http("Your Details Submit")
@@ -33,7 +28,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Has your marriage irretrievably broken down (it cannot be saved)?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_020_MarriageBrokenDownSubmit") {
@@ -46,7 +41,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("When did you get married?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_030_DateFromCertificateSubmit") {
@@ -61,7 +56,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you have your marriage certificate with you?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_040_HasMarriageCertificateSubmit") {
@@ -74,7 +69,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("How do you want to apply for the divorce?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_050_HowDoYouWantToApply") {
@@ -87,7 +82,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you need help paying the fee for your divorce?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_060_HelpWithYourFeeSubmit") {
@@ -100,7 +95,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Did you get married in the UK?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_070_InTheUKSubmit") {
@@ -113,7 +108,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Check if you can get a divorce in England and Wales")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_080_CheckJurisdictionSubmit") {
@@ -125,7 +120,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Where your lives are based")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_090_WhereYourLivesAreBasedSubmit") {
@@ -140,7 +135,7 @@ object NFD_01DivorceApplication {
         .check(regex("""<input class="govuk-input" id="connections" name="connections" type="hidden" value="(.+)"""").saveAs("connectionId"))
         .check(substring("You can use English or Welsh courts to apply for a divorce")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_100_CanUseEnglishWelshCourt") {
@@ -153,7 +148,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your name")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_110_EnterYourName") {
@@ -168,7 +163,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your wife’s name")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_120_EnterTheirName") {
@@ -183,7 +178,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Your names on your marriage certificate")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_130_NamesOnYourMarriageCertificate?") {
@@ -197,7 +192,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Changes to your name")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_140_ChangesToYourName?") {
@@ -211,7 +206,7 @@ object NFD_01DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("How the court will contact you")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
 }

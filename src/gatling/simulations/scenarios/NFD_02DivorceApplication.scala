@@ -18,11 +18,6 @@ object NFD_02DivorceApplication {
 
   val postcodeFeeder = csv("postcodes.csv").random
 
-  val active =
-    exec(http("DivorceApp_000_Active")
-    .get(BaseURL + "/active")
-    .headers(CommonHeader))
-
   val ApplicationQuestions2 =
     group("DivorceApp_150_HowTheCourtWillContactYou?") {
       exec(http("How the court will contact you")
@@ -35,7 +30,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("What language do you want to receive emails and documents in?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_160_LanguageToReceiveEmailsAndDocs?") {
@@ -48,7 +43,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you need your contact details kept private from your wife?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_170_DetailsKeptPrivate?") {
@@ -61,7 +56,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your postal address")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_180_EnterYourPostcode") {
@@ -93,7 +88,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(regex("Enter your wife(&.+;)s email address")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_200_EnterTheirEmailAddress") {
@@ -107,7 +102,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(regex("Do you have your wife(&.+;)s postal address?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_210_DoYouKnowTheirAddress") {
@@ -120,7 +115,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Enter your wife’s postal address")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_220_EnterTheirPostcode") {
@@ -152,7 +147,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Other court cases")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_240_OtherCourtCases") {
@@ -166,7 +161,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Dividing your money and property")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_250_DividingYourMoneyAndProperty") {
@@ -178,7 +173,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Do you want to apply for a financial order?")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_260_ApplyForFinancialOrder") {
@@ -192,7 +187,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Upload your documents")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_270_DocumentUpload") {
@@ -226,7 +221,7 @@ object NFD_02DivorceApplication {
         .formParam("cannotUploadDocuments", "")
         .check(substring("Check your answers")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_290_CheckYourAnswers") {
@@ -240,7 +235,7 @@ object NFD_02DivorceApplication {
         .check(CsrfCheck.save)
         .check(substring("Pay your divorce fee")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
     .group("DivorceApp_300_PayYourFee") {
@@ -251,7 +246,7 @@ object NFD_02DivorceApplication {
         .formParam("_csrf", "${csrf}")
         .check(substring("Check your answers")))
     }
-    .exec(active)
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
 }
