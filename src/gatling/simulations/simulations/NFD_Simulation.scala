@@ -101,7 +101,7 @@ class NFD_Simulation extends Simulation {
       case "perftest" =>
         Seq(global.successfulRequests.percent.gte(95))
       case "pipeline" =>
-        Seq(global.successfulRequests.percent.is(95),
+        Seq(global.successfulRequests.percent.gte(95),
           details("DivorceApp_300_PayYourFee").successfulRequests.count.gte((numberOfPipelineUsers * 0.8).ceil.toInt))
       case _ =>
         Seq()
