@@ -12,7 +12,7 @@ object Case {
   }
 
   object YesOrNo extends Enumeration {
-    val Yes = Value("YES")
-    val No = Value("NO")
+    val Yes = Value("Yes")
+    val No = Value("No")
   }
 }

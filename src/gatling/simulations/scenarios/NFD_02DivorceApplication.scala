@@ -244,7 +244,7 @@ object NFD_02DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .check(substring("Check your answers")))
+        .check(substring("Enter card details")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
