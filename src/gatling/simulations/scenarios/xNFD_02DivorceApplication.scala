@@ -6,7 +6,7 @@ import utils.{Case, Common, CsrfCheck, Environment}
 
 import scala.concurrent.duration._
 
-object NFD_02DivorceApplication {
+object xNFD_02DivorceApplication {
 
   val BaseURL = Environment.baseURL
 
@@ -149,7 +149,7 @@ object NFD_02DivorceApplication {
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
+//common
     .group("DivorceApp_240_OtherCourtCases") {
       exec(http("Other court cases")
         .post(BaseURL + "/other-court-cases")

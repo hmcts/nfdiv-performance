@@ -64,8 +64,8 @@ class NFD_Simulation extends Simulation {
         CreateUser.CreateCitizen,
         Homepage.NFDHomepage,
         Login.NFDLogin,
-        NFD_01DivorceApplication.ApplicationQuestions1,
-        NFD_02DivorceApplication.ApplicationQuestions2,
+        xNFD_01DivorceApplication.ApplicationQuestions1,
+        xNFD_02DivorceApplication.ApplicationQuestions2,
         Logout.NFDLogout)
     }
     .exec(DeleteUser.DeleteCitizen)

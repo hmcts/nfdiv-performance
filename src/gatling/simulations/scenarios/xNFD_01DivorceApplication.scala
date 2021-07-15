@@ -6,7 +6,7 @@ import utils.{Case, Common, CsrfCheck, Environment}
 
 import scala.concurrent.duration._
 
-object NFD_01DivorceApplication {
+object xNFD_01DivorceApplication {
 
   val BaseURL = Environment.baseURL
 
