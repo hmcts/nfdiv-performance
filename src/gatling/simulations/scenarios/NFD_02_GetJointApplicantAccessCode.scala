@@ -6,7 +6,7 @@ import utils.{CsrfCheck, Environment}
 
 import scala.concurrent.duration._
 
-object NFD_03_GetJointApplicantAccessCode {
+object NFD_02_GetJointApplicantAccessCode {
 
   val BaseURL = Environment.baseURL
   val RpeAPIURL = Environment.rpeAPIURL

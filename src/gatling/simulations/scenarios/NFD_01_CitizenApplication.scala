@@ -1,0 +1,565 @@
+package scenarios
+
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import utils.{Case, Common, CsrfCheck, Environment}
+
+import scala.concurrent.duration._
+
+object NFD_01_CitizenApplication {
+
+  val BaseURL = Environment.baseURL
+
+  val MinThinkTime = Environment.minThinkTime
+  val MaxThinkTime = Environment.maxThinkTime
+
+  val CommonHeader = Environment.commonHeader
+  val PostHeader = Environment.postHeader
+
+  val postcodeFeeder = csv("postcodes.csv").random
+
+  val LandingPage =
+
+    group("DivorceApp_010_YourDetailsSubmit") {
+      exec(http("Your Details Submit")
+        .post(BaseURL + "/your-details")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("gender", Case.Gender.Female)
+        .formParam("sameSex", Case.Checkbox.Unchecked)
+        .check(CsrfCheck.save)
+        .check(substring("Has your marriage irretrievably broken down (it cannot be saved)?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val MarriageBrokenDown =
+
+    group("DivorceApp_020_${userType}MarriageBrokenDownSubmit") {
+      exec(http("Marriage Broken Down Submit")
+        .post(BaseURL + "/${userTypeURL}irretrievable-breakdown")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${union}", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(regex("When did you get married?|Enter your name")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val MarriageCertificate =
+
+    group("DivorceApp_030_DateFromCertificateSubmit") {
+      exec(http("Date From Certificate Submit")
+        .post(BaseURL + "/date-from-certificate")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("relationshipDate-day", Common.getDay())
+        .formParam("relationshipDate-month", Common.getMonth())
+        .formParam("relationshipDate-year", Common.getMarriageYear())
+        .check(CsrfCheck.save)
+        .check(substring("Do you have your marriage certificate with you?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_040_HasMarriageCertificateSubmit") {
+      exec(http("Has Marriage Certificate Submit")
+        .post(BaseURL + "/do-you-have-your-certificate")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("hasCertificate", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(substring("How do you want to apply for the divorce?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val HowDoYouWantToApplySole =
+
+    group("DivorceApp_050_HowDoYouWantToApply") {
+      exec(http("How do you want to apply")
+        .post(BaseURL + "/how-do-you-want-to-apply")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicationType", "soleApplication")
+        .check(CsrfCheck.save)
+        .check(substring("Do you need help paying the fee for your divorce?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val HowDoYouWantToApplyJoint =
+
+    group("DivorceApp_050_HowDoYouWantToApply") {
+      exec(http("How do you want to apply")
+        .post(BaseURL + "/how-do-you-want-to-apply")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicationType", "jointApplication")
+        .check(CsrfCheck.save)
+        .check(substring("Enter your wife&#39;s email address")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val EnterTheirEmailAddress =
+
+    group("DivorceApp_055_EnterTheirEmailAddress") {
+      exec(http("Enter their email address")
+        .post(BaseURL + "/their-email-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant2EmailAddress", "${Applicant2EmailAddress}")
+        .formParam("applicant1DoesNotKnowApplicant2EmailAddress", "")
+        .check(CsrfCheck.save)
+        .check(substring("Help paying the divorce fee")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+
+  val Jurisdictions =
+
+    group("DivorceApp_060_HelpWithYourFeeSubmit") {
+      exec(http("Help With Your Fee Submit")
+        .post(BaseURL + "/help-with-your-fee")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1HelpPayingNeeded", Case.YesOrNo.No)
+        .check(CsrfCheck.save)
+        .check(substring("Did you get married in the UK?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_070_InTheUKSubmit") {
+      exec(http("In The UK Submit")
+        .post(BaseURL + "/in-the-uk")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("inTheUk", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(substring("Check if you can get a divorce in England and Wales")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_080_CheckJurisdictionSubmit") {
+      exec(http("Check Jurisdiction Submit")
+        .post(BaseURL + "/check-jurisdiction")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .check(CsrfCheck.save)
+        .check(substring("Where your lives are based")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_090_WhereYourLivesAreBasedSubmit") {
+      exec(http("Where Your Lives Are Based Submit")
+        .post(BaseURL + "/where-your-lives-are-based")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1LifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
+        .formParam("applicant2LifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(regex("""<input class="govuk-input" id="connections" name="connections" type="hidden" value="(.+)"""").saveAs("connectionId"))
+        .check(substring("You can use English or Welsh courts to get a divorce")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_100_CanUseEnglishWelshCourt") {
+      exec(http("English or Welsh courts")
+        .post(BaseURL + "/you-can-use-english-welsh-courts")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("connections", "${connectionId}")
+        .check(CsrfCheck.save)
+        .check(substring("Enter your name")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val EnterYourName =
+
+    group("DivorceApp_110_${userType}EnterYourName") {
+      exec(http("Enter your name")
+        .post(BaseURL + "/${userTypeURL}enter-your-name")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}FirstNames", Common.randomString(5))
+        .formParam("${userType}MiddleNames", "")
+        .formParam("${userType}LastNames", Common.randomString(5))
+        .check(CsrfCheck.save)
+        .check(regex("Enter your wife’s name|Your names on your marriage certificate|Changes to your name")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val EnterTheirName =
+
+    group("DivorceApp_120_EnterTheirName") {
+      exec(http("Enter Their name")
+        .post(BaseURL + "/enter-their-name")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant2FirstNames", Common.randomString(5))
+        .formParam("applicant2MiddleNames", "")
+        .formParam("applicant2LastNames", Common.randomString(5))
+        .check(CsrfCheck.save)
+        .check(substring("Your names on your marriage certificate")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val MarriageCertNames =
+
+    group("DivorceApp_130_NamesOnYourMarriageCertificate?") {
+      exec(http("Names on your marriage certificate")
+        .post(BaseURL + "/your-names-on-certificate")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1FullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
+        .formParam("applicant2FullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
+        .check(CsrfCheck.save)
+        .check(substring("Changes to your name")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val ContactDetails =
+
+    group("DivorceApp_140_${userType}ChangesToYourName?") {
+      exec(http("Changes to your name")
+        .post(BaseURL + "/${userTypeURL}changes-to-your-name")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}LastNameChangedWhenRelationshipFormed", Case.YesOrNo.No)
+        .formParam("${userType}NameChangedSinceRelationshipFormed", Case.YesOrNo.No)
+        .check(CsrfCheck.save)
+        .check(substring("How the court will contact you")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_150_${userType}HowTheCourtWillContactYou") {
+      exec(http("How the court will contact you")
+        .post(BaseURL + "/${userTypeURL}how-the-court-will-contact-you")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .multivaluedFormParam("${userType}AgreeToReceiveEmails", List("", Case.Checkbox.Checked))
+        .formParam("${userType}PhoneNumber", "")
+        .check(CsrfCheck.save)
+        .check(substring("What language do you want to receive emails and documents in?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_160_${userType}LanguageToReceiveEmailsAndDocs?") {
+      exec(http("English or Welsh?")
+        .post(BaseURL + "/${userTypeURL}english-or-welsh")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${engWelsh}", "english")
+        .check(CsrfCheck.save)
+        .check(substring("Do you need your contact details kept private from your")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_170_${userType}DetailsKeptPrivate?") {
+      exec(http("Keep contact details private from your wife?")
+        .post(BaseURL + "/${userTypeURL}address-private")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}AddressPrivate", Case.YesOrNo.No)
+        .check(CsrfCheck.save)
+        .check(substring("Enter your postal address")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_180_${userType}EnterYourPostcode") {
+      feed(postcodeFeeder)
+        .exec(http("Enter your postcode")
+          .post(BaseURL + "/postcode-lookup")
+          .headers(CommonHeader)
+          .headers(PostHeader)
+          .formParam("_csrf", "${csrf}")
+          .formParam("postcode", "${postcode}")
+          .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"*(.*?)"*,"postcode":"(.+?)"""")
+            .ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_190_${userType}EnterYourPostalAddress") {
+      exec(http("Enter your postal address")
+        .post(BaseURL + "/${userTypeURL}enter-your-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}Address1", "${addressLines(0)}")
+        .formParam("${userType}Address2", "${addressLines(1)}")
+        .formParam("${userType}Address3", "")
+        .formParam("${userType}AddressTown", "${addressLines(2)}")
+        .formParam("${userType}AddressCounty", "${addressLines(3)}")
+        .formParam("${userType}AddressPostcode", "${addressLines(4)}")
+        .formParam("${userType}AddressCountry", "UK")
+        .check(CsrfCheck.save)
+        .check(regex("Other court cases|Enter your wife(&.+;)s email address")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val ContactDetailsJoint =
+
+    group("DivorceApp_200_EnterTheirEmailAddress") {
+      exec(http("Enter your wife's email address")
+        .post(BaseURL + "/their-email-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant2EmailAddress", Common.randomString(5) + "@test.com")
+        .formParam("doNotKnowApplicant2EmailAddress", "")
+        .check(CsrfCheck.save)
+        .check(regex("Do you have your wife(&.+;)s postal address?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_210_DoYouKnowTheirAddress") {
+      exec(http("Do you have your wife's postal address?")
+        .post(BaseURL + "/do-you-have-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1KnowsApplicant2Address", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(substring("Enter your wife’s postal address")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_220_EnterTheirPostcode") {
+      feed(postcodeFeeder)
+        .exec(http("Enter their postcode")
+          .post(BaseURL + "/postcode-lookup")
+          .headers(CommonHeader)
+          .headers(PostHeader)
+          .formParam("_csrf", "${csrf}")
+          .formParam("postcode", "${postcode}")
+          .check(regex(""""fullAddress":"(?:.+?)","street1":"(.*?)","street2":"(.*?)","town":"(.*?)","county":"*(.*?)"*,"postcode":"(.+?)"""")
+            .ofType[(String, String, String, String, String)].findRandom.saveAs("addressLines")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_230_TheirAddress") {
+      exec(http("Enter your wife’s postal address")
+        .post(BaseURL + "/enter-their-address")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant2Address1", "${addressLines(0)}")
+        .formParam("applicant2Address2", "${addressLines(1)}")
+        .formParam("applicant2Address3", "")
+        .formParam("applicant2AddressTown", "${addressLines(2)}")
+        .formParam("applicant2AddressCounty", "${addressLines(3)}")
+        .formParam("applicant2AddressPostcode", "${addressLines(4)}")
+        .formParam("applicant2AddressCountry", "UK")
+        .check(CsrfCheck.save)
+        .check(substring("Other court cases")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val DivorceDetailsAndUpload =
+
+    group("DivorceApp_240_OtherCourtCases") {
+      exec(http("Other court cases")
+        .post(BaseURL + "/other-court-cases")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .multivaluedFormParam("legalProceedingsRelated", List("", "", ""))
+        .formParam("legalProceedings", Case.YesOrNo.No)
+        .check(CsrfCheck.save)
+        .check(substring("Dividing your money and property")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_250_DividingYourMoneyAndProperty") {
+      exec(http("Dividing your money and property")
+        .post(BaseURL + "/dividing-money-property")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .check(CsrfCheck.save)
+        .check(substring("Do you want to apply for a financial order?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_260_ApplyForFinancialOrder") {
+      exec(http("Do you want to apply for a financial order?")
+        .post(BaseURL + "/do-you-want-to-apply-financial-order")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .multivaluedFormParam("whoIsFinancialOrderFor", List("", ""))
+        .formParam("applyForFinancialOrder", Case.YesOrNo.No)
+        .check(CsrfCheck.save)
+        .check(substring("Upload your documents")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_270_DocumentUpload") {
+      exec(http("Upload your documents")
+        .post(BaseURL + "/document-manager?_csrf=${csrf}")
+        .header("accept", "application/json")
+        .header("accept-encoding", "gzip, deflate, br")
+        .header("accept-language", "en-GB,en;q=0.9")
+        .header("content-type", "multipart/form-data")
+        .header("sec-fetch-dest", "empty")
+        .header("sec-fetch-mode", "cors")
+        .header("sec-fetch-site", "same-origin")
+        .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36")
+        .header("x-requested-with", "XMLHttpRequest")
+        .bodyPart(RawFileBodyPart("files[]", "2MB.pdf")
+          .fileName("2MB.pdf")
+          .transferEncoding("binary"))
+        .asMultipartForm
+        .check(status.is(200))
+        .check(regex(""""id":"(.+)","name":"2MB.pdf"""").saveAs("documentId")))
+    }
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_280_DocumentUploadSubmit") {
+      exec(http("Upload your documents")
+        .post(BaseURL + "/upload-your-documents")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("uploadedFiles", "[{\"id\":\"" + "${documentId}" + "\",\"name\":\"2MB.pdf\"}]")
+        .formParam("cannotUploadDocuments", "")
+        .check(substring("Check your answers")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val CheckYourAnswersSole =
+
+    group("DivorceApp_290_CheckYourAnswers") {
+      exec(http("Check your answers")
+        .post(BaseURL + "/check-your-answers")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .multivaluedFormParam("iConfirmPrayer", List("", Case.Checkbox.Checked))
+        .multivaluedFormParam("iBelieveApplicationIsTrue", List("", Case.Checkbox.Checked))
+        .check(CsrfCheck.save)
+        .check(substring("Pay your divorce fee")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val CheckYourAnswersJoint =
+
+    group("DivorceApp_290_CheckYourAnswers") {
+      exec(http("Check your answers")
+        .post(BaseURL + "/check-your-answers")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicationType", "jointApplication")
+        .check(CsrfCheck.save)
+        .check(substring("Your answers have been sent to your wife to review")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val SaveAndSignout =
+
+    group("DivorceApp_300_SaveAndSignout") {
+      exec(http("Save and signout")
+        .get(BaseURL + "/save-and-sign-out?lng=en")
+        .headers(CommonHeader)
+        .check(substring("Your application has been saved")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val Applicant2LandingPage =
+
+    group("DivorceApp_310_App2LandingPage") {
+
+      exec(http("Applicant2 Landing Page")
+        .get(BaseURL + "/login-applicant2")
+        .headers(CommonHeader)
+        .header("sec-fetch-site", "none")
+        .check(CsrfCheck.save)
+        .check(substring("Sign in or create an account")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val Applicant2ContinueApplication =
+
+    group("DivorceApp_320_App2AccessCodeSubmit") {
+
+      exec(http("Applicant2 Submit Access Code")
+        .post(BaseURL + "/applicant2/enter-your-access-code")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("caseReference", "${caseId}")
+        .formParam("accessCode", "${accessCode}")
+        .check(CsrfCheck.save)
+        .check(substring("You need to review your joint application")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("DivorceApp_330_App2ContinueApp") {
+
+      exec(http("Applicant2 Continue Application")
+        .post(BaseURL + "/applicant2/you-need-to-review-your-application")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .check(CsrfCheck.save)
+        .check(substring("Has your marriage irretrievably broken down (it cannot be saved)?")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  //CONTINUE DEVELOPMENT ONCE THE REST OF THE JOINT APPLICATION FUNCTIONALITY IS COMPLETED
+
+}

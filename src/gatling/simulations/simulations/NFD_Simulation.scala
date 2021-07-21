@@ -59,21 +59,27 @@ class NFD_Simulation extends Simulation {
     .exitBlockOnFail {
       exec(flushHttpCache)
       .exec(flushCookieJar)
-      .exec(_.set("env", s"${env}"))
+      .exec(  _.set("env", s"${env}")
+              .set("userTypeURL", "")
+              .set("userType", "applicant1")
+              .set("userTypeParam", "")
+              .set("union", "screenHasUnionBroken")
+              .set("engWelsh", "englishOrWelsh"))
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         Homepage.NFDHomepage,
         Login.NFDLogin("Applicant1"),
-        NFD_01_CitizenCommon.InitialQuestions,
-        NFD_02a_CitizenSoleApplicant.HowDoYouWantToApply,
-        NFD_01_CitizenCommon.Jurisdictions,
-        NFD_02a_CitizenSoleApplicant.EnterYourName,
-        NFD_02a_CitizenSoleApplicant.EnterTheirName,
-        NFD_01_CitizenCommon.MarriageNames,
-        NFD_01_CitizenCommon.ContactDetails,
-        NFD_02a_CitizenSoleApplicant.ContactDetails,
-        NFD_01_CitizenCommon.DivorceDetailsAndUpload,
-        NFD_02a_CitizenSoleApplicant.CheckYourAnswers,
+        NFD_01_CitizenApplication.LandingPage,
+        NFD_01_CitizenApplication.MarriageBrokenDown,
+        NFD_01_CitizenApplication.MarriageCertificate,
+        NFD_01_CitizenApplication.HowDoYouWantToApplySole,
+        NFD_01_CitizenApplication.Jurisdictions,
+        NFD_01_CitizenApplication.EnterYourName,
+        NFD_01_CitizenApplication.EnterTheirName,
+        NFD_01_CitizenApplication.MarriageCertNames,
+        NFD_01_CitizenApplication.ContactDetails,
+        NFD_01_CitizenApplication.DivorceDetailsAndUpload,
+        NFD_01_CitizenApplication.CheckYourAnswersSole,
         Logout.NFDLogout)
     }
     .doIf("${Applicant1EmailAddress.exists()}") {
@@ -90,7 +96,12 @@ class NFD_Simulation extends Simulation {
     .exitBlockOnFail {
       exec(flushHttpCache)
         .exec(flushCookieJar)
-        .exec(_.set("env", s"${env}"))
+        .exec(  _.set("env", s"${env}")
+                .set("userTypeURL", "")
+                .set("userType", "applicant1")
+                .set("userTypeParam", "")
+                .set("union", "screenHasUnionBroken")
+                .set("engWelsh", "englishOrWelsh"))
         .exec(
           CreateUser.CreateCitizen("Applicant1"),
           CreateUser.CreateCitizen("Applicant2"))
@@ -98,26 +109,39 @@ class NFD_Simulation extends Simulation {
         .exec(
           Homepage.NFDHomepage,
           Login.NFDLogin("Applicant1"),
-          NFD_01_CitizenCommon.InitialQuestions,
-          NFD_02b_CitizenJointApplicants.HowDoYouWantToApply,
-          NFD_02b_CitizenJointApplicants.EnterTheirEmailAddress,
-          NFD_01_CitizenCommon.Jurisdictions,
-          NFD_02b_CitizenJointApplicants.EnterYourName,
-          NFD_01_CitizenCommon.MarriageNames,
-          NFD_01_CitizenCommon.ContactDetails,
-          NFD_02b_CitizenJointApplicants.ContactDetails,
-          NFD_01_CitizenCommon.DivorceDetailsAndUpload,
-          NFD_02b_CitizenJointApplicants.CheckYourAnswers,
-          NFD_02b_CitizenJointApplicants.SaveAndSignout,
+          NFD_01_CitizenApplication.LandingPage,
+          NFD_01_CitizenApplication.MarriageBrokenDown,
+          NFD_01_CitizenApplication.MarriageCertificate,
+          NFD_01_CitizenApplication.HowDoYouWantToApplyJoint,
+          NFD_01_CitizenApplication.EnterTheirEmailAddress,
+          NFD_01_CitizenApplication.Jurisdictions,
+          NFD_01_CitizenApplication.EnterYourName,
+          NFD_01_CitizenApplication.MarriageCertNames,
+          NFD_01_CitizenApplication.ContactDetails,
+          NFD_01_CitizenApplication.ContactDetailsJoint,
+          NFD_01_CitizenApplication.DivorceDetailsAndUpload,
+          NFD_01_CitizenApplication.CheckYourAnswersJoint,
+          NFD_01_CitizenApplication.SaveAndSignout,
           Logout.NFDLogout)
         //Get Access Code for Applicant 2
-        .exec(NFD_03_GetJointApplicantAccessCode.GetAccessCode)
+        .exec(flushHttpCache)
+        .exec(flushCookieJar)
+        .exec(NFD_02_GetJointApplicantAccessCode.GetAccessCode)
         //Applicant 2
         .exec(flushHttpCache)
         .exec(flushCookieJar)
+        .exec(  _.set("userTypeURL", "applicant2/")
+                .set("userType", "applicant2")
+                .set("userTypeParam", "applicant2")
+                .set("union", "applicant2ScreenHasUnionBroken")
+                .set("engWelsh", "applicant2EnglishOrWelsh"))
         .exec(
-          NFD_02b_CitizenJointApplicants.Applicant2Entry,
-          Login.NFDLogin("Applicant2"))
+          NFD_01_CitizenApplication.Applicant2LandingPage,
+          Login.NFDLogin("Applicant2"),
+          NFD_01_CitizenApplication.Applicant2ContinueApplication,
+          NFD_01_CitizenApplication.MarriageBrokenDown,
+          NFD_01_CitizenApplication.EnterYourName,
+          NFD_01_CitizenApplication.ContactDetails)
 
     }
     .doIf("${Applicant1EmailAddress.exists()}") {
