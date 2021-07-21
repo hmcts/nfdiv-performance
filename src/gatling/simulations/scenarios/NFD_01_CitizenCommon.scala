@@ -153,7 +153,7 @@ object NFD_01_CitizenCommon {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applicant1FullNameOnCertificate", "${forename}" + " " + "${surname}")
+        .formParam("applicant1FullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
         .formParam("applicant2FullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
         .check(CsrfCheck.save)
         .check(substring("Changes to your name")))
@@ -177,7 +177,7 @@ object NFD_01_CitizenCommon {
 
   val ContactDetails =
 
-    group("DivorceApp_150_HowTheCourtWillContactYou?") {
+    group("DivorceApp_150_HowTheCourtWillContactYou") {
       exec(http("How the court will contact you")
         .post(BaseURL + "/how-the-court-will-contact-you")
         .headers(CommonHeader)

@@ -40,9 +40,9 @@ object NFD_02a_CitizenSoleApplicant {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applicant1FirstNames", "${forename}")
+        .formParam("applicant1FirstNames", Common.randomString(5))
         .formParam("applicant1MiddleNames", "")
-        .formParam("applicant1LastNames", "${surname}")
+        .formParam("applicant1LastNames", Common.randomString(5))
         .check(CsrfCheck.save)
         .check(substring("Enter your wife’s name")))
     }

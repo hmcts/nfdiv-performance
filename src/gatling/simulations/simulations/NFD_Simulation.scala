@@ -55,20 +55,77 @@ class NFD_Simulation extends Simulation {
     println(s"Debug Mode: ${debugMode}")
   }
 
-  val NFDSimulation = scenario( "NFDSimulation")
+  val NFDCitizenSoleApp = scenario( "NFDCitizenSoleApp")
     .exitBlockOnFail {
       exec(flushHttpCache)
       .exec(flushCookieJar)
       .exec(_.set("env", s"${env}"))
       .exec(
-        CreateUser.CreateCitizen,
+        CreateUser.CreateCitizen("Applicant1"),
         Homepage.NFDHomepage,
-        Login.NFDLogin,
-        xNFD_01DivorceApplication.ApplicationQuestions1,
-        xNFD_02DivorceApplication.ApplicationQuestions2,
+        Login.NFDLogin("Applicant1"),
+        NFD_01_CitizenCommon.InitialQuestions,
+        NFD_02a_CitizenSoleApplicant.HowDoYouWantToApply,
+        NFD_01_CitizenCommon.Jurisdictions,
+        NFD_02a_CitizenSoleApplicant.EnterYourName,
+        NFD_02a_CitizenSoleApplicant.EnterTheirName,
+        NFD_01_CitizenCommon.MarriageNames,
+        NFD_01_CitizenCommon.ContactDetails,
+        NFD_02a_CitizenSoleApplicant.ContactDetails,
+        NFD_01_CitizenCommon.DivorceDetailsAndUpload,
+        NFD_02a_CitizenSoleApplicant.CheckYourAnswers,
         Logout.NFDLogout)
     }
-    .exec(DeleteUser.DeleteCitizen)
+    .doIf("${Applicant1EmailAddress.exists()}") {
+      exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
+    }
+
+    .exec {
+      session =>
+        println(session)
+        session
+    }
+
+  val NFDCitizenJointApp = scenario( "NFDCitizenJointApp")
+    .exitBlockOnFail {
+      exec(flushHttpCache)
+        .exec(flushCookieJar)
+        .exec(_.set("env", s"${env}"))
+        .exec(
+          CreateUser.CreateCitizen("Applicant1"),
+          CreateUser.CreateCitizen("Applicant2"))
+        //Applicant 1
+        .exec(
+          Homepage.NFDHomepage,
+          Login.NFDLogin("Applicant1"),
+          NFD_01_CitizenCommon.InitialQuestions,
+          NFD_02b_CitizenJointApplicants.HowDoYouWantToApply,
+          NFD_02b_CitizenJointApplicants.EnterTheirEmailAddress,
+          NFD_01_CitizenCommon.Jurisdictions,
+          NFD_02b_CitizenJointApplicants.EnterYourName,
+          NFD_01_CitizenCommon.MarriageNames,
+          NFD_01_CitizenCommon.ContactDetails,
+          NFD_02b_CitizenJointApplicants.ContactDetails,
+          NFD_01_CitizenCommon.DivorceDetailsAndUpload,
+          NFD_02b_CitizenJointApplicants.CheckYourAnswers,
+          NFD_02b_CitizenJointApplicants.SaveAndSignout,
+          Logout.NFDLogout)
+        //Get Access Code for Applicant 2
+        .exec(NFD_03_GetJointApplicantAccessCode.GetAccessCode)
+        //Applicant 2
+        .exec(flushHttpCache)
+        .exec(flushCookieJar)
+        .exec(
+          NFD_02b_CitizenJointApplicants.Applicant2Entry,
+          Login.NFDLogin("Applicant2"))
+
+    }
+    .doIf("${Applicant1EmailAddress.exists()}") {
+      exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
+    }
+    .doIf("${Applicant2EmailAddress.exists()}") {
+      exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
+    }
 
     .exec {
       session =>
@@ -109,7 +166,7 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    NFDSimulation.inject(simulationProfile(testType))
+    NFDCitizenSoleApp.inject(simulationProfile(testType))
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
