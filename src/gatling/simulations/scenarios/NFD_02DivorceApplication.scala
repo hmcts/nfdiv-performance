@@ -156,8 +156,8 @@ object NFD_02DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .multivaluedFormParam("legalProceedingsRelated", List("", "", ""))
-        .formParam("legalProceedings", Case.YesOrNo.No)
+        .multivaluedFormParam("applicant1LegalProceedingsRelated", List("", "", ""))
+        .formParam("applicant1LegalProceedings", Case.YesOrNo.No)
         .check(CsrfCheck.save)
         .check(substring("Dividing your money and property")))
     }
