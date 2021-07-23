@@ -39,7 +39,7 @@ object NFD_02DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("englishOrWelsh", "english")
+        .formParam("applicant1EnglishOrWelsh", "english")
         .check(CsrfCheck.save)
         .check(substring("Do you need your contact details kept private from your wife?")))
     }
@@ -217,8 +217,8 @@ object NFD_02DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("uploadedFiles", "[{\"id\":\"" + "${documentId}" + "\",\"name\":\"2MB.pdf\"}]")
-        .formParam("cannotUploadDocuments", "")
+        .formParam("applicant1UploadedFiles", "[{\"id\":\"" + "${documentId}" + "\",\"name\":\"2MB.pdf\"}]")
+        .formParam("applicant1CannotUploadDocuments", "")
         .check(substring("Check your answers")))
     }
 
