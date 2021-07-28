@@ -31,7 +31,10 @@ object NFD_02_GetJointApplicantAccessCode {
       .formParam("username", "${Applicant1EmailAddress}")
       .formParam("password", "${Applicant1Password}")
       .formParam("client_id", "divorce")
+      //TODO: don't hardcode the client_secret in the script
       .formParam("client_secret", "thUphEveC2Ekuqedaneh4jEcRuba4t2t")
+      //TODO: sort out scopes that work in aat and perftest
+      //.formParam("scope", "")
       .header("Content-Type", "application/x-www-form-urlencoded")
       .check(jsonPath("$.access_token").saveAs("bearerToken")))
 
@@ -45,11 +48,12 @@ object NFD_02_GetJointApplicantAccessCode {
     .pause(1)
 
     .exec(http("NFD03CitGetPIN_040_GetCase")
-      .get(CcdAPIURL + "/citizens/${idamId}/jurisdictions/DIVORCE/case-types/NO_FAULT_DIVORCE18/cases/${caseId}")
+      .get(CcdAPIURL + "/citizens/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases")
       .header("Authorization", "Bearer ${bearerToken}")
       .header("ServiceAuthorization", "${authToken}")
       .header("Content-Type", "application/json")
-      .check(jsonPath("$.case_data.accessCode").saveAs("accessCode")))
+      .check(jsonPath("$[0].id").saveAs("caseId"))
+      .check(jsonPath("$[0].case_data.accessCode").saveAs("accessCode")))
 
     .pause(1)
 

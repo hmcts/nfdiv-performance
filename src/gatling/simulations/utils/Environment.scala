@@ -10,9 +10,10 @@ object Environment {
   val idamAPIURL = "https://idam-api.${env}.platform.hmcts.net"
   val rpeAPIURL = "http://rpe-service-auth-provider-${env}.service.core-compute-${env}.internal"
   val ccdAPIURL = "http://ccd-data-store-api-${env}.service.core-compute-${env}.internal"
+  val paymentURL = "https://www.payments.service.gov.uk"
 
-  val minThinkTime = 5
-  val maxThinkTime = 7
+  val minThinkTime = 1
+  val maxThinkTime = 2
 
   val HttpProtocol = http
 

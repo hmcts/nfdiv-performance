@@ -40,7 +40,8 @@ class NFD_Simulation extends Simulation {
   /* ******************************** */
 
   /* PIPELINE CONFIGURATION */
-  val numberOfPipelineUsers:Double = 10
+  val numberOfPipelineUsersSole:Double = 5
+  val numberOfPipelineUsersJoint:Double = 5
   /* ******************************** */
 
   val httpProtocol = Environment.HttpProtocol
@@ -60,11 +61,10 @@ class NFD_Simulation extends Simulation {
       exec(flushHttpCache)
       .exec(flushCookieJar)
       .exec(  _.set("env", s"${env}")
+              .set("appType", "sole")
               .set("userTypeURL", "")
               .set("userType", "applicant1")
-              .set("userTypeParam", "")
-              .set("union", "screenHasUnionBroken")
-              .set("engWelsh", "englishOrWelsh"))
+              .set("union", "screenHasUnionBroken"))
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         Homepage.NFDHomepage,
@@ -72,16 +72,19 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.LandingPage,
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.MarriageCertificate,
-        NFD_01_CitizenApplication.HowDoYouWantToApplySole,
+        NFD_01_CitizenApplication.HowDoYouWantToApply,
         NFD_01_CitizenApplication.Jurisdictions,
         NFD_01_CitizenApplication.EnterYourName,
         NFD_01_CitizenApplication.EnterTheirName,
         NFD_01_CitizenApplication.MarriageCertNames,
-        NFD_01_CitizenApplication.ContactDetails,
+        NFD_01_CitizenApplication.YourContactDetails,
+        NFD_01_CitizenApplication.TheirContactDetails,
         NFD_01_CitizenApplication.DivorceDetailsAndUpload,
         NFD_01_CitizenApplication.CheckYourAnswersSole,
+        NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout)
     }
+
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
@@ -97,11 +100,10 @@ class NFD_Simulation extends Simulation {
       exec(flushHttpCache)
         .exec(flushCookieJar)
         .exec(  _.set("env", s"${env}")
+                .set("appType", "joint")
                 .set("userTypeURL", "")
                 .set("userType", "applicant1")
-                .set("userTypeParam", "")
-                .set("union", "screenHasUnionBroken")
-                .set("engWelsh", "englishOrWelsh"))
+                .set("union", "screenHasUnionBroken"))
         .exec(
           CreateUser.CreateCitizen("Applicant1"),
           CreateUser.CreateCitizen("Applicant2"))
@@ -112,13 +114,12 @@ class NFD_Simulation extends Simulation {
           NFD_01_CitizenApplication.LandingPage,
           NFD_01_CitizenApplication.MarriageBrokenDown,
           NFD_01_CitizenApplication.MarriageCertificate,
-          NFD_01_CitizenApplication.HowDoYouWantToApplyJoint,
+          NFD_01_CitizenApplication.HowDoYouWantToApply,
           NFD_01_CitizenApplication.EnterTheirEmailAddress,
           NFD_01_CitizenApplication.Jurisdictions,
           NFD_01_CitizenApplication.EnterYourName,
           NFD_01_CitizenApplication.MarriageCertNames,
-          NFD_01_CitizenApplication.ContactDetails,
-          NFD_01_CitizenApplication.ContactDetailsJoint,
+          NFD_01_CitizenApplication.YourContactDetails,
           NFD_01_CitizenApplication.DivorceDetailsAndUpload,
           NFD_01_CitizenApplication.CheckYourAnswersJoint,
           NFD_01_CitizenApplication.SaveAndSignout,
@@ -132,18 +133,18 @@ class NFD_Simulation extends Simulation {
         .exec(flushCookieJar)
         .exec(  _.set("userTypeURL", "applicant2/")
                 .set("userType", "applicant2")
-                .set("userTypeParam", "applicant2")
-                .set("union", "applicant2ScreenHasUnionBroken")
-                .set("engWelsh", "applicant2EnglishOrWelsh"))
+                .set("union", "applicant2ScreenHasUnionBroken"))
         .exec(
           NFD_01_CitizenApplication.Applicant2LandingPage,
           Login.NFDLogin("Applicant2"),
           NFD_01_CitizenApplication.Applicant2ContinueApplication,
           NFD_01_CitizenApplication.MarriageBrokenDown,
           NFD_01_CitizenApplication.EnterYourName,
-          NFD_01_CitizenApplication.ContactDetails)
-
+          NFD_01_CitizenApplication.YourContactDetails,
+          //TODO: ADD MORE OF THE FLOW HERE ONCE DEVELOPED
+          Logout.NFDLogout)
     }
+
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
@@ -157,11 +158,12 @@ class NFD_Simulation extends Simulation {
         session
     }
 
-  def simulationProfile(simulationType: String): Seq[OpenInjectionStep] = {
+  def simulationProfile(simulationType: String, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
     simulationType match {
       case "perftest" =>
         if (debugMode == "off") {
           Seq(
+            //TODO: UPDATE THIS TO CATER FOR SOLE/JOINT APPLICATIONS
             rampUsersPerSec(0.00) to (divorceRatePerSec) during (rampUpDurationMins minutes),
             constantUsersPerSec(divorceRatePerSec) during (testDurationMins minutes),
             rampUsersPerSec(divorceRatePerSec) to (0.00) during (rampDownDurationMins minutes)
@@ -182,15 +184,19 @@ class NFD_Simulation extends Simulation {
       case "perftest" =>
         Seq(global.successfulRequests.percent.gte(95))
       case "pipeline" =>
+        //TODO: UPDATE ASSERTION FOR JOINT APPLICATION ONCE DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
-          details("DivorceApp_300_PayYourFee").successfulRequests.count.gte((numberOfPipelineUsers * 0.8).ceil.toInt))
+          details("DivorceApp_330_ConfirmPayment").successfulRequests.count.gte((numberOfPipelineUsersSole * 0.8).ceil.toInt),
+          details("DivorceApp_370_App2ContinueApp").successfulRequests.count.gte((numberOfPipelineUsersJoint * 0.8).ceil.toInt)
+        )
       case _ =>
         Seq()
     }
   }
 
   setUp(
-    NFDCitizenSoleApp.inject(simulationProfile(testType))
+    NFDCitizenSoleApp.inject(simulationProfile(testType, numberOfPipelineUsersSole)),
+    NFDCitizenJointApp.inject(simulationProfile(testType, numberOfPipelineUsersJoint))
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
