@@ -230,8 +230,8 @@ object NFD_02DivorceApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .multivaluedFormParam("iConfirmPrayer", List("", Case.Checkbox.Checked))
-        .multivaluedFormParam("iBelieveApplicationIsTrue", List("", Case.Checkbox.Checked))
+        .multivaluedFormParam("applicant1IConfirmPrayer", List("", Case.Checkbox.Checked))
+        .multivaluedFormParam("applicant1IBelieveApplicationIsTrue", List("", Case.Checkbox.Checked))
         .check(CsrfCheck.save)
         .check(substring("Pay your divorce fee")))
     }
