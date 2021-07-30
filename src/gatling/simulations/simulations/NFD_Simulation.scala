@@ -1,6 +1,5 @@
 package simulations
 
-import com.typesafe.config.ConfigFactory
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.core.scenario.Simulation
@@ -106,11 +105,6 @@ class NFD_Simulation extends Simulation {
                 .set("userTypeURL", "")
                 .set("userType", "applicant1")
                 .set("union", "screenHasUnionBroken"))
-        .exec {
-          session =>
-            println(session)
-            session
-        }
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         CreateUser.CreateCitizen("Applicant2"))
@@ -151,7 +145,7 @@ class NFD_Simulation extends Simulation {
         //TODO: ADD MORE OF THE FLOW HERE ONCE DEVELOPED
         Logout.NFDLogout)
     }
-/*
+
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
@@ -159,8 +153,6 @@ class NFD_Simulation extends Simulation {
       exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
     }
 
-
- */
     .exec {
       session =>
         println(session)
@@ -195,8 +187,8 @@ class NFD_Simulation extends Simulation {
       case "pipeline" =>
         //TODO: UPDATE ASSERTION FOR JOINT APPLICATION ONCE DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
-          details("DivorceApp_330_ConfirmPayment").successfulRequests.count.gte((numberOfPipelineUsersSole * 0.8).ceil.toInt),
-          details("DivorceApp_370_App2ContinueApp").successfulRequests.count.gte((numberOfPipelineUsersJoint * 0.8).ceil.toInt)
+          details("NFD01CitizenApp_330_ConfirmPayment").successfulRequests.count.gte((numberOfPipelineUsersSole * 0.8).ceil.toInt),
+          details("NFD01CitizenApp_370_App2ContinueApp").successfulRequests.count.gte((numberOfPipelineUsersJoint * 0.8).ceil.toInt)
         )
       case _ =>
         Seq()
@@ -204,7 +196,7 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    //NFDCitizenSoleApp.inject(simulationProfile(testType, numberOfPipelineUsersSole)),
+    NFDCitizenSoleApp.inject(simulationProfile(testType, numberOfPipelineUsersSole)),
     NFDCitizenJointApp.inject(simulationProfile(testType, numberOfPipelineUsersJoint))
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
