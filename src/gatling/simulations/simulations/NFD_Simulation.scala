@@ -20,8 +20,6 @@ class NFD_Simulation extends Simulation {
   /* perftest (default) = performance test against the perftest environment */
   val testType = scala.util.Properties.envOrElse("TEST_TYPE", "perftest")
 
-  val clientSecret = ConfigFactory.load.getString("auth.clientSecret")
-
   //set the environment based on the test type
   val environment = testType match{
     case "perftest" => "perftest"
@@ -57,7 +55,7 @@ class NFD_Simulation extends Simulation {
   before{
     println(s"Test Type: ${testType}")
     println(s"Test Environment: ${env}")
-    println(s"Debug Mode: ${debugMode} ${clientSecret}")
+    println(s"Debug Mode: ${debugMode}")
   }
 
   val NFDCitizenSoleApp = scenario( "NFDCitizenSoleApp")
@@ -103,9 +101,7 @@ class NFD_Simulation extends Simulation {
     .exitBlockOnFail {
       exec(flushHttpCache)
       .exec(flushCookieJar)
-        //.feed(clientSecretLocal)
-        .exec(  session => session.set("env", s"${env}")
-                //.set("client_secret", scala.util.Properties.envOrElse("OAUTH2-CLIENT-SECRET", session("client_secret").as[String]))
+        .exec(  _.set("env", s"${env}")
                 .set("appType", "joint")
                 .set("userTypeURL", "")
                 .set("userType", "applicant1")

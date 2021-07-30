@@ -32,7 +32,7 @@ object NFD_02_GetJointApplicantAccessCode {
       .formParam("username", "${Applicant1EmailAddress}")
       .formParam("password", "${Applicant1Password}")
       .formParam("client_id", "rd-professional-api")
-      .formParam("client_secret", "${client_secret}")
+      .formParam("client_secret", clientSecret)
       .formParam("scope", "openid profile roles openid roles profile create-user manage-user")
       .header("Content-Type", "application/x-www-form-urlencoded")
       .check(jsonPath("$.access_token").saveAs("bearerToken")))
