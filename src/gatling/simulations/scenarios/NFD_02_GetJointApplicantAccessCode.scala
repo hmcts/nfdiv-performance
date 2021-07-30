@@ -18,14 +18,14 @@ object NFD_02_GetJointApplicantAccessCode {
 
   val GetAccessCode =
 
-    exec(http("NFD03CitGetPIN_010_Auth")
+    exec(http("NFD02AccessCode_010_Auth")
       .post(RpeAPIURL + "/testing-support/lease")
       .body(StringBody("""{"microservice":"nfdiv_case_api"}""")).asJson
       .check(regex("(.+)").saveAs("authToken")))
 
     .pause(1)
 
-    .exec(http("NFD03CitGetPIN_020_GetBearerToken")
+    .exec(http("NFD02AccessCode_020_GetBearerToken")
       .post(IdamAPIURL + "/o/token")
       .formParam("grant_type", "password")
       .formParam("username", "${Applicant1EmailAddress}")
@@ -38,14 +38,14 @@ object NFD_02_GetJointApplicantAccessCode {
 
     .pause(1)
 
-    .exec(http("NFD03CitGetPIN_030_GetIdamID")
+    .exec(http("NFD02AccessCode_030_GetIdamID")
       .get(IdamAPIURL + "/details")
       .header("Authorization", "Bearer ${bearerToken}")
       .check(jsonPath("$.id").saveAs("idamId")))
 
     .pause(1)
 
-    .exec(http("NFD03CitGetPIN_040_GetCase")
+    .exec(http("NFD02AccessCode_040_GetCase")
       .get(CcdAPIURL + "/citizens/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases")
       .header("Authorization", "Bearer ${bearerToken}")
       .header("ServiceAuthorization", "${authToken}")

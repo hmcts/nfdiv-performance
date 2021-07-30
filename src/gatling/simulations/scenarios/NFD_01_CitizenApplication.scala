@@ -24,7 +24,7 @@ object NFD_01_CitizenApplication {
 
   val LandingPage =
 
-    group("DivorceApp_010_YourDetailsSubmit") {
+    group("NFD01CitizenApp_010_YourDetailsSubmit") {
       exec(http("Your Details Submit")
         .post(BaseURL + "/your-details")
         .headers(CommonHeader)
@@ -40,7 +40,7 @@ object NFD_01_CitizenApplication {
 
   val MarriageBrokenDown =
 
-    group("DivorceApp_020_${userType}MarriageBrokenDownSubmit") {
+    group("NFD01CitizenApp_020_${userType}MarriageBrokenDownSubmit") {
       exec(http("Marriage Broken Down Submit")
         .post(BaseURL + "/${userTypeURL}irretrievable-breakdown")
         .headers(CommonHeader)
@@ -55,7 +55,7 @@ object NFD_01_CitizenApplication {
 
   val MarriageCertificate =
 
-    group("DivorceApp_030_DateFromCertificateSubmit") {
+    group("NFD01CitizenApp_030_DateFromCertificateSubmit") {
       exec(http("Date From Certificate Submit")
         .post(BaseURL + "/date-from-certificate")
         .headers(CommonHeader)
@@ -70,7 +70,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_040_HasMarriageCertificateSubmit") {
+    .group("NFD01CitizenApp_040_HasMarriageCertificateSubmit") {
       exec(http("Has Marriage Certificate Submit")
         .post(BaseURL + "/do-you-have-your-certificate")
         .headers(CommonHeader)
@@ -85,7 +85,7 @@ object NFD_01_CitizenApplication {
 
   val HowDoYouWantToApply =
 
-    group("DivorceApp_050_HowDoYouWantToApply") {
+    group("NFD01CitizenApp_050_HowDoYouWantToApply") {
       exec(http("How do you want to apply")
         .post(BaseURL + "/how-do-you-want-to-apply")
         .headers(CommonHeader)
@@ -100,7 +100,7 @@ object NFD_01_CitizenApplication {
 
   val EnterTheirEmailAddress =
 
-    group("DivorceApp_055_EnterTheirEmailAddress") {
+    group("NFD01CitizenApp_055_EnterTheirEmailAddress") {
       exec(http("Enter their email address")
         .post(BaseURL + "/their-email-address")
         .headers(CommonHeader)
@@ -117,7 +117,7 @@ object NFD_01_CitizenApplication {
 
   val Jurisdictions =
 
-    group("DivorceApp_060_HelpWithYourFeeSubmit") {
+    group("NFD01CitizenApp_060_HelpWithYourFeeSubmit") {
       exec(http("Help With Your Fee Submit")
         .post(BaseURL + "/help-with-your-fee")
         .headers(CommonHeader)
@@ -130,7 +130,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_070_InTheUKSubmit") {
+    .group("NFD01CitizenApp_070_InTheUKSubmit") {
       exec(http("In The UK Submit")
         .post(BaseURL + "/in-the-uk")
         .headers(CommonHeader)
@@ -143,7 +143,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_080_CheckJurisdictionSubmit") {
+    .group("NFD01CitizenApp_080_CheckJurisdictionSubmit") {
       exec(http("Check Jurisdiction Submit")
         .post(BaseURL + "/check-jurisdiction")
         .headers(CommonHeader)
@@ -155,7 +155,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_090_WhereYourLivesAreBasedSubmit") {
+    .group("NFD01CitizenApp_090_WhereYourLivesAreBasedSubmit") {
       exec(http("Where Your Lives Are Based Submit")
         .post(BaseURL + "/where-your-lives-are-based")
         .headers(CommonHeader)
@@ -170,7 +170,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_100_CanUseEnglishWelshCourt") {
+    .group("NFD01CitizenApp_100_CanUseEnglishWelshCourt") {
       exec(http("English or Welsh courts")
         .post(BaseURL + "/you-can-use-english-welsh-courts")
         .headers(CommonHeader)
@@ -185,7 +185,7 @@ object NFD_01_CitizenApplication {
 
   val EnterYourName =
 
-    group("DivorceApp_110_${userType}EnterYourName") {
+    group("NFD01CitizenApp_110_${userType}EnterYourName") {
       exec(http("Enter your name")
         .post(BaseURL + "/${userTypeURL}enter-your-name")
         .headers(CommonHeader)
@@ -202,7 +202,7 @@ object NFD_01_CitizenApplication {
 
   val EnterTheirName =
 
-    group("DivorceApp_120_EnterTheirName") {
+    group("NFD01CitizenApp_120_EnterTheirName") {
       exec(http("Enter Their name")
         .post(BaseURL + "/enter-their-name")
         .headers(CommonHeader)
@@ -219,7 +219,7 @@ object NFD_01_CitizenApplication {
 
   val MarriageCertNames =
 
-    group("DivorceApp_130_NamesOnYourMarriageCertificate?") {
+    group("NFD01CitizenApp_130_NamesOnYourMarriageCertificate?") {
       exec(http("Names on your marriage certificate")
         .post(BaseURL + "/your-names-on-certificate")
         .headers(CommonHeader)
@@ -235,7 +235,7 @@ object NFD_01_CitizenApplication {
 
   val YourContactDetails =
 
-    group("DivorceApp_140_${userType}ChangesToYourName?") {
+    group("NFD01CitizenApp_140_${userType}ChangesToYourName?") {
       exec(http("Changes to your name")
         .post(BaseURL + "/${userTypeURL}changes-to-your-name")
         .headers(CommonHeader)
@@ -249,7 +249,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_150_${userType}HowTheCourtWillContactYou") {
+    .group("NFD01CitizenApp_150_${userType}HowTheCourtWillContactYou") {
       exec(http("How the court will contact you")
         .post(BaseURL + "/${userTypeURL}how-the-court-will-contact-you")
         .headers(CommonHeader)
@@ -263,7 +263,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_160_${userType}LanguageToReceiveEmailsAndDocs?") {
+    .group("NFD01CitizenApp_160_${userType}LanguageToReceiveEmailsAndDocs?") {
       exec(http("English or Welsh?")
         .post(BaseURL + "/${userTypeURL}english-or-welsh")
         .headers(CommonHeader)
@@ -276,7 +276,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_170_${userType}DetailsKeptPrivate?") {
+    .group("NFD01CitizenApp_170_${userType}DetailsKeptPrivate?") {
       exec(http("Keep contact details private from your wife?")
         .post(BaseURL + "/${userTypeURL}address-private")
         .headers(CommonHeader)
@@ -289,7 +289,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_180_${userType}EnterYourPostcode") {
+    .group("NFD01CitizenApp_180_${userType}EnterYourPostcode") {
       feed(postcodeFeeder)
         .exec(http("Enter your postcode")
           .post(BaseURL + "/postcode-lookup")
@@ -303,7 +303,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_190_${userType}EnterYourPostalAddress") {
+    .group("NFD01CitizenApp_190_${userType}EnterYourPostalAddress") {
       exec(http("Enter your postal address")
         .post(BaseURL + "/${userTypeURL}enter-your-address")
         .headers(CommonHeader)
@@ -324,7 +324,7 @@ object NFD_01_CitizenApplication {
 
   val TheirContactDetails =
 
-    group("DivorceApp_200_EnterTheirEmailAddress") {
+    group("NFD01CitizenApp_200_EnterTheirEmailAddress") {
       exec(http("Enter your wife's email address")
         .post(BaseURL + "/their-email-address")
         .headers(CommonHeader)
@@ -338,7 +338,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_210_DoYouKnowTheirAddress") {
+    .group("NFD01CitizenApp_210_DoYouKnowTheirAddress") {
       exec(http("Do you have your wife's postal address?")
         .post(BaseURL + "/do-you-have-address")
         .headers(CommonHeader)
@@ -351,7 +351,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_220_EnterTheirPostcode") {
+    .group("NFD01CitizenApp_220_EnterTheirPostcode") {
       feed(postcodeFeeder)
         .exec(http("Enter their postcode")
           .post(BaseURL + "/postcode-lookup")
@@ -365,7 +365,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_230_TheirAddress") {
+    .group("NFD01CitizenApp_230_TheirAddress") {
       exec(http("Enter your wife’s postal address")
         .post(BaseURL + "/enter-their-address")
         .headers(CommonHeader)
@@ -386,7 +386,7 @@ object NFD_01_CitizenApplication {
 
   val DivorceDetailsAndUpload =
 
-    group("DivorceApp_240_OtherCourtCases") {
+    group("NFD01CitizenApp_240_OtherCourtCases") {
       exec(http("Other court cases")
         .post(BaseURL + "/other-court-cases")
         .headers(CommonHeader)
@@ -400,7 +400,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_250_DividingYourMoneyAndProperty") {
+    .group("NFD01CitizenApp_250_DividingYourMoneyAndProperty") {
       exec(http("Dividing your money and property")
         .post(BaseURL + "/dividing-money-property")
         .headers(CommonHeader)
@@ -412,7 +412,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_260_ApplyForFinancialOrder") {
+    .group("NFD01CitizenApp_260_ApplyForFinancialOrder") {
       exec(http("Do you want to apply for a financial order?")
         .post(BaseURL + "/do-you-want-to-apply-financial-order")
         .headers(CommonHeader)
@@ -426,7 +426,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_270_DocumentUpload") {
+    .group("NFD01CitizenApp_270_DocumentUpload") {
       exec(http("Upload your documents")
         .post(BaseURL + "/document-manager?_csrf=${csrf}")
         .header("accept", "application/json")
@@ -447,7 +447,7 @@ object NFD_01_CitizenApplication {
     }
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_280_DocumentUploadSubmit") {
+    .group("NFD01CitizenApp_280_DocumentUploadSubmit") {
       exec(http("Upload your documents")
         .post(BaseURL + "/upload-your-documents")
         .headers(CommonHeader)
@@ -462,7 +462,7 @@ object NFD_01_CitizenApplication {
 
   val CheckYourAnswersSole =
 
-    group("DivorceApp_290_CheckYourAnswers") {
+    group("NFD01CitizenApp_290_CheckYourAnswers") {
       exec(http("Check your answers")
         .post(BaseURL + "/check-your-answers")
         .headers(CommonHeader)
@@ -478,7 +478,7 @@ object NFD_01_CitizenApplication {
 
   val CheckYourAnswersJoint =
 
-    group("DivorceApp_290_CheckYourAnswers") {
+    group("NFD01CitizenApp_290_CheckYourAnswers") {
       exec(http("Check your answers")
         .post(BaseURL + "/check-your-answers")
         .headers(CommonHeader)
@@ -492,7 +492,7 @@ object NFD_01_CitizenApplication {
 
   val PayAndSubmit =
 
-    group("DivorceApp_300_PayYourFee") {
+    group("NFD01CitizenApp_300_PayYourFee") {
       exec(http("Pay your fee")
         .post(BaseURL + "/pay-your-fee")
         .headers(CommonHeader)
@@ -505,7 +505,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_310_CheckCard") {
+    .group("NFD01CitizenApp_310_CheckCard") {
       exec(http("Check Card")
         .post(PaymentURL + "/check_card/${ChargeId}")
         .headers(CommonHeader)
@@ -519,7 +519,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_320_CardDetailsSubmit") {
+    .group("NFD01CitizenApp_320_CardDetailsSubmit") {
       exec(http("Card Details")
         .post(PaymentURL + "/card_details/${ChargeId}")
         .headers(CommonHeader)
@@ -543,7 +543,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_330_ConfirmPayment") {
+    .group("NFD01CitizenApp_330_ConfirmPayment") {
       exec(http("Confirm Payment")
         .post(PaymentURL + "/card_details/${ChargeId}/confirm")
         .headers(CommonHeader)
@@ -564,7 +564,7 @@ object NFD_01_CitizenApplication {
 
   val SaveAndSignout =
 
-    group("DivorceApp_340_SaveAndSignout") {
+    group("NFD01CitizenApp_340_SaveAndSignout") {
       exec(http("Save and signout")
         .get(BaseURL + "/save-and-sign-out?lng=en")
         .headers(CommonHeader)
@@ -575,7 +575,7 @@ object NFD_01_CitizenApplication {
 
   val Applicant2LandingPage =
 
-    group("DivorceApp_350_App2LandingPage") {
+    group("NFD01CitizenApp_350_App2LandingPage") {
 
       exec(http("Applicant2 Landing Page")
         .get(BaseURL + "/login-applicant2")
@@ -590,7 +590,7 @@ object NFD_01_CitizenApplication {
 
   val Applicant2ContinueApplication =
 
-    group("DivorceApp_360_App2AccessCodeSubmit") {
+    group("NFD01CitizenApp_360_App2AccessCodeSubmit") {
 
       exec(http("Applicant2 Submit Access Code")
         .post(BaseURL + "/applicant2/enter-your-access-code")
@@ -606,7 +606,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("DivorceApp_370_App2ContinueApp") {
+    .group("NFD01CitizenApp_370_App2ContinueApp") {
 
       exec(http("Applicant2 Continue Application")
         .post(BaseURL + "/applicant2/you-need-to-review-your-application")
