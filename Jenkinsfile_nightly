@@ -28,6 +28,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     ]
 }
 
+def pipelineConf = new AppPipelineConfig()
+pipelineConf.vaultSecrets = secrets
+
 withNightlyPipeline("java", product, component) {
 
     loadVaultSecrets(secrets)
