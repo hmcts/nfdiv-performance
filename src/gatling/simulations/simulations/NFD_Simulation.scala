@@ -20,7 +20,7 @@ class NFD_Simulation extends Simulation {
   /* perftest (default) = performance test against the perftest environment */
   val testType = scala.util.Properties.envOrElse("TEST_TYPE", "perftest")
 
-  val clientSecret = scala.util.Properties.envOrElse("OAUTH2-CLIENT-SECRET", "UNDEFINED")
+  val clientSecret = sys.env.getOrElse("OAUTH2-CLIENT-SECRET", "UNDEFINED")
 
   //set the environment based on the test type
   val environment = testType match{
