@@ -13,6 +13,8 @@ class NFD_Simulation extends Simulation {
 
   val BaseURL = Environment.baseURL
 
+  val clientSecretLocal = csv("client_secret.csv")
+
   /* TEST TYPE DEFINITION */
   /* pipeline = nightly pipeline against the AAT environment (see the Jenkins_nightly file) */
   /* perftest (default) = performance test against the perftest environment */
@@ -98,53 +100,60 @@ class NFD_Simulation extends Simulation {
   val NFDCitizenJointApp = scenario( "NFDCitizenJointApp")
     .exitBlockOnFail {
       exec(flushHttpCache)
-        .exec(flushCookieJar)
-        .exec(  _.set("env", s"${env}")
+      .exec(flushCookieJar)
+        .feed(clientSecretLocal)
+        .exec(  session => session.set("env", s"${env}")
+                .set("client_secret", scala.util.Properties.envOrElse("OAUTH2-CLIENT-SECRET", session("client_secret").as[String]))
                 .set("appType", "joint")
                 .set("userTypeURL", "")
                 .set("userType", "applicant1")
                 .set("union", "screenHasUnionBroken"))
-        .exec(
-          CreateUser.CreateCitizen("Applicant1"),
-          CreateUser.CreateCitizen("Applicant2"))
-        //Applicant 1
-        .exec(
-          Homepage.NFDHomepage,
-          Login.NFDLogin("Applicant1"),
-          NFD_01_CitizenApplication.LandingPage,
-          NFD_01_CitizenApplication.MarriageBrokenDown,
-          NFD_01_CitizenApplication.MarriageCertificate,
-          NFD_01_CitizenApplication.HowDoYouWantToApply,
-          NFD_01_CitizenApplication.EnterTheirEmailAddress,
-          NFD_01_CitizenApplication.Jurisdictions,
-          NFD_01_CitizenApplication.EnterYourName,
-          NFD_01_CitizenApplication.MarriageCertNames,
-          NFD_01_CitizenApplication.YourContactDetails,
-          NFD_01_CitizenApplication.DivorceDetailsAndUpload,
-          NFD_01_CitizenApplication.CheckYourAnswersJoint,
-          NFD_01_CitizenApplication.SaveAndSignout,
-          Logout.NFDLogout)
-        //Get Access Code for Applicant 2
-        .exec(flushHttpCache)
-        .exec(flushCookieJar)
-        .exec(NFD_02_GetJointApplicantAccessCode.GetAccessCode)
-        //Applicant 2
-        .exec(flushHttpCache)
-        .exec(flushCookieJar)
-        .exec(  _.set("userTypeURL", "applicant2/")
-                .set("userType", "applicant2")
-                .set("union", "applicant2ScreenHasUnionBroken"))
-        .exec(
-          NFD_01_CitizenApplication.Applicant2LandingPage,
-          Login.NFDLogin("Applicant2"),
-          NFD_01_CitizenApplication.Applicant2ContinueApplication,
-          NFD_01_CitizenApplication.MarriageBrokenDown,
-          NFD_01_CitizenApplication.EnterYourName,
-          NFD_01_CitizenApplication.YourContactDetails,
-          //TODO: ADD MORE OF THE FLOW HERE ONCE DEVELOPED
-          Logout.NFDLogout)
+        .exec {
+          session =>
+            println(session)
+            session
+        }
+      .exec(
+        CreateUser.CreateCitizen("Applicant1"),
+        CreateUser.CreateCitizen("Applicant2"))
+      //Applicant 1
+      .exec(
+        Homepage.NFDHomepage,
+        Login.NFDLogin("Applicant1"),
+        NFD_01_CitizenApplication.LandingPage,
+        NFD_01_CitizenApplication.MarriageBrokenDown,
+        NFD_01_CitizenApplication.MarriageCertificate,
+        NFD_01_CitizenApplication.HowDoYouWantToApply,
+        NFD_01_CitizenApplication.EnterTheirEmailAddress,
+        NFD_01_CitizenApplication.Jurisdictions,
+        NFD_01_CitizenApplication.EnterYourName,
+        NFD_01_CitizenApplication.MarriageCertNames,
+        NFD_01_CitizenApplication.YourContactDetails,
+        NFD_01_CitizenApplication.DivorceDetailsAndUpload,
+        NFD_01_CitizenApplication.CheckYourAnswersJoint,
+        NFD_01_CitizenApplication.SaveAndSignout,
+        Logout.NFDLogout)
+      //Get Access Code for Applicant 2
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(NFD_02_GetJointApplicantAccessCode.GetAccessCode)
+      //Applicant 2
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(  _.set("userTypeURL", "applicant2/")
+              .set("userType", "applicant2")
+              .set("union", "applicant2ScreenHasUnionBroken"))
+      .exec(
+        NFD_01_CitizenApplication.Applicant2LandingPage,
+        Login.NFDLogin("Applicant2"),
+        NFD_01_CitizenApplication.Applicant2ContinueApplication,
+        NFD_01_CitizenApplication.MarriageBrokenDown,
+        NFD_01_CitizenApplication.EnterYourName,
+        NFD_01_CitizenApplication.YourContactDetails,
+        //TODO: ADD MORE OF THE FLOW HERE ONCE DEVELOPED
+        Logout.NFDLogout)
     }
-
+/*
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
@@ -152,6 +161,8 @@ class NFD_Simulation extends Simulation {
       exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
     }
 
+
+ */
     .exec {
       session =>
         println(session)
@@ -195,7 +206,7 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    NFDCitizenSoleApp.inject(simulationProfile(testType, numberOfPipelineUsersSole)),
+    //NFDCitizenSoleApp.inject(simulationProfile(testType, numberOfPipelineUsersSole)),
     NFDCitizenJointApp.inject(simulationProfile(testType, numberOfPipelineUsersJoint))
   ).protocols(httpProtocol)
     .assertions(assertions(testType))

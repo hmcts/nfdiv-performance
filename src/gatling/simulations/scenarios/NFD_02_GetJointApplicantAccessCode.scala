@@ -30,11 +30,9 @@ object NFD_02_GetJointApplicantAccessCode {
       .formParam("grant_type", "password")
       .formParam("username", "${Applicant1EmailAddress}")
       .formParam("password", "${Applicant1Password}")
-      .formParam("client_id", "divorce")
-      //TODO: don't hardcode the client_secret in the script
-      .formParam("client_secret", "thUphEveC2Ekuqedaneh4jEcRuba4t2t")
-      //TODO: sort out scopes that work in aat and perftest
-      //.formParam("scope", "")
+      .formParam("client_id", "rd-professional-api")
+      .formParam("client_secret", "${client_secret}")
+      .formParam("scope", "openid profile roles openid roles profile create-user manage-user")
       .header("Content-Type", "application/x-www-form-urlencoded")
       .check(jsonPath("$.access_token").saveAs("bearerToken")))
 

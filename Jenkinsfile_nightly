@@ -13,7 +13,24 @@ properties([
 def product = "nfdiv"
 def component = "frontend"
 
+def secrets = [
+        'rd-aat': [
+                secret('OAUTH2-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET')
+        ]
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [$class     : 'AzureKeyVaultSecret',
+     secretType : 'Secret',
+     name       : secretName,
+     version    : '',
+     envVariable: envVar
+    ]
+}
+
 withNightlyPipeline("java", product, component) {
+
+    loadVaultSecrets(secrets)
 
     enablePerformanceTest()
 
