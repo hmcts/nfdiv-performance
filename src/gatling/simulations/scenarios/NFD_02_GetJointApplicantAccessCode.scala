@@ -2,9 +2,8 @@ package scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import utils.{CsrfCheck, Environment}
-
-import scala.concurrent.duration._
+import utils.Environment
+import com.typesafe.config.ConfigFactory
 
 object NFD_02_GetJointApplicantAccessCode {
 
@@ -15,6 +14,8 @@ object NFD_02_GetJointApplicantAccessCode {
 
   val MinThinkTime = Environment.minThinkTime
   val MaxThinkTime = Environment.maxThinkTime
+
+  val clientSecret = ConfigFactory.load.getString("auth.clientSecret")
 
   val GetAccessCode =
 

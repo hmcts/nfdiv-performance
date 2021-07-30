@@ -1,5 +1,6 @@
 package simulations
 
+import com.typesafe.config.ConfigFactory
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 import io.gatling.core.scenario.Simulation
@@ -7,20 +8,19 @@ import io.gatling.core.controller.inject.open.OpenInjectionStep
 import io.gatling.commons.stats.assertion.Assertion
 import scenarios._
 import utils.Environment
+
 import scala.concurrent.duration._
 
 class NFD_Simulation extends Simulation {
 
   val BaseURL = Environment.baseURL
 
-  val clientSecretLocal = csv("client_secret.csv")
-
   /* TEST TYPE DEFINITION */
   /* pipeline = nightly pipeline against the AAT environment (see the Jenkins_nightly file) */
   /* perftest (default) = performance test against the perftest environment */
   val testType = scala.util.Properties.envOrElse("TEST_TYPE", "perftest")
 
-  val clientSecret = sys.env.getOrElse("OAUTH2-CLIENT-SECRET", "UNDEFINED")
+  val clientSecret = ConfigFactory.load.getString("auth.clientSecret")
 
   //set the environment based on the test type
   val environment = testType match{
@@ -103,9 +103,9 @@ class NFD_Simulation extends Simulation {
     .exitBlockOnFail {
       exec(flushHttpCache)
       .exec(flushCookieJar)
-        .feed(clientSecretLocal)
+        //.feed(clientSecretLocal)
         .exec(  session => session.set("env", s"${env}")
-                .set("client_secret", scala.util.Properties.envOrElse("OAUTH2-CLIENT-SECRET", session("client_secret").as[String]))
+                //.set("client_secret", scala.util.Properties.envOrElse("OAUTH2-CLIENT-SECRET", session("client_secret").as[String]))
                 .set("appType", "joint")
                 .set("userTypeURL", "")
                 .set("userType", "applicant1")

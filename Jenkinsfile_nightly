@@ -10,8 +10,6 @@ properties([
 
 @Library("Infrastructure") _
 
-import uk.gov.hmcts.contino.AppPipelineConfig
-
 def product = "nfdiv"
 def component = "frontend"
 
@@ -29,9 +27,6 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
      envVariable: envVar
     ]
 }
-
-def pipelineConf = new AppPipelineConfig()
-pipelineConf.vaultSecrets = secrets
 
 withNightlyPipeline("java", product, component) {
 
