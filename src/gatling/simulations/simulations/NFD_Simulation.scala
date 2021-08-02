@@ -36,8 +36,11 @@ class NFD_Simulation extends Simulation {
   val rampUpDurationMins = 5
   val rampDownDurationMins = 5
   val testDurationMins = 60
-  val divorceHourlyTarget:Double = 165
-  val divorceRatePerSec = divorceHourlyTarget / 3600
+  //TODO: numbers below TBC by the project
+  val divorceHourlyTargetSole:Double = 100
+  val divorceHourlyTargetJoint:Double = 65
+  val divorceRatePerSecSole = divorceHourlyTargetSole / 3600
+  val divorceRatePerSecJoint = divorceHourlyTargetJoint / 3600
   /* ******************************** */
 
   /* PIPELINE CONFIGURATION */
@@ -159,15 +162,14 @@ class NFD_Simulation extends Simulation {
         session
     }
 
-  def simulationProfile(simulationType: String, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
+  def simulationProfile(simulationType: String, userPerSecRate: Double, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
     simulationType match {
       case "perftest" =>
         if (debugMode == "off") {
           Seq(
-            //TODO: UPDATE THIS TO CATER FOR SOLE/JOINT APPLICATIONS
-            rampUsersPerSec(0.00) to (divorceRatePerSec) during (rampUpDurationMins minutes),
-            constantUsersPerSec(divorceRatePerSec) during (testDurationMins minutes),
-            rampUsersPerSec(divorceRatePerSec) to (0.00) during (rampDownDurationMins minutes)
+            rampUsersPerSec(0.00) to (userPerSecRate) during (rampUpDurationMins minutes),
+            constantUsersPerSec(userPerSecRate) during (testDurationMins minutes),
+            rampUsersPerSec(userPerSecRate) to (0.00) during (rampDownDurationMins minutes)
           )
         }
         else{
@@ -196,8 +198,8 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    NFDCitizenSoleApp.inject(simulationProfile(testType, numberOfPipelineUsersSole)),
-    NFDCitizenJointApp.inject(simulationProfile(testType, numberOfPipelineUsersJoint))
+    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)),
+    NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint))
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
