@@ -12,8 +12,8 @@ object Environment {
   val ccdAPIURL = "http://ccd-data-store-api-${env}.service.core-compute-${env}.internal"
   val paymentURL = "https://www.payments.service.gov.uk"
 
-  val minThinkTime = 1
-  val maxThinkTime = 2
+  val minThinkTime = 5
+  val maxThinkTime = 7
 
   val HttpProtocol = http
 

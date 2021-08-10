@@ -186,8 +186,8 @@ class NFD_Simulation extends Simulation {
       case "pipeline" =>
         //TODO: UPDATE ASSERTION FOR JOINT APPLICATION ONCE DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
-          details("NFD01CitizenApp_330_ConfirmPayment").successfulRequests.count.gte((numberOfPipelineUsersSole * 0.8).ceil.toInt),
-          details("NFD01CitizenApp_370_App2ContinueApp").successfulRequests.count.gte((numberOfPipelineUsersJoint * 0.8).ceil.toInt)
+          details("NFD01CitApp_330_ConfirmPayment").successfulRequests.count.gte((numberOfPipelineUsersSole * 0.8).ceil.toInt),
+          details("NFD01CitApp_370_App2ContinueApp").successfulRequests.count.gte((numberOfPipelineUsersJoint * 0.8).ceil.toInt)
         )
       case _ =>
         Seq()
