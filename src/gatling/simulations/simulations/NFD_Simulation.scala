@@ -67,8 +67,7 @@ class NFD_Simulation extends Simulation {
       .exec(  _.set("env", s"${env}")
               .set("appType", "sole")
               .set("userTypeURL", "")
-              .set("userType", "applicant1")
-              .set("union", "screenHasUnionBroken"))
+              .set("userType", "applicant1"))
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         Homepage.NFDHomepage,
@@ -106,8 +105,7 @@ class NFD_Simulation extends Simulation {
         .exec(  _.set("env", s"${env}")
                 .set("appType", "joint")
                 .set("userTypeURL", "")
-                .set("userType", "applicant1")
-                .set("union", "screenHasUnionBroken"))
+                .set("userType", "applicant1"))
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         CreateUser.CreateCitizen("Applicant2"))
@@ -136,8 +134,7 @@ class NFD_Simulation extends Simulation {
       .exec(flushHttpCache)
       .exec(flushCookieJar)
       .exec(  _.set("userTypeURL", "applicant2/")
-              .set("userType", "applicant2")
-              .set("union", "applicant2ScreenHasUnionBroken"))
+              .set("userType", "applicant2"))
       .exec(
         NFD_01_CitizenApplication.Applicant2LandingPage,
         Login.NFDLogin("Applicant2"),
