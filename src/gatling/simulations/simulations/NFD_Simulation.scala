@@ -5,6 +5,7 @@ import io.gatling.http.Predef._
 import io.gatling.core.scenario.Simulation
 import io.gatling.core.controller.inject.open.OpenInjectionStep
 import io.gatling.commons.stats.assertion.Assertion
+import io.gatling.core.pause.PauseType
 import scenarios._
 import utils.Environment
 
@@ -36,11 +37,17 @@ class NFD_Simulation extends Simulation {
   val rampUpDurationMins = 5
   val rampDownDurationMins = 5
   val testDurationMins = 60
-  
+
   val divorceHourlyTargetSole:Double = 80
   val divorceHourlyTargetJoint:Double = 80
   val divorceRatePerSecSole = divorceHourlyTargetSole / 3600
   val divorceRatePerSecJoint = divorceHourlyTargetJoint / 3600
+
+  //If running in debug mode, disable pauses between steps
+  val pauses:PauseType = debugMode match{
+    case "off" => constantPauses
+    case _ => disabledPauses
+  }
   /* ******************************** */
 
   /* PIPELINE CONFIGURATION */
@@ -159,6 +166,7 @@ class NFD_Simulation extends Simulation {
         session
     }
 
+  //defines the Gatling simulation model, based on the inputs
   def simulationProfile(simulationType: String, userPerSecRate: Double, numberOfPipelineUsers: Double): Seq[OpenInjectionStep] = {
     simulationType match {
       case "perftest" =>
@@ -179,6 +187,7 @@ class NFD_Simulation extends Simulation {
     }
   }
 
+  //defines the test assertions, based on the test type
   def assertions(simulationType: String): Seq[Assertion] = {
     simulationType match {
       case "perftest" =>
@@ -195,8 +204,8 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)),
-    NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint))
+    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauses),
+    NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauses)
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
