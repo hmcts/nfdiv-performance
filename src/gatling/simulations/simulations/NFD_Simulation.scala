@@ -36,9 +36,9 @@ class NFD_Simulation extends Simulation {
   val rampUpDurationMins = 5
   val rampDownDurationMins = 5
   val testDurationMins = 60
-  //TODO: numbers below TBC by the project
-  val divorceHourlyTargetSole:Double = 100
-  val divorceHourlyTargetJoint:Double = 65
+  
+  val divorceHourlyTargetSole:Double = 80
+  val divorceHourlyTargetJoint:Double = 80
   val divorceRatePerSecSole = divorceHourlyTargetSole / 3600
   val divorceRatePerSecJoint = divorceHourlyTargetJoint / 3600
   /* ******************************** */
