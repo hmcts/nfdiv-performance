@@ -44,7 +44,7 @@ class NFD_Simulation extends Simulation {
   val divorceRatePerSecJoint = divorceHourlyTargetJoint / 3600
 
   //If running in debug mode, disable pauses between steps
-  val pauses:PauseType = debugMode match{
+  val pauseOption:PauseType = debugMode match{
     case "off" => constantPauses
     case _ => disabledPauses
   }
@@ -204,8 +204,8 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauses),
-    NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauses)
+    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauseOption),
+    NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauseOption)
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
