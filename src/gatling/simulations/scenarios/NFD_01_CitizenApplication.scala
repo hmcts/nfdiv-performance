@@ -249,7 +249,7 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD01CitApp_150_${userType}HowTheCourtWillContactYou") {
+    .group("NFD01CitApp_150_${userType}HowCourtWillContactYou") {
       exec(http("How the court will contact you")
         .post(BaseURL + "/${userTypeURL}how-the-court-will-contact-you")
         .headers(CommonHeader)
