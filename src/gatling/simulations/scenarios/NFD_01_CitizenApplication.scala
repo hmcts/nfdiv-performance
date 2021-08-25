@@ -455,7 +455,7 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "${csrf}")
         .formParam("${userType}UploadedFiles", "[{\"id\":\"" + "${documentId}" + "\",\"name\":\"2MB.pdf\"}]")
         .formParam("${userType}CannotUploadDocuments", "")
-        .check(substring("Check your answers")))
+        .check(substring("Check your answers|Equality and diversity questions")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
