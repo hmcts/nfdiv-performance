@@ -78,6 +78,19 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "${csrf}")
         .formParam("hasCertificate", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
+        .check(substring("Do you need help paying the fee for your divorce?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("NFD01CitApp_050_HelpWithYourFeeSubmit") {
+      exec(http("Help With Your Fee Submit")
+        .post(BaseURL + "/help-with-your-fee")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1HelpPayingNeeded", Case.YesOrNo.No)
+        .check(CsrfCheck.save)
         .check(substring("How do you want to apply for the divorce?")))
     }
 
@@ -85,7 +98,7 @@ object NFD_01_CitizenApplication {
 
   val HowDoYouWantToApply =
 
-    group("NFD01CitApp_050_HowDoYouWantToApply") {
+    group("NFD01CitApp_060_HowDoYouWantToApply") {
       exec(http("How do you want to apply")
         .post(BaseURL + "/how-do-you-want-to-apply")
         .headers(CommonHeader)
@@ -93,14 +106,14 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "${csrf}")
         .formParam("applicationType", "${appType}Application")
         .check(CsrfCheck.save)
-        .check(regex("Do you need help paying the fee for your divorce?|Enter your wife&#39;s email address")))
+        .check(regex("Did you get married in the UK?|Enter your wife&#39;s email address")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
   val EnterTheirEmailAddress =
 
-    group("NFD01CitApp_055_EnterTheirEmailAddress") {
+    group("NFD01CitApp_065_EnterTheirEmailAddress") {
       exec(http("Enter their email address")
         .post(BaseURL + "/their-email-address")
         .headers(CommonHeader)
@@ -109,7 +122,7 @@ object NFD_01_CitizenApplication {
         .formParam("applicant2EmailAddress", "${Applicant2EmailAddress}")
         .formParam("applicant1DoesNotKnowApplicant2EmailAddress", "")
         .check(CsrfCheck.save)
-        .check(substring("Help paying the divorce fee")))
+        .check(substring("Did you get married in the UK?")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
@@ -117,20 +130,7 @@ object NFD_01_CitizenApplication {
 
   val Jurisdictions =
 
-    group("NFD01CitApp_060_HelpWithYourFeeSubmit") {
-      exec(http("Help With Your Fee Submit")
-        .post(BaseURL + "/help-with-your-fee")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
-        .formParam("applicant1HelpPayingNeeded", Case.YesOrNo.No)
-        .check(CsrfCheck.save)
-        .check(substring("Did you get married in the UK?")))
-    }
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    .group("NFD01CitApp_070_InTheUKSubmit") {
+    group("NFD01CitApp_070_InTheUKSubmit") {
       exec(http("In The UK Submit")
         .post(BaseURL + "/in-the-uk")
         .headers(CommonHeader)
