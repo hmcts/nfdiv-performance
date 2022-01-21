@@ -6,6 +6,6 @@ object NFD_07_LegalAdvisorGrantCO {
 
   val GrantConditionalOrder =
 
-    exec(CCDAPI.CreateEvent("Legal", "", "bodies/events/.json"))
+    exec(CCDAPI.CreateEvent("Legal", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
 
 }

@@ -93,26 +93,25 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.DivorceDetailsAndUpload,
         NFD_01_CitizenApplication.CheckYourAnswersSole,
         NFD_01_CitizenApplication.PayAndSubmit,
-        Logout.NFDLogout)
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(NFD_03_CaseworkerIssueApplication.IssueApplication)
+        Logout.NFDLogout,
+        NFD_03_CaseworkerIssueApplication.IssueApplication,
+        NFD_02_GetAccessCode.GetAccessCode)
       .exec(flushHttpCache)
       .exec(flushCookieJar)
       .exec(
-        NFD_02_GetAccessCode.GetAccessCode,
         NFD_04_CitizenRespondent.RespondentHomepage,
         Login.NFDLogin("Applicant2"),
         NFD_04_CitizenRespondent.RespondentApplication,
-        NFD_05_CaseworkerAwaitingCO.AwaitingConditionalOrder
-      )
+        NFD_05_CaseworkerAwaitingCO.AwaitingConditionalOrder)
       .exec(flushHttpCache)
       .exec(flushCookieJar)
       .exec(
         Homepage.NFDHomepage,
         Login.NFDLogin("Applicant1"),
-        NFD_06_CitizenApplyForCO.ApplyForConditionalOrder
-      )
+        NFD_06_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_07_LegalAdvisorGrantCO.GrantConditionalOrder,
+        NFD_08_CaseworkerMakeEligibleForFO.MakeEligibleForFinalOrder)
+      //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
     }
 /*
     .doIf("${Applicant1EmailAddress.exists()}") {

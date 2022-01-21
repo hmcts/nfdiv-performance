@@ -86,7 +86,6 @@ object NFD_06_CitizenApplyForCO {
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
         .multivaluedFormParam("coApplicant1StatementOfTruth", List("", Case.Checkbox.Checked))
-        .check(CsrfCheck.save)
         .check(substring("Latest update"))
         .check(substring("You have applied for a ‘conditional order’"))
         //check for four completed sections
