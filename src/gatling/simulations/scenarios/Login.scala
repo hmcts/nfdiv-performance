@@ -41,7 +41,7 @@ object Login {
           .formParam("selfRegistrationEnabled", "true")
           .formParam("_csrf", "${csrf}")
           .check(CsrfCheck.save)
-          .check(substring("Who are you applying to divorce?")))
+          .check(regex("Who are you applying to divorce?|You can now apply for a ‘conditional order’")))
 
       }
       {

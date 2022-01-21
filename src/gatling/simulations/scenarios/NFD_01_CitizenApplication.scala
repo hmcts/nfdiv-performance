@@ -330,7 +330,7 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applicant2EmailAddress", Common.randomString(5) + "@test.com")
+        .formParam("applicant2EmailAddress", "${Applicant2EmailAddress}")
         .formParam("applicant1DoesNotKnowApplicant2EmailAddress", "")
         .check(CsrfCheck.save)
         .check(regex("Do you have your wife(&.+;)s postal address?")))

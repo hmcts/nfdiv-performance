@@ -77,6 +77,7 @@ class NFD_Simulation extends Simulation {
               .set("userType", "applicant1"))
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
+        CreateUser.CreateCitizen("Applicant2"),
         Homepage.NFDHomepage,
         Login.NFDLogin("Applicant1"),
         NFD_01_CitizenApplication.LandingPage,
@@ -93,12 +94,34 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.CheckYourAnswersSole,
         NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout)
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(NFD_03_CaseworkerIssueApplication.IssueApplication)
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(
+        NFD_02_GetAccessCode.GetAccessCode,
+        NFD_04_CitizenRespondent.RespondentHomepage,
+        Login.NFDLogin("Applicant2"),
+        NFD_04_CitizenRespondent.RespondentApplication,
+        NFD_05_CaseworkerAwaitingCO.AwaitingConditionalOrder
+      )
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(
+        Homepage.NFDHomepage,
+        Login.NFDLogin("Applicant1"),
+        NFD_06_CitizenApplyForCO.ApplyForConditionalOrder
+      )
     }
-
+/*
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
-
+    .doIf("${Applicant2EmailAddress.exists()}") {
+      exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
+    }
+ */
     .exec {
       session =>
         println(session)
@@ -136,7 +159,7 @@ class NFD_Simulation extends Simulation {
       //Get Access Code for Applicant 2
       .exec(flushHttpCache)
       .exec(flushCookieJar)
-      .exec(NFD_02_GetJointApplicantAccessCode.GetAccessCode)
+      .exec(NFD_02_GetAccessCode.GetAccessCode)
       //Applicant 2
       .exec(flushHttpCache)
       .exec(flushCookieJar)
@@ -204,8 +227,8 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauseOption),
-    NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauseOption)
+    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauseOption)
+    //NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauseOption)
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 

@@ -5,7 +5,7 @@ import io.gatling.http.Predef._
 import utils.Environment
 import com.typesafe.config.ConfigFactory
 
-object NFD_02_GetJointApplicantAccessCode {
+object NFD_02_GetAccessCode {
 
   val BaseURL = Environment.baseURL
   val RpeAPIURL = Environment.rpeAPIURL
@@ -19,6 +19,9 @@ object NFD_02_GetJointApplicantAccessCode {
 
   val GetAccessCode =
 
+    exec(CCDAPI.GetAccessCode)
+
+/*
     exec(http("NFD02AccessCode_010_Auth")
       .post(RpeAPIURL + "/testing-support/lease")
       .body(StringBody("""{"microservice":"nfdiv_case_api"}""")).asJson
@@ -31,7 +34,7 @@ object NFD_02_GetJointApplicantAccessCode {
       .formParam("grant_type", "password")
       .formParam("username", "${Applicant1EmailAddress}")
       .formParam("password", "${Applicant1Password}")
-      .formParam("client_id", "rd-professional-api")
+      .formParam("client_id", "ccd_gateway")
       .formParam("client_secret", clientSecret)
       .formParam("scope", "openid profile roles openid roles profile create-user manage-user")
       .header("Content-Type", "application/x-www-form-urlencoded")
@@ -47,7 +50,7 @@ object NFD_02_GetJointApplicantAccessCode {
     .pause(1)
 
     .exec(http("NFD02AccessCode_040_GetCase")
-      .get(CcdAPIURL + "/citizens/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases")
+      .get(CcdAPIURL + "/caseworkers/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases/${caseId}")
       .header("Authorization", "Bearer ${bearerToken}")
       .header("ServiceAuthorization", "${authToken}")
       .header("Content-Type", "application/json")
@@ -56,4 +59,6 @@ object NFD_02_GetJointApplicantAccessCode {
 
     .pause(1)
 
+
+ */
 }
