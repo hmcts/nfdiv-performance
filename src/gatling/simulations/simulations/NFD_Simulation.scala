@@ -90,7 +90,8 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.MarriageCertNames,
         NFD_01_CitizenApplication.YourContactDetails,
         NFD_01_CitizenApplication.TheirContactDetails,
-        NFD_01_CitizenApplication.DivorceDetailsAndUpload,
+        NFD_01_CitizenApplication.DivorceDetails,
+        NFD_01_CitizenApplication.DocumentUpload,
         NFD_01_CitizenApplication.CheckYourAnswersSole,
         NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout,
@@ -151,10 +152,10 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.EnterYourName,
         NFD_01_CitizenApplication.MarriageCertNames,
         NFD_01_CitizenApplication.YourContactDetails,
-        NFD_01_CitizenApplication.DivorceDetailsAndUpload,
-        NFD_01_CitizenApplication.CheckYourAnswersJoint,
-        NFD_01_CitizenApplication.SaveAndSignout,
-        Logout.NFDLogout)
+        NFD_01_CitizenApplication.DivorceDetails,
+        NFD_01_CitizenApplication.DocumentUpload,
+        NFD_01_CitizenApplication.CheckYourAnswersJointApplicant1,
+        NFD_01_CitizenApplication.SaveAndSignout)
       //Get Access Code for Applicant 2
       .exec(flushHttpCache)
       .exec(flushCookieJar)
@@ -171,17 +172,48 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.EnterYourName,
         NFD_01_CitizenApplication.YourContactDetails,
-        //TODO: ADD MORE OF THE FLOW HERE ONCE DEVELOPED
+        NFD_01_CitizenApplication.DivorceDetails,
+        NFD_01_CitizenApplication.CheckYourAnswersJointApplicant2,
+        NFD_01_CitizenApplication.ConfirmYourJointApplication,
+        NFD_01_CitizenApplication.SaveAndSignout)
+      //Applicant 1
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(  _.set("userTypeURL", "")
+              .set("userType", "applicant1"))
+      .exec(
+        Homepage.NFDHomepage,
+        Login.NFDLogin("Applicant1"),
+        NFD_01_CitizenApplication.ConfirmYourJointApplication,
+        NFD_01_CitizenApplication.PayAndSubmit,
+        Logout.NFDLogout,
+        //Caseworker Issues Application
+        NFD_03_CaseworkerIssueApplication.IssueApplication)
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(
+        //Applicant 1 Confirms Receipt
+        Homepage.NFDHomepage,
+        Login.NFDLogin("Applicant1"),
+        NFD_01_CitizenApplication.ConfirmReceipt,
+        Logout.NFDLogout)
+      .exec(flushHttpCache)
+      .exec(flushCookieJar)
+      .exec(
+        //Applicant 2 Confirms Receipt
+        Homepage.NFDHomepage,
+        Login.NFDLogin("Applicant2"),
+        NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
     }
-
+/*
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
     .doIf("${Applicant2EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
     }
-
+ */
     .exec {
       session =>
         println(session)
@@ -226,8 +258,8 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauseOption)
-    //NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauseOption)
+    //NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauseOption)
+    NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauseOption)
   ).protocols(httpProtocol)
     .assertions(assertions(testType))
 
