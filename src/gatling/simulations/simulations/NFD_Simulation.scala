@@ -91,9 +91,10 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.CheckYourAnswersSole,
         NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout)
-      //Caseworker - Issue Application
+      //Caseworker - Get Marriage Details & Issue Application
       .exec(
-        NFD_02_CaseworkerIssueApplication.IssueApplication)
+        CCDAPI.GetMarriageDetails,
+        CCDAPI.CreateEvent("Caseworker", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
       //Applicant 1 - Get Access Code for Applicant 2
       .exec(
         CCDAPI.GetCaseIdAndAccessCode)
@@ -101,24 +102,33 @@ class NFD_Simulation extends Simulation {
       .exec(
         Homepage.NFDHomepage("respondent"),
         Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
-        NFD_03_CitizenRespondent.RespondentApplication)
+        NFD_02_CitizenRespondent.RespondentApplication)
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
       .exec(
-        NFD_04_CaseworkerAwaitingCO.AwaitingConditionalOrder)
+        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
         Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘conditional order’"),
-        NFD_05_CitizenApplyForCO.ApplyForConditionalOrder,
-        NFD_05_CitizenApplyForCO.ContinueWithConditionalOrderSole,
-        NFD_05_CitizenApplyForCO.CompleteConditionalOrder,
+        NFD_03_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_03_CitizenApplyForCO.ContinueWithConditionalOrderSole,
+        NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
         Logout.NFDLogout)
       //Legal Advisor - Grant Conditional Order
       .exec(
-        NFD_06_LegalAdvisorGrantCO.GrantConditionalOrder)
+        CCDAPI.CreateEvent("Legal", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
       //Caseworker - Make Eligible for Final Order
       .exec(
-        NFD_07_CaseworkerMakeEligibleForFO.MakeEligibleForFinalOrder)
+        //link with bulk case
+        CCDAPI.CreateEvent("Caseworker", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
+        //set case hearing and decision dates to a date in the past
+        CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
+        //set judge details, CO granted and issued dates in the past
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/AmendCase.json"),
+        //pronounce case
+        CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        //set case as awaiting final order
+        CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
       //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
     }
 
@@ -180,9 +190,10 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.ConfirmYourJointApplication,
         NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout)
-      //Caseworker - Issue Application
+      //Caseworker - Get Marriage Details & Issue Application
       .exec(
-        NFD_02_CaseworkerIssueApplication.IssueApplication)
+        CCDAPI.GetMarriageDetails,
+        CCDAPI.CreateEvent("Caseworker", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
       //Applicant 1 - Confirm Receipt
       .exec(
         Homepage.NFDHomepage(""),
@@ -197,29 +208,38 @@ class NFD_Simulation extends Simulation {
         Logout.NFDLogout)
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
       .exec(
-        NFD_04_CaseworkerAwaitingCO.AwaitingConditionalOrder)
+        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
         Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘conditional order’"),
-        NFD_05_CitizenApplyForCO.ApplyForConditionalOrder,
-        NFD_05_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
-        NFD_05_CitizenApplyForCO.CompleteConditionalOrder,
+        NFD_03_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_03_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
+        NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
         Logout.NFDLogout)
       //Applicant 2 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
         Login.NFDLogin("Applicant2", "callback", "You can now apply for a ‘conditional order’"),
-        NFD_05_CitizenApplyForCO.ApplyForConditionalOrder,
-        NFD_05_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
-        NFD_05_CitizenApplyForCO.CompleteConditionalOrder,
+        NFD_03_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_03_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
+        NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
         Logout.NFDLogout)
       //Legal Advisor - Grant Conditional Order
       .exec(
-        NFD_06_LegalAdvisorGrantCO.GrantConditionalOrder)
+        CCDAPI.CreateEvent("Legal", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
       //Caseworker - Make Eligible for Final Order
       .exec(
-        NFD_07_CaseworkerMakeEligibleForFO.MakeEligibleForFinalOrder)
+        //link with bulk case
+        CCDAPI.CreateEvent("Caseworker", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
+        //set case hearing and decision dates to a date in the past
+        CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
+        //set judge details, CO granted and issued dates in the past
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/AmendCase.json"),
+        //pronounce case
+        CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        //set case as awaiting final order
+        CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
       //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
     }
 
@@ -263,7 +283,7 @@ class NFD_Simulation extends Simulation {
       case "perftest" =>
         Seq(global.successfulRequests.percent.gte(95))
       case "pipeline" =>
-        //TODO: UPDATE ASSERTION FOR JOINT APPLICATION ONCE DEVELOPED
+        //TODO: UPDATE ASSERTION ONCE FINAL ORDER IS DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
           details("NFD_000_SubmitEvent-system-progress-case-awaiting-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
         )
