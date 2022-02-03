@@ -2,7 +2,7 @@ package scenarios
 
 import io.gatling.core.Predef._
 
-object NFD_05_CaseworkerAwaitingCO {
+object NFD_04_CaseworkerAwaitingCO {
 
   val AwaitingConditionalOrder =
 

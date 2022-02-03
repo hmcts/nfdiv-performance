@@ -417,6 +417,7 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
+        .multivaluedFormParam("${userType}WhoIsFinancialOrderFor", List("", ""))
         .formParam("${userType}ApplyForFinancialOrder", Case.YesOrNo.No)
         .check(CsrfCheck.save)
         .check(regex("Upload your documents|Check your husband&#39;s answers")))
@@ -436,7 +437,6 @@ object NFD_01_CitizenApplication {
         .header("sec-fetch-dest", "empty")
         .header("sec-fetch-mode", "cors")
         .header("sec-fetch-site", "same-origin")
-        .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36")
         .header("x-requested-with", "XMLHttpRequest")
         .bodyPart(RawFileBodyPart("files[]", "2MB.pdf")
           .fileName("2MB.pdf")
@@ -612,21 +612,6 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-  val Applicant2LandingPage =
-
-    group("NFD01CitApp_350_App2LandingPage") {
-
-      exec(http("Applicant2 Landing Page")
-        .get(BaseURL + "/login-applicant2")
-        .headers(CommonHeader)
-        .header("sec-fetch-site", "none")
-        .check(CsrfCheck.save)
-        .check(substring("Sign in or create an account")))
-
-    }
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
   val Applicant2ContinueApplication =
 
     group("NFD01CitApp_360_App2AccessCodeSubmit") {
@@ -661,14 +646,14 @@ object NFD_01_CitizenApplication {
 
   val ConfirmReceipt =
 
-    group("NFD01CitApp_380_ConfirmReceipt") {
+    group("NFD01CitApp_380_${userType}ConfirmReceipt") {
 
       exec(http("Confirm receipt")
-        .post(BaseURL + "/hub-page")
+        .post(BaseURL + "/${userTypeURL}hub-page")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applicant1ConfirmReceipt", Case.YesOrNo.Yes)
+        .formParam("${userType}ConfirmReceipt", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
         .check(substring("You have confirmed receipt of the divorce application")))
 

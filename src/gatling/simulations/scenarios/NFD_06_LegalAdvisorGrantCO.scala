@@ -2,7 +2,7 @@ package scenarios
 
 import io.gatling.core.Predef._
 
-object NFD_07_LegalAdvisorGrantCO {
+object NFD_06_LegalAdvisorGrantCO {
 
   val GrantConditionalOrder =
 

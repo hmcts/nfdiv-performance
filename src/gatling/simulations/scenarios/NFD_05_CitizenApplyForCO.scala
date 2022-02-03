@@ -1,0 +1,135 @@
+package scenarios
+
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import utils.{Case, CsrfCheck, Environment}
+
+import scala.concurrent.duration._
+
+object NFD_05_CitizenApplyForCO {
+
+  val BaseURL = Environment.baseURL
+
+  val MinThinkTime = Environment.minThinkTime
+  val MaxThinkTime = Environment.maxThinkTime
+
+  val CommonHeader = Environment.commonHeader
+  val PostHeader = Environment.postHeader
+
+  val ApplyForConditionalOrder =
+
+    group("NFD06CitResp_010_${userType}StartConditionalOrder") {
+
+      exec(http("Start Conditional Order")
+        .post(BaseURL + "/${userTypeURL}hub-page")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}ApplyForConditionalOrderStarted", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(regex("Read your wife&#39;s response|Do you want to continue with your joint divorce")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val ContinueWithConditionalOrderSole =
+
+    group("NFD06CitResp_020_ReadTheResponse") {
+
+      exec(http("Read the response")
+        .post(BaseURL + "/read-the-response")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .check(CsrfCheck.save)
+        .check(substring("Do you want to continue with your divorce")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("NFD06CitResp_030_ContinueWithYourApplication") {
+
+      exec(http("Continue with your application")
+        .post(BaseURL + "/continue-with-your-application")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1ApplyForConditionalOrder", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(substring("Review your divorce application")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("NFD06CitResp_040_ReviewYourApplication") {
+
+      exec(http("Review your application")
+        .post(BaseURL + "/review-your-application")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1ConfirmInformationStillCorrect", Case.YesOrNo.Yes)
+        .formParam("applicant1ReasonInformationNotCorrect", "")
+        .check(CsrfCheck.save)
+        .check(substring("Check your answers")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val ContinueWithConditionalOrderJoint =
+
+    group("NFD06CitResp_035_${userType}ContinueWithYourJointApplication") {
+
+      exec(http("Continue with your application")
+        .post(BaseURL + "/${userTypeURL}continue-with-your-application")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}ApplyForConditionalOrder", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(substring("Review your joint divorce application")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("NFD06CitResp_045_${userType}ReviewYourJointApplication") {
+
+      exec(http("Review your joint application")
+        .post(BaseURL + "/${userTypeURL}review-your-joint-application")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}ConfirmInformationStillCorrect", Case.YesOrNo.Yes)
+        .formParam("${userType}ReasonInformationNotCorrect", "")
+        .check(CsrfCheck.save)
+        .check(substring("Check your answers")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val CompleteConditionalOrder =
+
+    group("NFD06CitResp_050_${userType}CheckYourCOAnswers") {
+
+      exec(http("Check your CO answers")
+        .post(BaseURL + "/${userTypeURL}check-your-conditional-order-answers")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .multivaluedFormParam(session => "co" + session("userType").as[String].replace("applicant", "Applicant") + "StatementOfTruth", List("", Case.Checkbox.Checked))
+        .check(substring("Latest update")))
+        //TODO: uncomment this when the joint app is fixed .check(substring("You have applied for a ‘conditional order’"))
+        //check for completed sections (2 for joint, 4 for sole)
+        //TODO: uncomment this when the joint app is fixed .check(substring("progress-bar__icon--complete").count.in(2, 4)))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+}

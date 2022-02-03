@@ -2,7 +2,7 @@ package scenarios
 
 import io.gatling.core.Predef._
 
-object NFD_08_CaseworkerMakeEligibleForFO {
+object NFD_07_CaseworkerMakeEligibleForFO {
 
   val MakeEligibleForFinalOrder =
 

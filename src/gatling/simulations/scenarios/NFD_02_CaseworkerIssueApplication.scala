@@ -2,7 +2,7 @@ package scenarios
 
 import io.gatling.core.Predef._
 
-object NFD_03_CaseworkerIssueApplication {
+object NFD_02_CaseworkerIssueApplication {
 
   val IssueApplication =
 

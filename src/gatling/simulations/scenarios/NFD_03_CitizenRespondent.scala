@@ -6,7 +6,7 @@ import utils.{Case, Common, CsrfCheck, Environment}
 
 import scala.concurrent.duration._
 
-object NFD_04_CitizenRespondent {
+object NFD_03_CitizenRespondent {
 
   val BaseURL = Environment.baseURL
 
@@ -16,24 +16,9 @@ object NFD_04_CitizenRespondent {
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
 
-  val RespondentHomepage =
-
-    group("NFD04CitResp_010_RespLandingPage") {
-
-      exec(http("Respondent Landing Page")
-        .get(BaseURL + "/respondent")
-        .headers(CommonHeader)
-        .header("sec-fetch-site", "none")
-        .check(CsrfCheck.save)
-        .check(substring("Sign in or create an account")))
-
-    }
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
   val RespondentApplication =
 
-    group("NFD04CitResp_020_RespAccessCodeSubmit") {
+    group("NFD04CitResp_010_RespAccessCodeSubmit") {
 
       exec(http("Respondent Submit Access Code")
         .post(BaseURL + "/applicant2/enter-your-access-code")
@@ -50,7 +35,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_030_RespContinueApplication") {
+    .group("NFD04CitResp_020_RespContinueApplication") {
 
       exec(http("Respondent Continue Application")
         .get(BaseURL + "/respondent/review-the-application")
@@ -63,7 +48,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_040_RespReviewApplication") {
+    .group("NFD04CitResp_030_RespReviewApplication") {
 
       exec(http("Respondent Review Application")
         .post(BaseURL + "/respondent/review-the-application")
@@ -78,7 +63,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_050_RespHowDoYouWantToRespond") {
+    .group("NFD04CitResp_040_RespHowDoYouWantToRespond") {
 
       exec(http("Respondent How Do You Want To Respond")
         .post(BaseURL + "/respondent/how-do-you-want-to-respond")
@@ -93,7 +78,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_060_RespJurisdiction") {
+    .group("NFD04CitResp_050_RespJurisdiction") {
 
       exec(http("Respondent Jurisdiction")
         .post(BaseURL + "/respondent/legal-jurisdiction-of-the-courts")
@@ -110,7 +95,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_070_RespOtherCourtCases") {
+    .group("NFD04CitResp_060_RespOtherCourtCases") {
 
       exec(http("Respondent Other Court Cases")
         .post(BaseURL + "/respondent/other-court-cases")
@@ -125,7 +110,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_080_RespHowCourtWillContactYou") {
+    .group("NFD04CitResp_070_RespHowCourtWillContactYou") {
       exec(http("How the court will contact you")
         .post(BaseURL + "/respondent/how-the-court-will-contact-you")
         .headers(CommonHeader)
@@ -139,7 +124,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_090_RespLanguageToReceiveDocs") {
+    .group("NFD04CitResp_080_RespLanguageToReceiveDocs") {
       exec(http("English or Welsh?")
         .post(BaseURL + "/respondent/english-or-welsh")
         .headers(CommonHeader)
@@ -152,7 +137,7 @@ object NFD_04_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_100_RespCheckYourAnswers") {
+    .group("NFD04CitResp_090_RespCheckYourAnswers") {
       exec(http("Check your answers")
         .post(BaseURL + "/respondent/check-your-answers")
         .headers(CommonHeader)

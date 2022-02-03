@@ -17,19 +17,14 @@ object CCDAPI {
 
   val clientSecret = ConfigFactory.load.getString("auth.clientSecret")
 
-  //userType must be "Casewoker" or "Legal"
+  //userType must be "Caseworker", "Legal" or "Citizen"
   def Auth(userType: String) =
 
-    doIfOrElse(userType.equals("Caseworker")) {
-      exec(_.set("emailAddressCCD", "ccdloadtest-cw@gmail.com"))
-        .exec(_.set("passwordCCD", "Password12"))
-    }
-    {
-      doIf(userType.equals("Legal")) {
-        exec(_.set("emailAddressCCD", "ccdloadtest-la@gmail.com"))
-          .exec(_.set("passwordCCD", "Password12"))
-      }
-    }
+    exec(session => userType match {
+      case "Caseworker" => session.set("emailAddressCCD", "ccdloadtest-cw@gmail.com").set("passwordCCD", "Password12")
+      case "Legal" => session.set("emailAddressCCD", "ccdloadtest-la@gmail.com").set("passwordCCD", "Password12")
+      case "Citizen" => session.set("emailAddressCCD", session("emailAddress").as[String]).set("passwordCCD", session("password").as[String])
+    })
 
     .exec(http("NFD_000_Auth")
       .post(RpeAPIURL + "/testing-support/lease")
@@ -73,16 +68,17 @@ object CCDAPI {
 
     .pause(1)
 
-  val GetAccessCode =
+  val GetCaseIdAndAccessCode =
 
-    exec(Auth("Caseworker"))
+    exec(Auth("Citizen"))
 
     .exec(http("NFD_000_GetCase")
-      .get(CcdAPIURL + "/caseworkers/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases/${caseId}")
+      .get(CcdAPIURL + "/citizens/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases")
       .header("Authorization", "Bearer ${bearerToken}")
       .header("ServiceAuthorization", "${authToken}")
       .header("Content-Type", "application/json")
-      .check(jsonPath("$.case_data.accessCode").saveAs("accessCode")))
+      .check(jsonPath("$[0].id").saveAs("caseId"))
+      .check(jsonPath("$[0].case_data.accessCode").saveAs("accessCode")))
 
     .pause(1)
 

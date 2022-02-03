@@ -1,7 +1,6 @@
 package simulations
 
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
 import io.gatling.core.scenario.Simulation
 import io.gatling.core.controller.inject.open.OpenInjectionStep
 import io.gatling.commons.stats.assertion.Assertion
@@ -69,16 +68,13 @@ class NFD_Simulation extends Simulation {
 
   val NFDCitizenSoleApp = scenario( "NFDCitizenSoleApp")
     .exitBlockOnFail {
-      exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(  _.set("env", s"${env}")
-              .set("appType", "sole")
-              .set("userTypeURL", "")
-              .set("userType", "applicant1"))
+      exec(  _.set("env", s"${env}")
+              .set("appType", "sole"))
+      //Applicant 1 - Divorce Application
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         CreateUser.CreateCitizen("Applicant2"),
-        Homepage.NFDHomepage,
+        Homepage.NFDHomepage(""),
         Login.NFDLogin("Applicant1", "callback", "Who are you applying to divorce?"),
         NFD_01_CitizenApplication.LandingPage,
         NFD_01_CitizenApplication.MarriageBrokenDown,
@@ -94,34 +90,45 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.DocumentUpload,
         NFD_01_CitizenApplication.CheckYourAnswersSole,
         NFD_01_CitizenApplication.PayAndSubmit,
-        Logout.NFDLogout,
-        NFD_03_CaseworkerIssueApplication.IssueApplication,
-        NFD_02_GetAccessCode.GetAccessCode)
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
+        Logout.NFDLogout)
+      //Caseworker - Issue Application
       .exec(
-        NFD_04_CitizenRespondent.RespondentHomepage,
+        NFD_02_CaseworkerIssueApplication.IssueApplication)
+      //Applicant 1 - Get Access Code for Applicant 2
+      .exec(
+        CCDAPI.GetCaseIdAndAccessCode)
+      //Applicant 2 - Respond to Divorce Application
+      .exec(
+        Homepage.NFDHomepage("respondent"),
         Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
-        NFD_04_CitizenRespondent.RespondentApplication,
-        NFD_05_CaseworkerAwaitingCO.AwaitingConditionalOrder)
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
+        NFD_03_CitizenRespondent.RespondentApplication)
+      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
       .exec(
-        Homepage.NFDHomepage,
+        NFD_04_CaseworkerAwaitingCO.AwaitingConditionalOrder)
+      //Applicant 1 - Apply for Conditional Order
+      .exec(
+        Homepage.NFDHomepage(""),
         Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘conditional order’"),
-        NFD_06_CitizenApplyForCO.ApplyForConditionalOrder,
-        NFD_07_LegalAdvisorGrantCO.GrantConditionalOrder,
-        NFD_08_CaseworkerMakeEligibleForFO.MakeEligibleForFinalOrder)
+        NFD_05_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_05_CitizenApplyForCO.ContinueWithConditionalOrderSole,
+        NFD_05_CitizenApplyForCO.CompleteConditionalOrder,
+        Logout.NFDLogout)
+      //Legal Advisor - Grant Conditional Order
+      .exec(
+        NFD_06_LegalAdvisorGrantCO.GrantConditionalOrder)
+      //Caseworker - Make Eligible for Final Order
+      .exec(
+        NFD_07_CaseworkerMakeEligibleForFO.MakeEligibleForFinalOrder)
       //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
     }
-/*
+
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
     .doIf("${Applicant2EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
     }
- */
+
     .exec {
       session =>
         println(session)
@@ -130,18 +137,14 @@ class NFD_Simulation extends Simulation {
 
   val NFDCitizenJointApp = scenario( "NFDCitizenJointApp")
     .exitBlockOnFail {
-      exec(flushHttpCache)
-      .exec(flushCookieJar)
-        .exec(  _.set("env", s"${env}")
-                .set("appType", "joint")
-                .set("userTypeURL", "")
-                .set("userType", "applicant1"))
+      exec(  _.set("env", s"${env}")
+              .set("appType", "joint"))
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         CreateUser.CreateCitizen("Applicant2"))
-      //Applicant 1
+      //Applicant 1 - Divorce Application
       .exec(
-        Homepage.NFDHomepage,
+        Homepage.NFDHomepage(""),
         Login.NFDLogin("Applicant1", "callback", "Who are you applying to divorce?"),
         NFD_01_CitizenApplication.LandingPage,
         NFD_01_CitizenApplication.MarriageBrokenDown,
@@ -156,17 +159,11 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.DocumentUpload,
         NFD_01_CitizenApplication.CheckYourAnswersJointApplicant1,
         NFD_01_CitizenApplication.SaveAndSignout)
-      //Get Access Code for Applicant 2
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(NFD_02_GetAccessCode.GetAccessCode)
-      //Applicant 2
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(  _.set("userTypeURL", "applicant2/")
-              .set("userType", "applicant2"))
+      //Applicant 1 - Get Case ID and Access Code for Applicant 2
+      .exec(CCDAPI.GetCaseIdAndAccessCode)
+      //Applicant 2 - Respond to Divorce Application
       .exec(
-        NFD_01_CitizenApplication.Applicant2LandingPage,
+        Homepage.NFDHomepage("login-applicant2"),
         Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
         NFD_01_CitizenApplication.Applicant2ContinueApplication,
         NFD_01_CitizenApplication.MarriageBrokenDown,
@@ -176,44 +173,63 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.CheckYourAnswersJointApplicant2,
         NFD_01_CitizenApplication.ConfirmYourJointApplication,
         NFD_01_CitizenApplication.SaveAndSignout)
-      //Applicant 1
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(  _.set("userTypeURL", "")
-              .set("userType", "applicant1"))
+      //Applicant 1 - Confirm Application
       .exec(
-        Homepage.NFDHomepage,
+        Homepage.NFDHomepage(""),
         Login.NFDLogin("Applicant1", "callback", "Confirm your joint application"),
         NFD_01_CitizenApplication.ConfirmYourJointApplication,
         NFD_01_CitizenApplication.PayAndSubmit,
-        Logout.NFDLogout,
-        //Caseworker Issues Application
-        NFD_03_CaseworkerIssueApplication.IssueApplication)
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
+        Logout.NFDLogout)
+      //Caseworker - Issue Application
       .exec(
-        //Applicant 1 Confirms Receipt
-        Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1", "callback", "Your application for divorce has been submitted"),
+        NFD_02_CaseworkerIssueApplication.IssueApplication)
+      //Applicant 1 - Confirm Receipt
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "Your application for divorce  has been submitted"),
         NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
+      //Applicant 2 - Confirm Receipt
       .exec(
-        //Applicant 2 Confirms Receipt
-        Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant2", "callback", "Your application for divorce has been submitted"),
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant2", "callback", "Your application for divorce  has been submitted"),
         NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
+      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
+      .exec(
+        NFD_04_CaseworkerAwaitingCO.AwaitingConditionalOrder)
+      //Applicant 1 - Apply for Conditional Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘conditional order’"),
+        NFD_05_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_05_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
+        NFD_05_CitizenApplyForCO.CompleteConditionalOrder,
+        Logout.NFDLogout)
+      //Applicant 2 - Apply for Conditional Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant2", "callback", "You can now apply for a ‘conditional order’"),
+        NFD_05_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_05_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
+        NFD_05_CitizenApplyForCO.CompleteConditionalOrder,
+        Logout.NFDLogout)
+      //Legal Advisor - Grant Conditional Order
+      .exec(
+        NFD_06_LegalAdvisorGrantCO.GrantConditionalOrder)
+      //Caseworker - Make Eligible for Final Order
+      .exec(
+        NFD_07_CaseworkerMakeEligibleForFO.MakeEligibleForFinalOrder)
+      //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
     }
-/*
+
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
     }
     .doIf("${Applicant2EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
     }
- */
+
     .exec {
       session =>
         println(session)
@@ -249,8 +265,7 @@ class NFD_Simulation extends Simulation {
       case "pipeline" =>
         //TODO: UPDATE ASSERTION FOR JOINT APPLICATION ONCE DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
-          details("NFD01CitApp_330_ConfirmPayment").successfulRequests.count.gte((numberOfPipelineUsersSole * 0.8).ceil.toInt),
-          details("NFD01CitApp_370_App2ContinueApp").successfulRequests.count.gte((numberOfPipelineUsersJoint * 0.8).ceil.toInt)
+          details("NFD_000_SubmitEvent-system-progress-case-awaiting-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
         )
       case _ =>
         Seq()
@@ -258,7 +273,7 @@ class NFD_Simulation extends Simulation {
   }
 
   setUp(
-    //NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauseOption)
+    NFDCitizenSoleApp.inject(simulationProfile(testType, divorceRatePerSecSole, numberOfPipelineUsersSole)).pauses(pauseOption),
     NFDCitizenJointApp.inject(simulationProfile(testType, divorceRatePerSecJoint, numberOfPipelineUsersJoint)).pauses(pauseOption)
   ).protocols(httpProtocol)
     .assertions(assertions(testType))

@@ -43,6 +43,18 @@ object Login {
           .check(substring(nextPageTextCheck)))
     }
 
+    //set session variables for subsequent calls based on the userType (these are used to drive the URLs and form parameters)
+    .doIfOrElse(userType.equals("Applicant1")) {
+      exec(_.set("userTypeURL", "")
+            .set("userType", "applicant1"))
+    }
+    {
+      doIf(userType.equals("Applicant2")) {
+        exec(_.set("userTypeURL", "applicant2/")
+              .set("userType", "applicant2"))
+      }
+    }
+
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
 }
