@@ -79,7 +79,7 @@ class NFD_Simulation extends Simulation {
         CreateUser.CreateCitizen("Applicant1"),
         CreateUser.CreateCitizen("Applicant2"),
         Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1"),
+        Login.NFDLogin("Applicant1", "callback", "Who are you applying to divorce?"),
         NFD_01_CitizenApplication.LandingPage,
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.MarriageCertificate,
@@ -101,14 +101,14 @@ class NFD_Simulation extends Simulation {
       .exec(flushCookieJar)
       .exec(
         NFD_04_CitizenRespondent.RespondentHomepage,
-        Login.NFDLogin("Applicant2"),
+        Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
         NFD_04_CitizenRespondent.RespondentApplication,
         NFD_05_CaseworkerAwaitingCO.AwaitingConditionalOrder)
       .exec(flushHttpCache)
       .exec(flushCookieJar)
       .exec(
         Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1"),
+        Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘conditional order’"),
         NFD_06_CitizenApplyForCO.ApplyForConditionalOrder,
         NFD_07_LegalAdvisorGrantCO.GrantConditionalOrder,
         NFD_08_CaseworkerMakeEligibleForFO.MakeEligibleForFinalOrder)
@@ -142,7 +142,7 @@ class NFD_Simulation extends Simulation {
       //Applicant 1
       .exec(
         Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1"),
+        Login.NFDLogin("Applicant1", "callback", "Who are you applying to divorce?"),
         NFD_01_CitizenApplication.LandingPage,
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.MarriageCertificate,
@@ -167,7 +167,7 @@ class NFD_Simulation extends Simulation {
               .set("userType", "applicant2"))
       .exec(
         NFD_01_CitizenApplication.Applicant2LandingPage,
-        Login.NFDLogin("Applicant2"),
+        Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
         NFD_01_CitizenApplication.Applicant2ContinueApplication,
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.EnterYourName,
@@ -183,7 +183,7 @@ class NFD_Simulation extends Simulation {
               .set("userType", "applicant1"))
       .exec(
         Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1"),
+        Login.NFDLogin("Applicant1", "callback", "Confirm your joint application"),
         NFD_01_CitizenApplication.ConfirmYourJointApplication,
         NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout,
@@ -194,7 +194,7 @@ class NFD_Simulation extends Simulation {
       .exec(
         //Applicant 1 Confirms Receipt
         Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1"),
+        Login.NFDLogin("Applicant1", "callback", "Your application for divorce has been submitted"),
         NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
       .exec(flushHttpCache)
@@ -202,7 +202,7 @@ class NFD_Simulation extends Simulation {
       .exec(
         //Applicant 2 Confirms Receipt
         Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant2"),
+        Login.NFDLogin("Applicant2", "callback", "Your application for divorce has been submitted"),
         NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
     }

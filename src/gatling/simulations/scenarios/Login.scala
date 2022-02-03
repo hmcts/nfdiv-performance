@@ -17,8 +17,10 @@ object Login {
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
 
-
-  def NFDLogin(userType: String) =
+  //userType: Applicant1 or Applicant2
+  //redirectURLSuffix: callback or callback-applicant2 (use callback-applicant2 if the user is landing on /login-applicant2 or /respondent)
+  //nextPageTextCheck: unique text that appears on the subsequent page for validation
+  def NFDLogin(userType: String, redirectURLSuffix: String, nextPageTextCheck: String) =
 
     exec {
       session =>
@@ -27,12 +29,9 @@ object Login {
           .set("password", session(s"${userType}Password").as[String])
     }
 
-    .group(s"NFD_000_Login_${userType}") {
-
-      doIfOrElse(userType.equals("Applicant1")) {
-
+    .group("NFD_000_Login") {
         exec(http("Login Applicant1")
-          .post(IdamURL + "/login?client_id=divorce&response_type=code&redirect_uri=" + BaseURL + "/oauth2/callback")
+          .post(IdamURL + "/login?client_id=divorce&response_type=code&redirect_uri=" + BaseURL + "/oauth2/" + redirectURLSuffix)
           .headers(CommonHeader)
           .headers(PostHeader)
           .formParam("username", "${emailAddress}")
@@ -41,24 +40,7 @@ object Login {
           .formParam("selfRegistrationEnabled", "true")
           .formParam("_csrf", "${csrf}")
           .check(CsrfCheck.save)
-          .check(regex("Who are you applying to divorce?|Confirm your joint application|Your application for divorce has been submitted|You can now apply for a ‘conditional order’")))
-
-      }
-      {
-        doIf(userType.equals("Applicant2")) {
-          exec(http("Login Applicant2")
-            .post(IdamURL + "/login?client_id=divorce&response_type=code&redirect_uri=" + BaseURL + "/oauth2/callback-applicant2")
-            .headers(CommonHeader)
-            .headers(PostHeader)
-            .formParam("username", "${emailAddress}")
-            .formParam("password", "${password}")
-            .formParam("save", "Sign in")
-            .formParam("selfRegistrationEnabled", "true")
-            .formParam("_csrf", "${csrf}")
-            .check(CsrfCheck.save)
-            .check(substring("Enter your access details")))
-        }
-      }
+          .check(substring(nextPageTextCheck)))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
