@@ -89,7 +89,7 @@ object CCDAPI {
 
     .exec(Auth(userType))
 
-    .exec(http("NFD_000_GetEventToken")
+    .exec(http("NFD_000_GetCCDEventToken")
       .get(CcdAPIURL + "/caseworkers/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases/${caseId}/event-triggers/${eventName}/token")
       .header("Authorization", "Bearer ${bearerToken}")
       .header("ServiceAuthorization", "${authToken}")
@@ -98,7 +98,7 @@ object CCDAPI {
 
     .pause(1)
 
-    .exec(http("NFD_000_SubmitEvent-${eventName}")
+    .exec(http("NFD_000_CCDEvent-${eventName}")
       .post(CcdAPIURL + "/caseworkers/${idamId}/jurisdictions/DIVORCE/case-types/NFD/cases/${caseId}/events")
       .header("Authorization", "Bearer ${bearerToken}")
       .header("ServiceAuthorization", "${authToken}")
