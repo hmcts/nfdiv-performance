@@ -102,7 +102,8 @@ class NFD_Simulation extends Simulation {
       .exec(
         Homepage.NFDHomepage("respondent"),
         Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
-        NFD_02_CitizenRespondent.RespondentApplication)
+        NFD_02_CitizenRespondent.RespondentApplication,
+        Logout.NFDLogout)
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
       .exec(
         CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"))
