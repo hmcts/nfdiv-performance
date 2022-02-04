@@ -399,8 +399,8 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD01CitApp_250_${userType}DividingYourMoneyAndProperty") {
-      exec(http("Dividing your money and property")
+    .group("NFD01CitApp_250_${userType}DividingMoneyAndProperty") {
+      exec(http("Dividing money and property")
         .post(BaseURL + "/${userTypeURL}dividing-money-property")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -505,8 +505,8 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD01CitApp_297_LoadConfirmYourJointApplication") {
-      exec(http("Load confirm your joint application")
+    .group("NFD01CitApp_297_LoadConfirmJointApplication") {
+      exec(http("Load confirm joint application")
         .get(BaseURL + "/applicant2/confirm-your-joint-application")
         .headers(CommonHeader)
         .check(substring("Confirm your joint application")))
@@ -516,8 +516,8 @@ object NFD_01_CitizenApplication {
 
   val ConfirmYourJointApplication =
 
-    group("NFD01CitApp_298_${userType}ConfirmYourJointApplication") {
-      exec(http("Confirm your joint application")
+    group("NFD01CitApp_298_${userType}ConfirmJointApplication") {
+      exec(http("Confirm joint application")
         .post(BaseURL + "/${userTypeURL}confirm-your-joint-application")
         .headers(CommonHeader)
         .headers(PostHeader)

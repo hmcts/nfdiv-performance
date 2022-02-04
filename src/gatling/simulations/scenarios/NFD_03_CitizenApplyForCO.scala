@@ -82,9 +82,9 @@ object NFD_03_CitizenApplyForCO {
 
   val ContinueWithConditionalOrderJoint =
 
-    group("NFD03CitCO_035_${userType}ContinueWithYourJointApplication") {
+    group("NFD03CitCO_035_${userType}ContinueJointApplication") {
 
-      exec(http("Continue with your application")
+      exec(http("Continue joint application")
         .post(BaseURL + "/${userTypeURL}continue-with-your-application")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -97,9 +97,9 @@ object NFD_03_CitizenApplyForCO {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD03CitCO_045_${userType}ReviewYourJointApplication") {
+    .group("NFD03CitCO_045_${userType}ReviewJointApplication") {
 
-      exec(http("Review your joint application")
+      exec(http("Review joint application")
         .post(BaseURL + "/${userTypeURL}review-your-joint-application")
         .headers(CommonHeader)
         .headers(PostHeader)
