@@ -18,7 +18,7 @@ object NFD_03_CitizenApplyForCO {
 
   val ApplyForConditionalOrder =
 
-    group("NFD06CitResp_010_${userType}StartConditionalOrder") {
+    group("NFD03CitCO_010_${userType}StartConditionalOrder") {
 
       exec(http("Start Conditional Order")
         .post(BaseURL + "/${userTypeURL}hub-page")
@@ -35,7 +35,7 @@ object NFD_03_CitizenApplyForCO {
 
   val ContinueWithConditionalOrderSole =
 
-    group("NFD06CitResp_020_ReadTheResponse") {
+    group("NFD03CitCO_020_ReadTheResponse") {
 
       exec(http("Read the response")
         .post(BaseURL + "/read-the-response")
@@ -49,7 +49,7 @@ object NFD_03_CitizenApplyForCO {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD06CitResp_030_ContinueWithYourApplication") {
+    .group("NFD03CitCO_030_ContinueWithYourApplication") {
 
       exec(http("Continue with your application")
         .post(BaseURL + "/continue-with-your-application")
@@ -64,7 +64,7 @@ object NFD_03_CitizenApplyForCO {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD06CitResp_040_ReviewYourApplication") {
+    .group("NFD03CitCO_040_ReviewYourApplication") {
 
       exec(http("Review your application")
         .post(BaseURL + "/review-your-application")
@@ -82,7 +82,7 @@ object NFD_03_CitizenApplyForCO {
 
   val ContinueWithConditionalOrderJoint =
 
-    group("NFD06CitResp_035_${userType}ContinueWithYourJointApplication") {
+    group("NFD03CitCO_035_${userType}ContinueWithYourJointApplication") {
 
       exec(http("Continue with your application")
         .post(BaseURL + "/${userTypeURL}continue-with-your-application")
@@ -97,7 +97,7 @@ object NFD_03_CitizenApplyForCO {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD06CitResp_045_${userType}ReviewYourJointApplication") {
+    .group("NFD03CitCO_045_${userType}ReviewYourJointApplication") {
 
       exec(http("Review your joint application")
         .post(BaseURL + "/${userTypeURL}review-your-joint-application")
@@ -115,7 +115,7 @@ object NFD_03_CitizenApplyForCO {
 
   val CompleteConditionalOrder =
 
-    group("NFD06CitResp_050_${userType}CheckYourCOAnswers") {
+    group("NFD03CitCO_050_${userType}CheckYourCOAnswers") {
 
       exec(http("Check your CO answers")
         .post(BaseURL + "/${userTypeURL}check-your-conditional-order-answers")

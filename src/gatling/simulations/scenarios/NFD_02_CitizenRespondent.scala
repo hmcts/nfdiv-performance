@@ -18,7 +18,7 @@ object NFD_02_CitizenRespondent {
 
   val RespondentApplication =
 
-    group("NFD04CitResp_010_RespAccessCodeSubmit") {
+    group("NFD02CitResp_010_RespAccessCodeSubmit") {
 
       exec(http("Respondent Submit Access Code")
         .post(BaseURL + "/applicant2/enter-your-access-code")
@@ -35,7 +35,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_020_RespContinueApplication") {
+    .group("NFD02CitResp_020_RespContinueApplication") {
 
       exec(http("Respondent Continue Application")
         .get(BaseURL + "/respondent/review-the-application")
@@ -48,7 +48,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_030_RespReviewApplication") {
+    .group("NFD02CitResp_030_RespReviewApplication") {
 
       exec(http("Respondent Review Application")
         .post(BaseURL + "/respondent/review-the-application")
@@ -63,7 +63,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_040_RespHowDoYouWantToRespond") {
+    .group("NFD02CitResp_040_RespHowDoYouWantToRespond") {
 
       exec(http("Respondent How Do You Want To Respond")
         .post(BaseURL + "/respondent/how-do-you-want-to-respond")
@@ -78,7 +78,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_050_RespJurisdiction") {
+    .group("NFD02CitResp_050_RespJurisdiction") {
 
       exec(http("Respondent Jurisdiction")
         .post(BaseURL + "/respondent/legal-jurisdiction-of-the-courts")
@@ -95,7 +95,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_060_RespOtherCourtCases") {
+    .group("NFD02CitResp_060_RespOtherCourtCases") {
 
       exec(http("Respondent Other Court Cases")
         .post(BaseURL + "/respondent/other-court-cases")
@@ -110,7 +110,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_070_RespHowCourtWillContactYou") {
+    .group("NFD02CitResp_070_RespHowCourtWillContactYou") {
       exec(http("How the court will contact you")
         .post(BaseURL + "/respondent/how-the-court-will-contact-you")
         .headers(CommonHeader)
@@ -124,7 +124,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_080_RespLanguageToReceiveDocs") {
+    .group("NFD02CitResp_080_RespLanguageToReceiveDocs") {
       exec(http("English or Welsh?")
         .post(BaseURL + "/respondent/english-or-welsh")
         .headers(CommonHeader)
@@ -137,7 +137,7 @@ object NFD_02_CitizenRespondent {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD04CitResp_090_RespCheckYourAnswers") {
+    .group("NFD02CitResp_090_RespCheckYourAnswers") {
       exec(http("Check your answers")
         .post(BaseURL + "/respondent/check-your-answers")
         .headers(CommonHeader)
