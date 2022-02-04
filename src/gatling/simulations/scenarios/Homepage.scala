@@ -20,7 +20,7 @@ object Homepage {
     exec(flushHttpCache)
     .exec(flushCookieJar)
 
-    .group(s"NFD_001_HomePage${URLSuffix}") {
+    .group(s"NFD_001_${URLSuffix}HomePage") {
 
       exec(http("Load Homepage")
         .get(BaseURL + "/" + URLSuffix)
