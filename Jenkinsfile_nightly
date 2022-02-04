@@ -14,8 +14,8 @@ def product = "nfdiv"
 def component = "frontend"
 
 def secrets = [
-        'rd-aat': [
-                secret('OAUTH2-CLIENT-SECRET', 'OAUTH2_CLIENT_SECRET')
+        'ccd-aat': [
+                secret('ccd-api-gateway-oauth2-client-secret', 'ccd-api-gateway-oauth2-client-secret')
         ]
 ]
 

@@ -15,12 +15,15 @@ object Homepage {
 
   val CommonHeader = Environment.commonHeader
 
-  val NFDHomepage =
+  def NFDHomepage(URLSuffix: String) =
 
-    group("NFD_001_HomePage") {
+    exec(flushHttpCache)
+    .exec(flushCookieJar)
+
+    .group(s"NFD_001_HomePage${URLSuffix}") {
 
       exec(http("Load Homepage")
-        .get(BaseURL + "/")
+        .get(BaseURL + "/" + URLSuffix)
         .headers(CommonHeader)
         .header("sec-fetch-site", "none")
         .check(CsrfCheck.save)

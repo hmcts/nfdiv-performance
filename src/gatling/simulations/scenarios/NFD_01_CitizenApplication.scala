@@ -330,7 +330,7 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applicant2EmailAddress", Common.randomString(5) + "@test.com")
+        .formParam("applicant2EmailAddress", "${Applicant2EmailAddress}")
         .formParam("applicant1DoesNotKnowApplicant2EmailAddress", "")
         .check(CsrfCheck.save)
         .check(regex("Do you have your wife(&.+;)s postal address?")))
@@ -384,11 +384,11 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-  val DivorceDetailsAndUpload =
+  val DivorceDetails =
 
-    group("NFD01CitApp_240_OtherCourtCases") {
+    group("NFD01CitApp_240_${userType}OtherCourtCases") {
       exec(http("Other court cases")
-        .post(BaseURL + "/other-court-cases")
+        .post(BaseURL + "/${userTypeURL}other-court-cases")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
@@ -399,9 +399,9 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD01CitApp_250_DividingYourMoneyAndProperty") {
+    .group("NFD01CitApp_250_${userType}DividingYourMoneyAndProperty") {
       exec(http("Dividing your money and property")
-        .post(BaseURL + "/dividing-money-property")
+        .post(BaseURL + "/${userTypeURL}dividing-money-property")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
@@ -411,20 +411,23 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD01CitApp_260_ApplyForFinancialOrder") {
+    .group("NFD01CitApp_260_${userType}ApplyForFinancialOrder") {
       exec(http("Do you want to apply for a financial order?")
-        .post(BaseURL + "/do-you-want-to-apply-financial-order")
+        .post(BaseURL + "/${userTypeURL}do-you-want-to-apply-financial-order")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applyForFinancialOrder", Case.YesOrNo.No)
+        .multivaluedFormParam("${userType}WhoIsFinancialOrderFor", List("", ""))
+        .formParam("${userType}ApplyForFinancialOrder", Case.YesOrNo.No)
         .check(CsrfCheck.save)
-        .check(substring("Upload your documents")))
+        .check(regex("Upload your documents|Check your husband&#39;s answers")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD01CitApp_270_DocumentUpload") {
+  val DocumentUpload =
+
+    group("NFD01CitApp_270_DocumentUpload") {
       exec(http("Upload your documents")
         .post(BaseURL + "/document-manager?_csrf=${csrf}")
         .header("accept", "application/json")
@@ -434,7 +437,6 @@ object NFD_01_CitizenApplication {
         .header("sec-fetch-dest", "empty")
         .header("sec-fetch-mode", "cors")
         .header("sec-fetch-site", "same-origin")
-        .header("user-agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36")
         .header("x-requested-with", "XMLHttpRequest")
         .bodyPart(RawFileBodyPart("files[]", "2MB.pdf")
           .fileName("2MB.pdf")
@@ -474,9 +476,9 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-  val CheckYourAnswersJoint =
+  val CheckYourAnswersJointApplicant1 =
 
-    group("NFD01CitApp_290_CheckYourAnswers") {
+    group("NFD01CitApp_290_CheckYourAnswersApplicant1") {
       exec(http("Check your answers")
         .post(BaseURL + "/check-your-answers")
         .headers(CommonHeader)
@@ -484,6 +486,45 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "${csrf}")
         .formParam("applicationType", "jointApplication")
         .check(substring("Your answers have been sent to your wife to review")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val CheckYourAnswersJointApplicant2 =
+
+    group("NFD01CitApp_295_CheckYourAnswersApplicant2") {
+      exec(http("Check your answers")
+        .post(BaseURL + "/applicant2/check-your-joint-application")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant2Confirmation", Case.YesOrNo.Yes)
+        .formParam("applicant2Explanation", "")
+        .check(substring("Check your answers")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("NFD01CitApp_297_LoadConfirmYourJointApplication") {
+      exec(http("Load confirm your joint application")
+        .get(BaseURL + "/applicant2/confirm-your-joint-application")
+        .headers(CommonHeader)
+        .check(substring("Confirm your joint application")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val ConfirmYourJointApplication =
+
+    group("NFD01CitApp_298_${userType}ConfirmYourJointApplication") {
+      exec(http("Confirm your joint application")
+        .post(BaseURL + "/${userTypeURL}confirm-your-joint-application")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .multivaluedFormParam("${userType}IConfirmPrayer", List("", Case.Checkbox.Checked))
+        .multivaluedFormParam("${userType}IBelieveApplicationIsTrue", List("", Case.Checkbox.Checked))
+        .check(regex("Your husband needs to confirm your joint application|Pay and submit")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
@@ -526,7 +567,7 @@ object NFD_01_CitizenApplication {
         .formParam("csrfToken", "${csrf}")
         .formParam("cardNo", "4444333322221111")
         .formParam("expiryMonth", Common.getMonth())
-        .formParam("expiryYear", "23")
+        .formParam("expiryYear", "25")
         .formParam("cardholderName", "Perf Tester" + Common.randomString(5))
         .formParam("cvc", (100 + rnd.nextInt(900)).toString())
         .formParam("addressCountry", "GB")
@@ -571,21 +612,6 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-  val Applicant2LandingPage =
-
-    group("NFD01CitApp_350_App2LandingPage") {
-
-      exec(http("Applicant2 Landing Page")
-        .get(BaseURL + "/login-applicant2")
-        .headers(CommonHeader)
-        .header("sec-fetch-site", "none")
-        .check(CsrfCheck.save)
-        .check(substring("Sign in or create an account")))
-
-    }
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
   val Applicant2ContinueApplication =
 
     group("NFD01CitApp_360_App2AccessCodeSubmit") {
@@ -618,6 +644,22 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-  //TODO: CONTINUE DEVELOPMENT ONCE THE REST OF THE JOINT APPLICATION FUNCTIONALITY IS COMPLETED
+  val ConfirmReceipt =
+
+    group("NFD01CitApp_380_${userType}ConfirmReceipt") {
+
+      exec(http("Confirm receipt")
+        .post(BaseURL + "/${userTypeURL}hub-page")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}ConfirmReceipt", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(substring("You have confirmed receipt of the divorce application")))
+
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
 
 }

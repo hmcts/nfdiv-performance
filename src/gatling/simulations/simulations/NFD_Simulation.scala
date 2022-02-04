@@ -1,7 +1,6 @@
 package simulations
 
 import io.gatling.core.Predef._
-import io.gatling.http.Predef._
 import io.gatling.core.scenario.Simulation
 import io.gatling.core.controller.inject.open.OpenInjectionStep
 import io.gatling.commons.stats.assertion.Assertion
@@ -69,16 +68,14 @@ class NFD_Simulation extends Simulation {
 
   val NFDCitizenSoleApp = scenario( "NFDCitizenSoleApp")
     .exitBlockOnFail {
-      exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(  _.set("env", s"${env}")
-              .set("appType", "sole")
-              .set("userTypeURL", "")
-              .set("userType", "applicant1"))
+      exec(  _.set("env", s"${env}")
+              .set("appType", "sole"))
+      //Applicant 1 - Divorce Application
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
-        Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1"),
+        CreateUser.CreateCitizen("Applicant2"),
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "Who are you applying to divorce?"),
         NFD_01_CitizenApplication.LandingPage,
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.MarriageCertificate,
@@ -89,14 +86,58 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.MarriageCertNames,
         NFD_01_CitizenApplication.YourContactDetails,
         NFD_01_CitizenApplication.TheirContactDetails,
-        NFD_01_CitizenApplication.DivorceDetailsAndUpload,
+        NFD_01_CitizenApplication.DivorceDetails,
+        NFD_01_CitizenApplication.DocumentUpload,
         NFD_01_CitizenApplication.CheckYourAnswersSole,
         NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout)
+      //Caseworker - Get Marriage Details & Issue Application
+      .exec(
+        CCDAPI.GetMarriageDetails,
+        CCDAPI.CreateEvent("Caseworker", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
+      //Applicant 1 - Get Access Code for Applicant 2
+      .exec(
+        CCDAPI.GetCaseIdAndAccessCode)
+      //Applicant 2 - Respond to Divorce Application
+      .exec(
+        Homepage.NFDHomepage("respondent"),
+        Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
+        NFD_02_CitizenRespondent.RespondentApplication,
+        Logout.NFDLogout)
+      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
+      .exec(
+        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"))
+      //Applicant 1 - Apply for Conditional Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘conditional order’"),
+        NFD_03_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_03_CitizenApplyForCO.ContinueWithConditionalOrderSole,
+        NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
+        Logout.NFDLogout)
+      //Legal Advisor - Grant Conditional Order
+      .exec(
+        CCDAPI.CreateEvent("Legal", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
+      //Caseworker - Make Eligible for Final Order
+      .exec(
+        //link with bulk case
+        CCDAPI.CreateEvent("Caseworker", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
+        //set case hearing and decision dates to a date in the past
+        CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
+        //set judge details, CO granted and issued dates in the past
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/AmendCase.json"),
+        //pronounce case
+        CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        //set case as awaiting final order
+        CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
+      //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
     }
 
     .doIf("${Applicant1EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("${Applicant1EmailAddress}"))
+    }
+    .doIf("${Applicant2EmailAddress.exists()}") {
+      exec(DeleteUser.DeleteCitizen("${Applicant2EmailAddress}"))
     }
 
     .exec {
@@ -107,19 +148,15 @@ class NFD_Simulation extends Simulation {
 
   val NFDCitizenJointApp = scenario( "NFDCitizenJointApp")
     .exitBlockOnFail {
-      exec(flushHttpCache)
-      .exec(flushCookieJar)
-        .exec(  _.set("env", s"${env}")
-                .set("appType", "joint")
-                .set("userTypeURL", "")
-                .set("userType", "applicant1"))
+      exec(  _.set("env", s"${env}")
+              .set("appType", "joint"))
       .exec(
         CreateUser.CreateCitizen("Applicant1"),
         CreateUser.CreateCitizen("Applicant2"))
-      //Applicant 1
+      //Applicant 1 - Divorce Application
       .exec(
-        Homepage.NFDHomepage,
-        Login.NFDLogin("Applicant1"),
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "Who are you applying to divorce?"),
         NFD_01_CitizenApplication.LandingPage,
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.MarriageCertificate,
@@ -129,28 +166,82 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.EnterYourName,
         NFD_01_CitizenApplication.MarriageCertNames,
         NFD_01_CitizenApplication.YourContactDetails,
-        NFD_01_CitizenApplication.DivorceDetailsAndUpload,
-        NFD_01_CitizenApplication.CheckYourAnswersJoint,
-        NFD_01_CitizenApplication.SaveAndSignout,
-        Logout.NFDLogout)
-      //Get Access Code for Applicant 2
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(NFD_02_GetJointApplicantAccessCode.GetAccessCode)
-      //Applicant 2
-      .exec(flushHttpCache)
-      .exec(flushCookieJar)
-      .exec(  _.set("userTypeURL", "applicant2/")
-              .set("userType", "applicant2"))
+        NFD_01_CitizenApplication.DivorceDetails,
+        NFD_01_CitizenApplication.DocumentUpload,
+        NFD_01_CitizenApplication.CheckYourAnswersJointApplicant1,
+        NFD_01_CitizenApplication.SaveAndSignout)
+      //Applicant 1 - Get Case ID and Access Code for Applicant 2
+      .exec(CCDAPI.GetCaseIdAndAccessCode)
+      //Applicant 2 - Respond to Divorce Application
       .exec(
-        NFD_01_CitizenApplication.Applicant2LandingPage,
-        Login.NFDLogin("Applicant2"),
+        Homepage.NFDHomepage("login-applicant2"),
+        Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
         NFD_01_CitizenApplication.Applicant2ContinueApplication,
         NFD_01_CitizenApplication.MarriageBrokenDown,
         NFD_01_CitizenApplication.EnterYourName,
         NFD_01_CitizenApplication.YourContactDetails,
-        //TODO: ADD MORE OF THE FLOW HERE ONCE DEVELOPED
+        NFD_01_CitizenApplication.DivorceDetails,
+        NFD_01_CitizenApplication.CheckYourAnswersJointApplicant2,
+        NFD_01_CitizenApplication.ConfirmYourJointApplication,
+        NFD_01_CitizenApplication.SaveAndSignout)
+      //Applicant 1 - Confirm Application
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "Confirm your joint application"),
+        NFD_01_CitizenApplication.ConfirmYourJointApplication,
+        NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout)
+      //Caseworker - Get Marriage Details & Issue Application
+      .exec(
+        CCDAPI.GetMarriageDetails,
+        CCDAPI.CreateEvent("Caseworker", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
+      //Applicant 1 - Confirm Receipt
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "Your application for divorce has been submitted"),
+        NFD_01_CitizenApplication.ConfirmReceipt,
+        Logout.NFDLogout)
+      //Applicant 2 - Confirm Receipt
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant2", "callback", "Your application for divorce has been submitted"),
+        NFD_01_CitizenApplication.ConfirmReceipt,
+        Logout.NFDLogout)
+      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
+      .exec(
+        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"))
+      //Applicant 1 - Apply for Conditional Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘conditional order’"),
+        NFD_03_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_03_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
+        NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
+        Logout.NFDLogout)
+      //Applicant 2 - Apply for Conditional Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant2", "callback", "You can now apply for a ‘conditional order’"),
+        NFD_03_CitizenApplyForCO.ApplyForConditionalOrder,
+        NFD_03_CitizenApplyForCO.ContinueWithConditionalOrderJoint,
+        NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
+        Logout.NFDLogout)
+      //Legal Advisor - Grant Conditional Order
+      .exec(
+        CCDAPI.CreateEvent("Legal", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
+      //Caseworker - Make Eligible for Final Order
+      .exec(
+        //link with bulk case
+        CCDAPI.CreateEvent("Caseworker", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
+        //set case hearing and decision dates to a date in the past
+        CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
+        //set judge details, CO granted and issued dates in the past
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/AmendCase.json"),
+        //pronounce case
+        CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        //set case as awaiting final order
+        CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
+      //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
     }
 
     .doIf("${Applicant1EmailAddress.exists()}") {
@@ -193,10 +284,9 @@ class NFD_Simulation extends Simulation {
       case "perftest" =>
         Seq(global.successfulRequests.percent.gte(95))
       case "pipeline" =>
-        //TODO: UPDATE ASSERTION FOR JOINT APPLICATION ONCE DEVELOPED
+        //TODO: UPDATE ASSERTION ONCE FINAL ORDER IS DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
-          details("NFD01CitApp_330_ConfirmPayment").successfulRequests.count.gte((numberOfPipelineUsersSole * 0.8).ceil.toInt),
-          details("NFD01CitApp_370_App2ContinueApp").successfulRequests.count.gte((numberOfPipelineUsersJoint * 0.8).ceil.toInt)
+          details("NFD_000_SubmitEvent-system-progress-case-awaiting-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
         )
       case _ =>
         Seq()
