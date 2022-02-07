@@ -125,9 +125,11 @@ class NFD_Simulation extends Simulation {
         //set case hearing and decision dates to a date in the past
         CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
         //set judge details, CO granted and issued dates in the past
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/AmendCase.json"),
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCODetails.json"),
         //pronounce case
         CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        //set final order eligibility dates
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
         //set case as awaiting final order
         CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
       //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
@@ -236,9 +238,11 @@ class NFD_Simulation extends Simulation {
         //set case hearing and decision dates to a date in the past
         CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
         //set judge details, CO granted and issued dates in the past
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/AmendCase.json"),
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCODetails.json"),
         //pronounce case
         CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        //set final order eligibility dates
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
         //set case as awaiting final order
         CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
       //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
