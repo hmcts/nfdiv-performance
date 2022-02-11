@@ -290,7 +290,7 @@ class NFD_Simulation extends Simulation {
       case "pipeline" =>
         //TODO: UPDATE ASSERTION ONCE FINAL ORDER IS DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
-          details("NFD_000_SubmitEvent-system-progress-case-awaiting-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
+          details("NFD_000_CCDEvent-system-progress-case-awaiting-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
         )
       case _ =>
         Seq()
