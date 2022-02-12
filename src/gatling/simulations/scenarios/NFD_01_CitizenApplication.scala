@@ -317,14 +317,27 @@ object NFD_01_CitizenApplication {
         .formParam("${userType}AddressPostcode", "${addressLines(4)}")
         .formParam("${userType}AddressCountry", "UK")
         .check(CsrfCheck.save)
-        .check(regex("Other court cases|Enter your wife(&.+;)s email address")))
+        .check(regex("Other court cases|Does your wife have a solicitor")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
   val TheirContactDetails =
 
-    group("NFD01CitApp_200_EnterTheirEmailAddress") {
+    group("NFD01CitApp_195_DoTheyHaveASolicitor") {
+      exec(http("Do they have a solicitor")
+        .post(BaseURL + "/do-they-have-a-solicitor")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1IsApplicant2Represented", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
+        .check(regex("Enter your wife(&.+;)s email address")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("NFD01CitApp_200_EnterTheirEmailAddress") {
       exec(http("Enter your wife's email address")
         .post(BaseURL + "/their-email-address")
         .headers(CommonHeader)
