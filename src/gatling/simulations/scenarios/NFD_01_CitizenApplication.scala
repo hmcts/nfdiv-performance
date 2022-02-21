@@ -33,7 +33,7 @@ object NFD_01_CitizenApplication {
         .formParam("gender", Case.Gender.Female)
         .formParam("sameSex", Case.Checkbox.Unchecked)
         .check(CsrfCheck.save)
-        .check(substring("Has your marriage irretrievably broken down (it cannot be saved)?")))
+        .check(substring("Has your marriage broken down irretrievably")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
@@ -138,7 +138,7 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "${csrf}")
         .formParam("inTheUk", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
-        .check(substring("Check if you can get a divorce in England and Wales")))
+        .check(substring("Check if you can get a divorce in England or Wales")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
@@ -330,7 +330,7 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("applicant1IsApplicant2Represented", Case.YesOrNo.Yes)
+        .formParam("applicant1IsApplicant2Represented", Case.YesOrNo.No)
         .check(CsrfCheck.save)
         .check(regex("Enter your wife(&.+;)s email address")))
     }
@@ -651,7 +651,7 @@ object NFD_01_CitizenApplication {
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
         .check(CsrfCheck.save)
-        .check(substring("Has your marriage irretrievably broken down (it cannot be saved)?")))
+        .check(substring("Has your marriage broken down irretrievably")))
 
     }
 
