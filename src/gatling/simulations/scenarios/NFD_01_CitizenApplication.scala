@@ -164,7 +164,6 @@ object NFD_01_CitizenApplication {
         .formParam("applicant1LifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
         .formParam("applicant2LifeBasedInEnglandAndWales", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
-        .check(regex("""<input class="govuk-input" id="connections" name="connections" type="hidden" value="(.+?)"""").saveAs("connectionId"))
         .check(substring("You can use English or Welsh courts to get a divorce")))
     }
 
@@ -176,7 +175,7 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .formParam("connections", "${connectionId}")
+        .multivaluedFormParam("connections", List("", "", "", "", "", "", "", ""))
         .check(CsrfCheck.save)
         .check(substring("Enter your name")))
     }
