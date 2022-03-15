@@ -123,10 +123,9 @@ object NFD_03_CitizenApplyForCO {
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
         .multivaluedFormParam(session => "co" + session("userType").as[String].replace("applicant", "Applicant") + "StatementOfTruth", List("", Case.Checkbox.Checked))
-        .check(substring("Latest update")))
-        //TODO: uncomment this when the joint app is fixed .check(substring("You have applied for a ‘conditional order’"))
-        //check for completed sections (2 for joint, 4 for sole)
-        //TODO: uncomment this when the joint app is fixed .check(substring("progress-bar__icon--complete").count.in(2, 4)))
+        .check(regex("You have applied for a `?conditional order`?|The court will check your application and send it to a judge"))
+        //check for completed sections (1 for joint, 4 for sole)
+        .check(substring("progress-bar__icon--complete").count.in(1, 3)))
 
     }
 
