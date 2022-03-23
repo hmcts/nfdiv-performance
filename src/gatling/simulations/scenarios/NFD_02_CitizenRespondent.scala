@@ -119,25 +119,12 @@ object NFD_02_CitizenRespondent {
         .multivaluedFormParam("applicant2AgreeToReceiveEmails", List("", Case.Checkbox.Checked))
         .formParam("applicant2PhoneNumber", "")
         .check(CsrfCheck.save)
-        .check(substring("What language do you want to receive emails and documents in?")))
-    }
-
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
-
-    .group("NFD02CitResp_080_RespLanguageToReceiveDocs") {
-      exec(http("English or Welsh?")
-        .post(BaseURL + "/respondent/english-or-welsh")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "${csrf}")
-        .formParam("applicant2EnglishOrWelsh", "english")
-        .check(CsrfCheck.save)
         .check(substring("Check your answers")))
     }
 
     .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
-    .group("NFD02CitResp_090_RespCheckYourAnswers") {
+    .group("NFD02CitResp_080_RespCheckYourAnswers") {
       exec(http("Check your answers")
         .post(BaseURL + "/respondent/check-your-answers")
         .headers(CommonHeader)
