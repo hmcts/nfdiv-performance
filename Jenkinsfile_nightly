@@ -14,7 +14,7 @@ def product = "nfdiv"
 def component = "frontend"
 
 def secrets = [
-        'ccd-aat': [
+        'ccd-perftest': [
                 secret('ccd-api-gateway-oauth2-client-secret', 'CLIENT_SECRET')
         ]
 ]
