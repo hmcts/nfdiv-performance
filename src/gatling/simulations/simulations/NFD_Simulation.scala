@@ -22,7 +22,7 @@ class NFD_Simulation extends Simulation {
   //set the environment based on the test type
   val environment = testType match{
     case "perftest" => "perftest"
-    case "pipeline" => "aat"
+    case "pipeline" => "perftest" //updated pipeline to run against perftest - change to aat to run against AAT
     case _ => "**INVALID**"
   }
   /* ******************************** */
