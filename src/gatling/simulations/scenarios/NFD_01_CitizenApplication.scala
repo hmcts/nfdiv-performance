@@ -468,7 +468,7 @@ object NFD_01_CitizenApplication {
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
         .multivaluedFormParam("${userType}IConfirmPrayer", List("", Case.Checkbox.Checked))
-        .multivaluedFormParam("${userType}IBelieveApplicationIsTrue", List("", Case.Checkbox.Checked))
+        .multivaluedFormParam("${userType}StatementOfTruth", List("", Case.Checkbox.Checked))
         .check(CsrfCheck.save)
         .check(substring("Pay your divorce fee")))
     }
