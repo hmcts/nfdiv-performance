@@ -130,7 +130,7 @@ object NFD_02_CitizenRespondent {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
-        .multivaluedFormParam("applicant2IBelieveApplicationIsTrue", List("", Case.Checkbox.Checked))
+        .multivaluedFormParam("applicant2StatementOfTruth", List("", Case.Checkbox.Checked))
         .check(substring("Latest update"))
         .check(substring("You have responded"))
         //check for two completed sections
