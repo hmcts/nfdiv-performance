@@ -184,9 +184,26 @@ object NFD_01_CitizenApplication {
 
   val EnterYourName =
 
-    group("NFD01CitApp_110_${userType}EnterYourName") {
+    group("NFD01CitApp_110_EnterYourName") {
       exec(http("Enter your name")
-        .post(BaseURL + "/${userTypeURL}enter-your-name")
+        .post(BaseURL + "/enter-your-names")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("applicant1FirstNames", Common.randomString(5))
+        .formParam("applicant1MiddleNames", "")
+        .formParam("applicant1LastNames", Common.randomString(5))
+        .check(CsrfCheck.save)
+        .check(regex("Enter your wife’s name")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+  val EnterYourNames =
+
+    group("NFD01CitApp_110_${userType}EnterYourNames") {
+      exec(http("Enter your name")
+        .post(BaseURL + "/enter-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
@@ -194,10 +211,10 @@ object NFD_01_CitizenApplication {
         .formParam("${userType}MiddleNames", "")
         .formParam("${userType}LastNames", Common.randomString(5))
         .check(CsrfCheck.save)
-        .check(regex("Enter your wife’s name|Your names on your marriage certificate|Changes to your name")))
+        .check(regex("Your names on your marriage certificate|Changes to your name")))
     }
 
-    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+      .pause(MinThinkTime seconds, MaxThinkTime seconds)
 
   val EnterTheirName =
 
