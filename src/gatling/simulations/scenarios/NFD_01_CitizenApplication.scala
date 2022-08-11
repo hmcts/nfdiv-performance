@@ -257,6 +257,19 @@ object NFD_01_CitizenApplication {
         .multivaluedFormParam("${userType}AgreeToReceiveEmails", List("", Case.Checkbox.Checked))
         .formParam("${userType}PhoneNumber", "")
         .check(CsrfCheck.save)
+        .check(substring("What language do you want to receive emails and documents in?")))
+    }
+
+    .pause(MinThinkTime seconds, MaxThinkTime seconds)
+
+    .group("NFD01CitApp_160_${userType}LanguageToReceiveDocs") {
+      exec(http("English or Welsh?")
+        .post(BaseURL + "/${userTypeURL}english-or-welsh")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "${csrf}")
+        .formParam("${userType}EnglishOrWelsh", "english")
+        .check(CsrfCheck.save)
         .check(substring("Do you need your contact details kept private from your")))
     }
 
