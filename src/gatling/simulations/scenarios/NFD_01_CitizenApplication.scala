@@ -201,7 +201,7 @@ object NFD_01_CitizenApplication {
 
   val EnterYourNames =
 
-    group("NFD01CitApp_110_${userType}EnterYourNames") {
+    group("NFD01CitApp_115_${userType}EnterYourNames") {
       exec(http("Enter your name")
         .post(BaseURL + "/enter-your-name")
         .headers(CommonHeader)
