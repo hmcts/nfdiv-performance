@@ -1,7 +1,7 @@
 {
   "data": {
     "coCourt": "birmingham",
-    "coDateAndTimeOfHearing": "2021-08-01T15:30",
+    "coDateAndTimeOfHearing": "2021-08-01T15:30:00.000",
     "coDecisionDate": "2021-08-01"
   },
   "event": {
