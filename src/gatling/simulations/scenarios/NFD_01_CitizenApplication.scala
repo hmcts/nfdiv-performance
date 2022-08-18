@@ -186,7 +186,7 @@ object NFD_01_CitizenApplication {
 
     group("NFD01CitApp_110_EnterYourName") {
       exec(http("Enter your name")
-        .post(BaseURL + "/enter-your-names")
+        .post(BaseURL + "/enter-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
@@ -203,7 +203,7 @@ object NFD_01_CitizenApplication {
 
     group("NFD01CitApp_115_${userType}EnterYourNames") {
       exec(http("Enter your name")
-        .post(BaseURL + "/enter-your-name")
+        .post(BaseURL + "/enter-your-names")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "${csrf}")
