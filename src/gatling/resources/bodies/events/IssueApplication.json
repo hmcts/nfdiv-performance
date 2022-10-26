@@ -1,9 +1,9 @@
 {
   "data": {
     "labelContentMarriageOrCivilPartnership": "marriage",
-    "marriageDate": "${marriageDate}",
-    "marriageApplicant1Name": "${marriageApplicant1Name}",
-    "marriageApplicant2Name": "${marriageApplicant2Name}",
+    "marriageDate": "#{marriageDate}",
+    "marriageApplicant1Name": "#{marriageApplicant1Name}",
+    "marriageApplicant2Name": "#{marriageApplicant2Name}",
     "marriagePlaceOfMarriage": "PerfTest"
   },
   "event": {
@@ -11,6 +11,6 @@
     "summary": "",
     "description": ""
   },
-  "event_token": "${eventToken}",
+  "event_token": "#{eventToken}",
   "ignore_warning": false
 }
