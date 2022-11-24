@@ -2,7 +2,7 @@ package scenarios
 
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
-import utils.{Case, Common, CsrfCheck, Environment}
+import utils.{Case, CsrfCheck, Environment}
 
 import scala.concurrent.duration._
 
