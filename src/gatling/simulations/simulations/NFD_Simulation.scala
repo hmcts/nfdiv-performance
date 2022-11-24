@@ -132,7 +132,15 @@ class NFD_Simulation extends Simulation {
         CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
         //set case as awaiting final order
         CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
-      //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
+      //Applicant 1 - Apply for Final Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "You can now apply for a &#39;final order&#39;"),
+        NFD_04_CitizenApplyForFO.ApplyForFinalOrder,
+        Logout.NFDLogout)
+      //Caseworker - Grant Final Order
+      .exec(
+        CCDAPI.CreateEvent("Caseworker", "caseworker-grant-final-order", "bodies/events/GrantFinalOrder.json"))
     }
 
     .doIf("#{Applicant1EmailAddress.exists()}") {
@@ -245,7 +253,21 @@ class NFD_Simulation extends Simulation {
         CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
         //set case as awaiting final order
         CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
-      //TODO: ADD FINAL ORDER HERE ONCE DEVELOPED
+      //Applicant 1 - Apply for Final Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant1", "callback", "You can now apply for a ‘final order’"),
+        NFD_04_CitizenApplyForFO.ApplyForFinalOrder,
+        Logout.NFDLogout)
+      //Applicant 2 - Apply for Final Order
+      .exec(
+        Homepage.NFDHomepage(""),
+        Login.NFDLogin("Applicant2", "callback", "You can now apply for a ‘final order’"),
+        NFD_04_CitizenApplyForFO.ApplyForFinalOrder,
+        Logout.NFDLogout)
+      //Caseworker - Grant Final Order
+      .exec(
+        CCDAPI.CreateEvent("Caseworker", "caseworker-grant-final-order", "bodies/events/GrantFinalOrder.json"))
     }
 
     .doIf("#{Applicant1EmailAddress.exists()}") {
@@ -286,11 +308,15 @@ class NFD_Simulation extends Simulation {
   def assertions(simulationType: String): Seq[Assertion] = {
     simulationType match {
       case "perftest" =>
-        Seq(global.successfulRequests.percent.gte(95))
+        if (debugMode == "off") {
+          Seq(global.successfulRequests.percent.gte(95))
+        }
+        else {
+          Seq(global.successfulRequests.percent.is(100))
+        }
       case "pipeline" =>
-        //TODO: UPDATE ASSERTION ONCE FINAL ORDER IS DEVELOPED
         Seq(global.successfulRequests.percent.gte(95),
-          details("NFD_000_CCDEvent-system-progress-case-awaiting-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
+          details("NFD_000_CCDEvent-caseworker-grant-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
         )
       case _ =>
         Seq()
