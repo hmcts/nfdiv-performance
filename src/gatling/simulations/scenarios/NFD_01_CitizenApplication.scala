@@ -24,7 +24,15 @@ object NFD_01_CitizenApplication {
 
   val LandingPage =
 
-    group("NFD01CitApp_010_YourDetailsSubmit") {
+  //set session variables
+    exec(_.setAll("randomString"  -> Common.randomString(5),
+                  "relationshipDateDay" -> Common.getDay(),
+                  "relationshipDateMonth" -> Common.getMonth(),
+                  "relationshipDateYear" -> Common.getMarriageYear(),
+
+    ))
+
+    .group("NFD01CitApp_010_YourDetailsSubmit") {
       exec(http("Your Details Submit")
         .post(BaseURL + "/your-details")
         .headers(CommonHeader)
@@ -61,9 +69,9 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("relationshipDate-day", Common.getDay())
-        .formParam("relationshipDate-month", Common.getMonth())
-        .formParam("relationshipDate-year", Common.getMarriageYear())
+        .formParam("relationshipDate-day", "#{relationshipDateDay}")
+        .formParam("relationshipDate-month", "#{relationshipDateMonth}")
+        .formParam("relationshipDate-year", "#{relationshipDateYear}")
         .check(CsrfCheck.save)
         .check(substring("Do you have your marriage certificate with you?")))
     }
@@ -190,9 +198,9 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("applicant1FirstNames", Common.randomString(5))
+        .formParam("applicant1FirstNames", "Perf#{randomString}")
         .formParam("applicant1MiddleNames", "")
-        .formParam("applicant1LastNames", Common.randomString(5))
+        .formParam("applicant1LastNames", "SoleApp#{randomString}")
         .check(CsrfCheck.save)
         .check(regex("Enter your wife’s name")))
     }
@@ -207,9 +215,9 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("#{userType}FirstNames", Common.randomString(5))
+        .formParam("#{userType}FirstNames", "Joint#{randomString}")
         .formParam("#{userType}MiddleNames", "")
-        .formParam("#{userType}LastNames", Common.randomString(5))
+        .formParam("#{userType}LastNames", "#{userType}#{randomString}")
         .check(CsrfCheck.save)
         .check(regex("Your names on your marriage certificate|Changes to your name")))
     }
@@ -224,9 +232,9 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("applicant2FirstNames", Common.randomString(5))
+        .formParam("applicant2FirstNames", "PerfTwo#{randomString}")
         .formParam("applicant2MiddleNames", "")
-        .formParam("applicant2LastNames", Common.randomString(5))
+        .formParam("applicant2LastNames", "SoleResp#{randomString}")
         .check(CsrfCheck.save)
         .check(substring("Your names on your marriage certificate")))
     }
@@ -241,8 +249,8 @@ object NFD_01_CitizenApplication {
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("applicant1FullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
-        .formParam("applicant2FullNameOnCertificate", Common.randomString(5) + " " + Common.randomString(5))
+        .formParam("applicant1FullNameOnCertificate", "Perf#{randomString}")
+        .formParam("applicant2FullNameOnCertificate", "Test#{randomString}")
         .check(CsrfCheck.save)
         .check(substring("Changes to your name")))
     }
@@ -595,16 +603,16 @@ object NFD_01_CitizenApplication {
         .formParam("chargeId", "#{ChargeId}")
         .formParam("csrfToken", "#{csrf}")
         .formParam("cardNo", "4444333322221111")
-        .formParam("expiryMonth", Common.getMonth())
+        .formParam("expiryMonth", "#{relationshipDateMonth}")
         .formParam("expiryYear", "25")
-        .formParam("cardholderName", "Perf Tester" + Common.randomString(5))
+        .formParam("cardholderName", "Perf Tester#{randomString}")
         .formParam("cvc", (100 + rnd.nextInt(900)).toString())
         .formParam("addressCountry", "GB")
-        .formParam("addressLine1", rnd.nextInt(1000).toString + " Perf" + Common.randomString(5) + " Road")
+        .formParam("addressLine1", rnd.nextInt(1000).toString + " Perf#{randomString} Road")
         .formParam("addressLine2", "")
-        .formParam("addressCity", "Perf " + Common.randomString(5) + " Town")
-        .formParam("addressPostcode", "PR1 1RF") //Common.getPostcode()
-        .formParam("email", "nfdiv@perftest" + Common.randomString(8) + ".com")
+        .formParam("addressCity", "Perf#{randomString} Town")
+        .formParam("addressPostcode", "PR1 1RF")
+        .formParam("email", "nfdiv@perftest#{randomString}.com")
         .check(regex("Confirm your payment"))
         .check(css("input[name='csrfToken']", "value").saveAs("csrf")))
     }
