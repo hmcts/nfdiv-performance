@@ -217,7 +217,7 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "#{csrf}")
         .formParam("#{userType}FirstNames", "Joint#{randomString}")
         .formParam("#{userType}MiddleNames", "")
-        .formParam("#{userType}LastNames", "#{userType}#{randomString}")
+        .formParam("#{userType}LastNames", "#{userTypeString}#{randomString}")
         .check(CsrfCheck.save)
         .check(regex("Your names on your marriage certificate|Changes to your name")))
     }
