@@ -1,7 +1,14 @@
 plugins {
   id 'org.owasp.dependencycheck' version '8.0.2'
   id 'scala'
+  id 'java-library'
   id 'io.gatling.gradle' version '3.8.4'
+}
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
 }
 
 tasks.withType(JavaExec) {
