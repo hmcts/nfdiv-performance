@@ -1,8 +1,8 @@
 plugins {
-  id 'org.owasp.dependencycheck' version '8.0.2'
+  id 'org.owasp.dependencycheck' version '8.2.1'
   id 'scala'
   id 'java-library'
-  id 'io.gatling.gradle' version '3.8.4'
+  id 'io.gatling.gradle' version '3.9.3.1'
 }
 
 java {
@@ -31,8 +31,8 @@ repositories {
 }
 
 gatling {
-  gatlingVersion '3.8.4'
-  scalaVersion '2.13.9'
+  gatlingVersion '3.9.3'
+  scalaVersion '2.13.10'
   simulations = {
     include "simulations/NFD_Simulation.scala"
   }
