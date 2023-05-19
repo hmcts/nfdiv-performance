@@ -104,9 +104,10 @@ class NFD_Simulation extends Simulation {
         Login.NFDLogin("Applicant2", "callback-applicant2", "Enter your access details"),
         NFD_02_CitizenRespondent.RespondentApplication,
         Logout.NFDLogout)
-      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
+      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding) and set the dueDate
       .exec(
-        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"))
+        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCOEligibilityDates.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
@@ -217,9 +218,10 @@ class NFD_Simulation extends Simulation {
         Login.NFDLogin("Applicant2", "callback", "Your application for divorce has been submitted"),
         NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
-      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding)
+      //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding) and set the dueDate
       .exec(
-        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"))
+        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
+        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCOEligibilityDates.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),

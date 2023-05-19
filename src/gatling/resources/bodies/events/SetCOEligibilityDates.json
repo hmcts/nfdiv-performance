@@ -1,7 +1,6 @@
 {
   "data": {
-    "dateFinalOrderEligibleToRespondent": "2022-12-01",
-    "dateFinalOrderEligibleFrom": "2022-12-01"
+    "dueDate": "2022-12-01"
   },
   "event": {
     "id": "caseworker-amend-case",
