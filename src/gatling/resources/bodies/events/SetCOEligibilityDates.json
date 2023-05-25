@@ -3,7 +3,7 @@
     "dueDate": "2022-12-01"
   },
   "event": {
-    "id": "caseworker-amend-case",
+    "id": "caseworker-update-due-date",
     "summary": "",
     "description": ""
   },
