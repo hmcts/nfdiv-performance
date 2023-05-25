@@ -107,7 +107,7 @@ class NFD_Simulation extends Simulation {
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding) and set the dueDate
       .exec(
         CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCOEligibilityDates.json"))
+        CCDAPI.CreateEvent("Caseworker", "caseworker-update-due-date", "bodies/events/SetCOEligibilityDates.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
@@ -221,7 +221,7 @@ class NFD_Simulation extends Simulation {
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding) and set the dueDate
       .exec(
         CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCOEligibilityDates.json"))
+        CCDAPI.CreateEvent("Caseworker", "caseworker-update-due-date", "bodies/events/SetCOEligibilityDates.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
