@@ -1,8 +1,8 @@
 {
   "data": {
     "coCourt": "birmingham",
-    "coDateAndTimeOfHearing": "2022-08-01T15:30:00.000",
-    "coDecisionDate": "2022-08-01"
+    "coDateAndTimeOfHearing": "#{coDate}T15:30:00.000",
+    "coDecisionDate": "#{coDate}"
   },
   "event": {
     "id": "system-update-case-court-hearing",

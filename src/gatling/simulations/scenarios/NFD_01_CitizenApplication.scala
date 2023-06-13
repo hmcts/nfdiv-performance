@@ -28,7 +28,10 @@ object NFD_01_CitizenApplication {
     exec(_.setAll("randomString"  -> Common.randomString(5),
                   "relationshipDateDay" -> Common.getDay(),
                   "relationshipDateMonth" -> Common.getMonth(),
-                  "relationshipDateYear" -> Common.getMarriageYear()
+                  "relationshipDateYear" -> Common.getMarriageYear(),
+                  "coDate" -> Common.getCoDate(),
+                  "foDate" -> Common.getFoDate(),
+                  "expiryDate" -> Common.getExpiryDate()
     ))
 
     .group("NFD01CitApp_010_YourDetailsSubmit") {

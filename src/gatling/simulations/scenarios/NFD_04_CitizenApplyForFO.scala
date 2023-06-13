@@ -16,7 +16,7 @@ object NFD_04_CitizenApplyForFO {
   val CommonHeader = Environment.commonHeader
   val PostHeader = Environment.postHeader
 
-  val ApplyForFinalOrder = {
+  val ApplyForFinalOrder =
 
     group("NFD04CitFO_010_#{userType}StartFinalOrder") {
 
@@ -44,6 +44,5 @@ object NFD_04_CitizenApplyForFO {
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
-  }
 
 }

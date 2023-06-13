@@ -1,6 +1,6 @@
 {
   "data": {
-    "dueDate": "2022-12-01"
+    "dueDate": "#{foDate}"
   },
   "event": {
     "id": "caseworker-update-due-date",

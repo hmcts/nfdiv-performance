@@ -1,8 +1,9 @@
 {
   "data": {
-    "coGrantedDate": "2022-08-01",
-    "issueDate": "2022-08-01",
-    "coPronouncementJudge": "District Judge"
+    "coGrantedDate": "#{coDate}",
+    "issueDate": "#{coDate}",
+    "coPronouncementJudge": "District Judge",
+    "dateFinalOrderNoLongerEligible": "#{expiryDate}"
   },
   "event": {
     "id": "caseworker-amend-case",

@@ -12,6 +12,7 @@ object Common {
   val patternMonth = DateTimeFormatter.ofPattern("MM")
   val patternYear = DateTimeFormatter.ofPattern("yyyy")
   val patternDate = DateTimeFormatter.ofPattern("yyyyMMdd")
+  val patternLongDate = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
   def randomString(length: Int) = {
     rnd.alphanumeric.filter(_.isLetter).take(length).mkString
@@ -19,6 +20,18 @@ object Common {
 
   def getDate(): String = {
     now.format(patternDate)
+  }
+
+  def getCoDate(): String = {
+    now.minusMonths(6).format(patternLongDate)
+  }
+
+  def getFoDate(): String = {
+    now.minusMonths(3).format(patternLongDate)
+  }
+
+  def getExpiryDate(): String = {
+    now.plusMonths(6).format(patternLongDate)
   }
 
   def getDay(): String = {
