@@ -29,7 +29,9 @@ object NFD_01_CitizenApplication {
                   "relationshipDateDay" -> Common.getDay(),
                   "relationshipDateMonth" -> Common.getMonth(),
                   "relationshipDateYear" -> Common.getMarriageYear(),
-
+                  "coDate" -> Common.getCoDate(),
+                  "foDate" -> Common.getFoDate(),
+                  "expiryDate" -> Common.getExpiryDate()
     ))
 
     .group("NFD01CitApp_010_YourDetailsSubmit") {
