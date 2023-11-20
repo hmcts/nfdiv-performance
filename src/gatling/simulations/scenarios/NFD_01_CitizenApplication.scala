@@ -204,6 +204,19 @@ object NFD_01_CitizenApplication {
         .formParam("applicant1MiddleNames", "")
         .formParam("applicant1LastNames", "SoleApp#{randomString}")
         .check(CsrfCheck.save)
+        .check(regex("your full name, including any middle names")))
+    }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+    .group("NFD01CitApp_112_ConfirmYourName") {
+      exec(http("Confirm your name")
+        .post(BaseURL + "/confirm-your-name")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "#{csrf}")
+        .formParam("applicant1ConfirmFullName", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
         .check(regex("Enter your wife’s name")))
     }
 
@@ -221,10 +234,23 @@ object NFD_01_CitizenApplication {
         .formParam("#{userType}MiddleNames", "")
         .formParam("#{userType}LastNames", "#{userTypeString}#{randomString}")
         .check(CsrfCheck.save)
+        .check(substring("your full name, including any middle names")))
+    }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+    .group("NFD01CitApp_117_#{userType}ConfirmYourNames") {
+      exec(http("Confirm your names")
+        .post(BaseURL + "/#{userTypeURL}/confirm-your-name")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "#{csrf}")
+        .formParam("#{userType}ConfirmFullName", Case.YesOrNo.Yes)
+        .check(CsrfCheck.save)
         .check(regex("Your names on your marriage certificate|Changes to your name")))
     }
 
-      .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
   val EnterTheirName =
 
@@ -237,6 +263,19 @@ object NFD_01_CitizenApplication {
         .formParam("applicant2FirstNames", "PerfTwo#{randomString}")
         .formParam("applicant2MiddleNames", "")
         .formParam("applicant2LastNames", "SoleResp#{randomString}")
+        .check(CsrfCheck.save)
+        .check(substring("full name, including any middle names")))
+    }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+    .group("NFD01CitApp_125_ConfirmTheirName") {
+      exec(http("Confirm Their name")
+        .post(BaseURL + "/confirm-their-name")
+        .headers(CommonHeader)
+        .headers(PostHeader)
+        .formParam("_csrf", "#{csrf}")
+        .formParam("applicant2ConfirmFullName", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
         .check(substring("Your names on your marriage certificate")))
     }
