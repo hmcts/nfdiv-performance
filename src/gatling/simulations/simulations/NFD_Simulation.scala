@@ -57,7 +57,7 @@ class NFD_Simulation extends Simulation {
   val httpProtocol = Environment.HttpProtocol
     .baseUrl(BaseURL)
     .doNotTrackHeader("1")
-    .inferHtmlResources()
+    .inferHtmlResources(DenyList(".*webchat-client.pp.ctsc.hmcts.net.*"))
     .silentResources
 
   before{
