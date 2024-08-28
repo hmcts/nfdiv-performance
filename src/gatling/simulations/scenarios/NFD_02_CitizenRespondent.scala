@@ -89,7 +89,7 @@ object NFD_02_CitizenRespondent {
         .formParam("reasonCourtsOfEnglandAndWalesHaveNoJurisdiction", "")
         .formParam("inWhichCountryIsYourLifeMainlyBased", "")
         .check(CsrfCheck.save)
-        .check(substring("Other court cases")))
+        .check(substring("Do you intend to ask the court")))
 
     }
 
