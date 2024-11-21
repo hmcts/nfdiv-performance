@@ -671,7 +671,7 @@ object NFD_01_CitizenApplication {
         .headers(PostHeader)
         .formParam("chargeId", "#{ChargeId}")
         .formParam("csrfToken", "#{csrf}")
-        .check(regex("""Your reference number is(?s).*?<div class="govuk-panel__body">(?s).*?<strong>([0-9-]{19})""").find.transform(str => str.replace("-", "")).saveAs("caseId"))
+        .check(regex("""Your reference number(?s).*?<div class="govuk-panel__body">(?s).*?<strong>([0-9-]{19})""").find.transform(str => str.replace("-", "")).saveAs("caseId"))
         .check(substring("Application submitted")))
     }
 
