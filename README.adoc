@@ -2,6 +2,7 @@
 
 To run locally:
 - Performance test against the perftest environment: `./gradlew gatlingRun`
+- To run a single user with reduced pause time between steps for debugging purposes, use the Debug flag below
 
 Flags:
 - Debug (single-user mode): `-Ddebug=on e.g. ./gradlew gatlingRun -Ddebug=on`
