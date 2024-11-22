@@ -27,8 +27,7 @@ object NFD_02_CitizenRespondent {
         .formParam("_csrf", "#{csrf}")
         .formParam("caseReference", "#{caseId}")
         .formParam("accessCode", "#{accessCode}")
-        .check(substring("Latest update"))
-
+        .check(substring("Latest update")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
@@ -143,7 +142,7 @@ object NFD_02_CitizenRespondent {
         .formParam("_csrf", "#{csrf}")
         .multivaluedFormParam("aosStatementOfTruth", List("", Case.Checkbox.Checked))
         .check(substring("Latest update"))
-        .check(substring("You have responded"))
+        .check(substring("You have responded")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
