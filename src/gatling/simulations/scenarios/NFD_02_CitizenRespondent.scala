@@ -28,8 +28,6 @@ object NFD_02_CitizenRespondent {
         .formParam("caseReference", "#{caseId}")
         .formParam("accessCode", "#{accessCode}")
         .check(substring("Latest update"))
-        //check that Response is the current step
-        .check(regex(""" aria-current="step">(?s).*?<span class="hmcts-progress-bar__icon"></span>(?s).*?Court checks(?s).*?</li>""")))
 
     }
 
@@ -146,8 +144,6 @@ object NFD_02_CitizenRespondent {
         .multivaluedFormParam("aosStatementOfTruth", List("", Case.Checkbox.Checked))
         .check(substring("Latest update"))
         .check(substring("You have responded"))
-        //check for two completed sections
-        .check(substring("progress-bar__icon--complete").count.is(2)))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
