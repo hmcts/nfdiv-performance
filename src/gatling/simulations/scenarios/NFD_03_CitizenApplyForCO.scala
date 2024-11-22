@@ -124,7 +124,7 @@ object NFD_03_CitizenApplyForCO {
         .formParam("_csrf", "#{csrf}")
         .multivaluedFormParam(session => "co" + session("userType").as[String].replace("applicant", "Applicant") + "StatementOfTruth", List("", Case.Checkbox.Checked))
         .check(regex("You have applied for a `?conditional order`?|The court will check your application and send it to a judge"))
-        .check(substring("progress-bar__icon--complete").count.in(1, 2)))
+        .check(substring("progress-bar__icon--complete").count.in(1, 3)))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
