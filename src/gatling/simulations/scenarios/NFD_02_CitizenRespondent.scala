@@ -29,7 +29,7 @@ object NFD_02_CitizenRespondent {
         .formParam("accessCode", "#{accessCode}")
         .check(substring("Latest update"))
         //check that Response is the current step
-        .check(regex(""" aria-current="step">(?s).*?<span class="hmcts-progress-bar__icon"></span>(?s).*?Response(?s).*?</li>""")))
+        .check(regex(""" aria-current="step">(?s).*?<span class="hmcts-progress-bar__icon"></span>(?s).*?Court checks(?s).*?</li>""")))
 
     }
 
