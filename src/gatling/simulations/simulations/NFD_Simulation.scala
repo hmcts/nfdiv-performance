@@ -45,7 +45,7 @@ class NFD_Simulation extends Simulation {
   //If running in debug mode, disable pauses between steps
   val pauseOption:PauseType = debugMode match{
     case "off" => constantPauses
-    case _ => disabledPauses
+    case _ => customPauses(2000.toLong)
   }
   /* ******************************** */
 
