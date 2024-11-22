@@ -209,13 +209,13 @@ class NFD_Simulation extends Simulation {
       //Applicant 1 - Confirm Receipt
       .exec(
         Homepage.NFDHomepage(""),
-        Login.NFDLogin("Applicant1", "callback", "Your application for divorce has been submitted"),
+        Login.NFDLogin("Applicant1", "callback", "application will be checked by court staff"),
         NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
       //Applicant 2 - Confirm Receipt
       .exec(
         Homepage.NFDHomepage(""),
-        Login.NFDLogin("Applicant2", "callback", "Your application for divorce has been submitted"),
+        Login.NFDLogin("Applicant2", "callback", "application will be checked by court staff"),
         NFD_01_CitizenApplication.ConfirmReceipt,
         Logout.NFDLogout)
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding) and set the dueDate
