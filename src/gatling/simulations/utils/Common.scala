@@ -11,6 +11,7 @@ object Common {
   val patternDay = DateTimeFormatter.ofPattern("dd")
   val patternMonth = DateTimeFormatter.ofPattern("MM")
   val patternYear = DateTimeFormatter.ofPattern("yyyy")
+  val patternExpiryYear = DateTimeFormatter.ofPattern("yy")
   val patternDate = DateTimeFormatter.ofPattern("yyyyMMdd")
   val patternLongDate = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -49,6 +50,10 @@ object Common {
 
   def getPostcode(): String = {
     randomString(2).toUpperCase() + rnd.nextInt(10).toString + " " + rnd.nextInt(10).toString + randomString(2).toUpperCase()
+  }
+
+  def getCardExpiryYear(): String = {
+    now.plusYears(1 + rnd.nextInt(2)).format(patternExpiryYear)
   }
 
 }

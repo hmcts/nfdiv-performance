@@ -31,7 +31,8 @@ object NFD_01_CitizenApplication {
                   "relationshipDateYear" -> Common.getMarriageYear(),
                   "coDate" -> Common.getCoDate(),
                   "foDate" -> Common.getFoDate(),
-                  "expiryDate" -> Common.getExpiryDate()
+                  "expiryDate" -> Common.getExpiryDate(),
+                  "cardExpiryYear" -> Common.getCardExpiryYear()
     ))
 
     .group("NFD01CitApp_010_YourDetailsSubmit") {
@@ -649,7 +650,7 @@ object NFD_01_CitizenApplication {
         .formParam("csrfToken", "#{csrf}")
         .formParam("cardNo", "4444333322221111")
         .formParam("expiryMonth", "#{relationshipDateMonth}")
-        .formParam("expiryYear", "25")
+        .formParam("expiryYear", "#{cardExpiryYear}")
         .formParam("cardholderName", "Perf Tester#{randomString}")
         .formParam("cvc", (100 + rnd.nextInt(900)).toString())
         .formParam("addressCountry", "GB")
