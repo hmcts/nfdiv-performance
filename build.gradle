@@ -30,11 +30,19 @@ repositories {
   mavenCentral()
 }
 
+dependencies {
+  gatlingImplementation project(':common-performance')
+}
+
+dependencyCheck {
+  suppressionFile = "common/common-performance/owasp/owasp-suppressions.xml"
+}
+
 gatling {
   gatlingVersion '3.9.5'
-  scalaVersion '2.13.10'
+  scalaVersion '2.13.11'
   simulations = {
-    include "simulations/NFD_Simulation.scala"
+    include "simulations/Create_NFD_Cases.scala"
   }
 }
 
