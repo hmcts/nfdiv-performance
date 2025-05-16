@@ -76,6 +76,7 @@ class Create_NFD_Cases extends Simulation {
         ))
 
       }
+      .pause(100.millis)
 
     }
 
