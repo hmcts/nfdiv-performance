@@ -59,11 +59,10 @@ class Create_NFD_Cases extends Simulation {
       //first upload a document
       .exec(CcdHelper.uploadDocumentToCdam(
         userEmail = "#{user1}",
-       userPassword = "#{password1}",
+        userPassword = "#{password1}",
         caseType = CcdCaseTypes.DIVORCE_NFD,
         filepath = "testFile.pdf"
       ))
-
 
       //create a case
       .exec(CcdHelper.createCase(
