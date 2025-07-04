@@ -11,7 +11,7 @@ java {
   }
 }
 
-tasks.withType(JavaExec) {
+tasks.withType(JavaExec).configureEach {
   // Configure the size of the JVM if necessary
   jvmArgs = ['-Xms1024m', '-Xmx2048m']
   /* Use the following args to build a report when a test was terminated
@@ -22,7 +22,7 @@ tasks.withType(JavaExec) {
   */
 }
 
-tasks.withType(Copy).all{
+tasks.withType(Copy).configureEach {
   duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
@@ -33,9 +33,6 @@ repositories {
 gatling {
   gatlingVersion '3.9.5'
   scalaVersion '2.13.10'
-  simulations = {
-    include "simulations/NFD_Simulation.scala"
-  }
 }
 
 sourceSets {
