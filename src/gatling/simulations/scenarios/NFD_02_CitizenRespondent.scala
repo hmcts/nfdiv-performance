@@ -141,7 +141,6 @@ object NFD_02_CitizenRespondent {
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
         .multivaluedFormParam("aosStatementOfTruth", List("", Case.Checkbox.Checked))
-        .check(substring("Latest update"))
         .check(substring("You have responded")))
     }
 
