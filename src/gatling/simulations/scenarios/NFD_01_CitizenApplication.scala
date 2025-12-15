@@ -218,7 +218,7 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "#{csrf}")
         .formParam("applicant1NameDifferentToMarriageCertificate", Case.YesOrNo.No)
         .check(CsrfCheck.save)
-        .check(regex("Enter your wife’s name")))
+        .check(regex("How is your name written on your")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
@@ -239,8 +239,8 @@ object NFD_01_CitizenApplication {
   val EnterYourNames =
 
     group("NFD01CitApp_115_#{userType}EnterYourNames") {
-      exec(http("Enter your names")
-        .post(BaseURL + "/#{userTypeURL}enter-your-names")
+      exec(http("Applicant 2 Enter your name")
+        .post(BaseURL + "/#{userTypeURL}enter-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
@@ -253,16 +253,29 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
-    .group("NFD01CitApp_117_#{userType}ConfirmYourNames") {
-      exec(http("Confirm your names")
-        .post(BaseURL + "/#{userTypeURL}/confirm-your-name")
+    .group("NFD01CitApp_117_#{userType}CheckYourName") {
+      exec(http("Applicant 2 Check your name")
+        .post(BaseURL + "/#{userTypeURL}/check-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("#{userType}ConfirmFullName", Case.YesOrNo.Yes)
+        .formParam("#{userType}NameDifferentToMarriageCertificate", Case.YesOrNo.No)
         .check(CsrfCheck.save)
-        .check(regex("Your names on your marriage certificate|Changes to your name")))
+        .check(regex("How is your name written on your")))
     }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+        .group("NFD01CitApp_118_#{userType}YourCertificateName") {
+          exec(http("Applicant 2 Your certificate name")
+            .post(BaseURL + "/#{userTypeURL}/your-name-on-certificate")
+            .headers(CommonHeader)
+            .headers(PostHeader)
+            .formParam("_csrf", "#{csrf}")
+            .formParam("#{userType}FullNameOnCertificate", "Perf#{randomString}")
+            .check(CsrfCheck.save)
+            .check(regex("How is your name written on your")))
+        }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
