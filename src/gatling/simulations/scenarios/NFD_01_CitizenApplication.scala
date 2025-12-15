@@ -205,29 +205,42 @@ object NFD_01_CitizenApplication {
         .formParam("applicant1MiddleNames", "")
         .formParam("applicant1LastNames", "SoleApp#{randomString}")
         .check(CsrfCheck.save)
-        .check(regex("your full name, including any middle names")))
+        .check(regex("We need to know if your name is written differently on the")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
-    .group("NFD01CitApp_112_ConfirmYourName") {
-      exec(http("Confirm your name")
-        .post(BaseURL + "/confirm-your-name")
+    .group("NFD01CitApp_112_CheckYourName") {
+      exec(http("Check your name")
+        .post(BaseURL + "/check-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("applicant1ConfirmFullName", Case.YesOrNo.Yes)
+        .formParam("applicant1NameDifferentToMarriageCertificate", Case.YesOrNo.No)
         .check(CsrfCheck.save)
-        .check(regex("Enter your wife’s name")))
+        .check(regex("How is your name written on your")))
     }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+        .group("NFD01CitApp_113_YourCertificateName") {
+          exec(http("Your certificate name")
+            .post(BaseURL + "/your-name-on-certificate")
+            .headers(CommonHeader)
+            .headers(PostHeader)
+            .formParam("_csrf", "#{csrf}")
+            .formParam("applicant1FullNameOnCertificate", "Perf#{randomString}")
+            .check(CsrfCheck.save)
+            .check(regex("Enter your wife’s name")))
+        }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
   val EnterYourNames =
 
     group("NFD01CitApp_115_#{userType}EnterYourNames") {
-      exec(http("Enter your names")
-        .post(BaseURL + "/#{userTypeURL}enter-your-names")
+      exec(http("Applicant 2 Enter your name")
+        .post(BaseURL + "/#{userTypeURL}enter-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
@@ -240,16 +253,29 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
-    .group("NFD01CitApp_117_#{userType}ConfirmYourNames") {
-      exec(http("Confirm your names")
-        .post(BaseURL + "/#{userTypeURL}/confirm-your-name")
+    .group("NFD01CitApp_117_#{userType}CheckYourName") {
+      exec(http("Applicant 2 Check your name")
+        .post(BaseURL + "/#{userTypeURL}/check-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("#{userType}ConfirmFullName", Case.YesOrNo.Yes)
+        .formParam("#{userType}NameDifferentToMarriageCertificate", Case.YesOrNo.No)
         .check(CsrfCheck.save)
-        .check(regex("Your names on your marriage certificate|Changes to your name")))
+        .check(regex("How is your name written on your")))
     }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+        .group("NFD01CitApp_118_#{userType}YourCertificateName") {
+          exec(http("Applicant 2 Your certificate name")
+            .post(BaseURL + "/#{userTypeURL}/your-name-on-certificate")
+            .headers(CommonHeader)
+            .headers(PostHeader)
+            .formParam("_csrf", "#{csrf}")
+            .formParam("#{userType}FullNameOnCertificate", "Perf#{randomString}")
+            .check(CsrfCheck.save)
+            .check(regex("How is your name written on your")))
+        }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
@@ -265,20 +291,33 @@ object NFD_01_CitizenApplication {
         .formParam("applicant2MiddleNames", "")
         .formParam("applicant2LastNames", "SoleResp#{randomString}")
         .check(CsrfCheck.save)
-        .check(substring("full name, including any middle names")))
+        .check(substring("name is written differently on your")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
-    .group("NFD01CitApp_125_ConfirmTheirName") {
-      exec(http("Confirm Their name")
-        .post(BaseURL + "/confirm-their-name")
+    .group("NFD01CitApp_125_CheckTheirName") {
+      exec(http("Check Their name")
+        .post(BaseURL + "/check-their-name")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
-        .formParam("applicant2ConfirmFullName", Case.YesOrNo.Yes)
+        .formParam("applicant2NameDifferentToMarriageCertificate", Case.YesOrNo.No)
         .check(CsrfCheck.save)
         .check(substring("Your names on your marriage certificate")))
+    }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+    .group("NFD01CitApp_127_TheirCertificateName") {
+      exec(http("Their certificate name")
+         .post(BaseURL + "/their-name-on-certificate")
+         .headers(CommonHeader)
+         .headers(PostHeader)
+         .formParam("_csrf", "#{csrf}")
+         .formParam("applicant2FullNameOnCertificate", "PerfTwo#{randomString}")
+         .check(CsrfCheck.save)
+         .check(substring("How the court will contact you")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
@@ -300,24 +339,6 @@ object NFD_01_CitizenApplication {
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
   val YourContactDetails =
-
-    group("NFD01CitApp_140_#{userType}ChangesToYourName") {
-      exec(http("Changes to your name")
-        .post(BaseURL + "/#{userTypeURL}changes-to-your-name")
-        .headers(CommonHeader)
-        .headers(PostHeader)
-        .formParam("_csrf", "#{csrf}")
-        .formParam("#{userType}LastNameChangedWhenMarried", Case.YesOrNo.No)
-        .multivaluedFormParam("#{userType}LastNameChangedWhenMarriedMethod", List("", "", ""))
-        .formParam("#{userType}LastNameChangedWhenMarriedOtherDetails", "")
-        .formParam("#{userType}NameDifferentToMarriageCertificate", Case.YesOrNo.No)
-        .multivaluedFormParam("#{userType}NameDifferentToMarriageCertificateMethod", List("", "", ""))
-        .formParam("#{userType}NameDifferentToMarriageCertificateOtherDetails", "")
-        .check(CsrfCheck.save)
-        .check(substring("How the court will contact you")))
-    }
-
-    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
     .group("NFD01CitApp_150_#{userType}HowCourtWillContactYou") {
       exec(http("How the court will contact you")
