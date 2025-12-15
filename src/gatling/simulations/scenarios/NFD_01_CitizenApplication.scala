@@ -248,7 +248,7 @@ object NFD_01_CitizenApplication {
         .formParam("#{userType}MiddleNames", "")
         .formParam("#{userType}LastNames", "#{userTypeString}#{randomString}")
         .check(CsrfCheck.save)
-        .check(substring("your full name, including any middle names")))
+        .check(substring("We need to know if your name is written differently on the")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
