@@ -83,7 +83,6 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.Jurisdictions,
         NFD_01_CitizenApplication.EnterYourName,
         NFD_01_CitizenApplication.EnterTheirName,
-        NFD_01_CitizenApplication.MarriageCertNames,
         NFD_01_CitizenApplication.YourContactDetails,
         NFD_01_CitizenApplication.TheirContactDetails,
         NFD_01_CitizenApplication.DivorceDetails,
