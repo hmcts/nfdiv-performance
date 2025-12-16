@@ -173,7 +173,7 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.HowDoYouWantToApply,
         NFD_01_CitizenApplication.EnterTheirEmailAddress,
         NFD_01_CitizenApplication.Jurisdictions,
-        NFD_01_CitizenApplication.EnterYourName,
+        NFD_01_CitizenApplication.EnterYourNames,
         NFD_01_CitizenApplication.YourContactDetails,
         NFD_01_CitizenApplication.DivorceDetails,
         NFD_01_CitizenApplication.DocumentUpload,

@@ -239,7 +239,7 @@ object NFD_01_CitizenApplication {
   val EnterYourNames =
 
     group("NFD01CitApp_115_#{userType}EnterYourNames") {
-      exec(http("Applicant 2 Enter your name")
+      exec(http("Enter your name")
         .post(BaseURL + "/#{userTypeURL}enter-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -254,7 +254,7 @@ object NFD_01_CitizenApplication {
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
     .group("NFD01CitApp_117_#{userType}CheckYourName") {
-      exec(http("Applicant 2 Check your name")
+      exec(http("Check your name")
         .post(BaseURL + "/#{userTypeURL}/check-your-name")
         .headers(CommonHeader)
         .headers(PostHeader)
@@ -267,14 +267,14 @@ object NFD_01_CitizenApplication {
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
         .group("NFD01CitApp_118_#{userType}YourCertificateName") {
-          exec(http("Applicant 2 Your certificate name")
+          exec(http("Your certificate name")
             .post(BaseURL + "/#{userTypeURL}/your-name-on-certificate")
             .headers(CommonHeader)
             .headers(PostHeader)
             .formParam("_csrf", "#{csrf}")
             .formParam("#{userType}FullNameOnCertificate", "Perf#{randomString}")
             .check(CsrfCheck.save)
-            .check(regex("How is your name written on your")))
+            .check(regex("How the court will contact you")))
         }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
