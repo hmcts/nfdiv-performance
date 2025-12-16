@@ -304,7 +304,7 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "#{csrf}")
         .formParam("applicant2NameDifferentToMarriageCertificate", Case.YesOrNo.No)
         .check(CsrfCheck.save)
-        .check(substring("Your names on your marriage certificate")))
+        .check(substring("They can sometimes be different from your current names")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
