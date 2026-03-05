@@ -517,7 +517,7 @@ object NFD_01_CitizenApplication {
 
     .group("NFD01CitApp_260_#{userType}ApplyForFinancialOrder") {
       exec(http("Do you want to apply for a financial order?")
-        .post(BaseURL + "/#{userTypeURL}do-you-want-to-apply-financial-order")
+        .post(BaseURL + "/#{userTypeURL}who-is-the-financial-order-for")
         .headers(CommonHeader)
         .headers(PostHeader)
         .formParam("_csrf", "#{csrf}")
