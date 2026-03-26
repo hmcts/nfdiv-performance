@@ -3,9 +3,7 @@
     "granted": [
       "Yes"
     ],
-    "grantWithCurrentDateTime": [
-      "Yes"
-    ]
+"grantWithCurrentDateTime": "Yes",
   },
   "event": {
     "id": "caseworker-grant-final-order",
