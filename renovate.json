@@ -1,7 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "local>hmcts/.github:renovate-config",
-    "local>hmcts/.github//renovate/automerge-all"
+    "local>hmcts/.github:renovate-config"
+  ],
+  "git-submodules": {
+    "enabled": true
+  },
+  "schedule": ["at any time"],
+  "packageRules": [
+    {
+      "matchManagers": ["git-submodules"],
+      "matchDepNames": ["common/common-performance"],
+      "automerge": true
+    }
   ]
 }
