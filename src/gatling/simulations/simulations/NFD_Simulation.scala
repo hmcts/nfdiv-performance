@@ -135,7 +135,7 @@ class NFD_Simulation extends Simulation {
       //Applicant 1 - Apply for Final Order
       .exec(
         Homepage.NFDHomepage(""),
-        Login.NFDLogin("Applicant1", "callback", "You can now apply for a &#39;final order&#39;"),
+        Login.NFDLogin("Applicant1", "callback", "You may now apply for a &#39;final order&#39;"),
         NFD_04_CitizenApplyForFO.ApplyForFinalOrder,
         Logout.NFDLogout)
       //Caseworker - Grant Final Order
