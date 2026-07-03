@@ -8,7 +8,7 @@ properties([
         ])
 ])
 
-@Library("Infrastructure@2.0.0") _
+@Library("Infrastructure@2.4.2")
 
 def product = "nfdiv"
 def component = "frontend"
