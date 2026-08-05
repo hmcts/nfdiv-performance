@@ -1,0 +1,12 @@
+{
+  "data": {
+    "dueDate": "#{foDate}"
+  },
+  "event": {
+    "id": "caseworker-update-due-date",
+    "summary": "",
+    "description": ""
+  },
+  "event_token": "#{eventToken}",
+  "ignore_warning": false
+}

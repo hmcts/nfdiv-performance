@@ -1,0 +1,17 @@
+{
+  "data": {
+    "granted": [
+      "Yes"
+    ],
+    "grantWithCurrentDateTime": [
+      "Yes"
+    ]
+  },
+  "event": {
+    "id": "caseworker-grant-final-order",
+    "summary": "",
+    "description": ""
+  },
+  "event_token": "#{eventToken}",
+  "ignore_warning": false
+}

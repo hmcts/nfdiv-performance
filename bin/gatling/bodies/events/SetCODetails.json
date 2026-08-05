@@ -1,0 +1,15 @@
+{
+  "data": {
+    "coGrantedDate": "#{coDate}",
+    "issueDate": "#{coDate}",
+    "coPronouncementJudge": "District Judge",
+    "dateFinalOrderNoLongerEligible": "#{expiryDate}"
+  },
+  "event": {
+    "id": "caseworker-amend-case",
+    "summary": "",
+    "description": ""
+  },
+  "event_token": "#{eventToken}",
+  "ignore_warning": false
+}
