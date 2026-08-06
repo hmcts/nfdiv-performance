@@ -705,13 +705,24 @@ object NFD_01_CitizenApplication {
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
 
+  val ExitService =
+
+    group("NFD01CitApp_340_ExitService") {
+      exec(http("Exit service")
+        .get(BaseURL + "/logout")
+        .headers(CommonHeader)
+        .check(substring("Sign in or create an account")))
+    }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
   val SaveAndSignout =
 
-    group("NFD01CitApp_340_SaveAndSignout") {
+    group("NFD01CitApp_350_SaveAndSignout") {
       exec(http("Save and signout")
-        .get(BaseURL + "/save-and-sign-out?lng=en")
+        .get(BaseURL + "/save-sign-out?lng=en")
         .headers(CommonHeader)
-        .check(substring("Your application has been saved")))
+        .check(regex("Your application has been saved")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
