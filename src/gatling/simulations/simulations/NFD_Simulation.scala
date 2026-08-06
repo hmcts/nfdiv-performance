@@ -150,12 +150,6 @@ class NFD_Simulation extends Simulation {
       exec(DeleteUser.DeleteCitizen("#{Applicant2EmailAddress}"))
     }
 
-    .exec {
-      session =>
-        println(session)
-        session
-    }
-
   val NFDCitizenJointApp = scenario( "NFDCitizenJointApp")
     .exitBlockOnFail {
       exec(  _.set("env", s"${env}")
@@ -178,7 +172,7 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.DivorceDetails,
         NFD_01_CitizenApplication.DocumentUpload,
         NFD_01_CitizenApplication.CheckYourAnswersJointApplicant1,
-        NFD_01_CitizenApplication.SaveAndSignout)
+        NFD_01_CitizenApplication.ExitService)
       //Applicant 1 - Get Case ID and Access Code for Applicant 2
       .exec(CCDAPI.GetCaseIdAndAccessCode)
       //Applicant 2 - Respond to Divorce Application
@@ -275,12 +269,6 @@ class NFD_Simulation extends Simulation {
     }
     .doIf("#{Applicant2EmailAddress.exists()}") {
       exec(DeleteUser.DeleteCitizen("#{Applicant2EmailAddress}"))
-    }
-
-    .exec {
-      session =>
-        println(session)
-        session
     }
 
   //defines the Gatling simulation model, based on the inputs
