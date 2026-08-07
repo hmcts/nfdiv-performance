@@ -7,12 +7,16 @@ import io.gatling.commons.stats.assertion.Assertion
 import io.gatling.core.pause.PauseType
 import scenarios._
 import utils.Environment
+import ccd._
 
 import scala.concurrent.duration._
 
 class NFD_Simulation extends Simulation {
 
   val BaseURL = Environment.baseURL
+
+  val CaseWorkerUserFeeder = csv("UserDataCW.csv").circular
+  val LegalAdvisorUserFeeder = csv("UserDataLA.csv").circular
 
   /* TEST TYPE DEFINITION */
   /* pipeline = nightly pipeline against the AAT environment (see the Jenkins_nightly file) */
@@ -91,12 +95,13 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.PayAndSubmit,
         Logout.NFDLogout)
       //Caseworker - Get Marriage Details & Issue Application
+      .feed(CaseWorkerUserFeeder)
       .exec(
         CCDAPI.GetMarriageDetails,
-        CCDAPI.CreateEvent("Caseworker", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
       //Applicant 1 - Get Access Code for Applicant 2
       .exec(
-        CCDAPI.GetCaseIdAndAccessCode)
+        CCDAPI.GetAccessCode)
       //Applicant 2 - Respond to Divorce Application
       .exec(
         Homepage.NFDHomepage("respondent"),
@@ -105,8 +110,8 @@ class NFD_Simulation extends Simulation {
         Logout.NFDLogout)
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding) and set the dueDate
       .exec(
-        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
-        CCDAPI.CreateEvent("Caseworker", "caseworker-update-due-date", "bodies/events/SetCOEligibilityDates.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-update-due-date", "bodies/events/SetCOEligibilityDates.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
@@ -116,22 +121,23 @@ class NFD_Simulation extends Simulation {
         NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
         Logout.NFDLogout)
       //Legal Advisor - Grant Conditional Order
+      .feed(LegalAdvisorUserFeeder)
       .exec(
-        CCDAPI.CreateEvent("Legal", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
+        CcdHelper.addCaseEvent("#{la-user}", "#{la-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
       //Caseworker - Make Eligible for Final Order
       .exec(
         //link with bulk case
-        CCDAPI.CreateEvent("Caseworker", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
         //set case hearing and decision dates to a date in the past
-        CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
         //set judge details, CO granted and issued dates in the past
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCODetails.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-amend-case", "bodies/events/SetCODetails.json"),
         //pronounce case
-        CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-pronounce-case", "bodies/events/PronounceCase.json"),
         //set final order eligibility dates
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
         //set case as awaiting final order
-        CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
       //Applicant 1 - Apply for Final Order
       .exec(
         Homepage.NFDHomepage(""),
@@ -140,7 +146,7 @@ class NFD_Simulation extends Simulation {
         Logout.NFDLogout)
       //Caseworker - Grant Final Order
       .exec(
-        CCDAPI.CreateEvent("Caseworker", "caseworker-grant-final-order", "bodies/events/GrantFinalOrder.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-grant-final-order", "bodies/events/GrantFinalOrder.json"))
     }
 
     .doIf("#{Applicant1EmailAddress.exists()}") {
@@ -174,7 +180,8 @@ class NFD_Simulation extends Simulation {
         NFD_01_CitizenApplication.CheckYourAnswersJointApplicant1,
         NFD_01_CitizenApplication.ExitService)
       //Applicant 1 - Get Case ID and Access Code for Applicant 2
-      .exec(CCDAPI.GetCaseIdAndAccessCode)
+      .feed(CaseWorkerUserFeeder)
+      .exec(CCDAPI.GetAccessCode)
       //Applicant 2 - Respond to Divorce Application
       .exec(
         Homepage.NFDHomepage("login-applicant2"),
@@ -197,7 +204,7 @@ class NFD_Simulation extends Simulation {
       //Caseworker - Get Marriage Details & Issue Application
       .exec(
         CCDAPI.GetMarriageDetails,
-        CCDAPI.CreateEvent("Caseworker", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-issue-application", "bodies/events/IssueApplication.json"))
       //Applicant 1 - Confirm Receipt
       .exec(
         Homepage.NFDHomepage(""),
@@ -212,8 +219,8 @@ class NFD_Simulation extends Simulation {
         Logout.NFDLogout)
       //Caseworker - Mark the Case as Awaiting Conditional Order (to bypass 20-week holding) and set the dueDate
       .exec(
-        CCDAPI.CreateEvent("Caseworker", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
-        CCDAPI.CreateEvent("Caseworker", "caseworker-update-due-date", "bodies/events/SetCOEligibilityDates.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-progress-held-case", "bodies/events/AwaitingConditionalOrder.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-update-due-date", "bodies/events/SetCOEligibilityDates.json"))
       //Applicant 1 - Apply for Conditional Order
       .exec(
         Homepage.NFDHomepage(""),
@@ -231,22 +238,23 @@ class NFD_Simulation extends Simulation {
         NFD_03_CitizenApplyForCO.CompleteConditionalOrder,
         Logout.NFDLogout)
       //Legal Advisor - Grant Conditional Order
+      .feed(LegalAdvisorUserFeeder)
       .exec(
-        CCDAPI.CreateEvent("Legal", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
+        CcdHelper.addCaseEvent("#{la-user}", "#{la-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "legal-advisor-make-decision", "bodies/events/MakeDecision.json"))
       //Caseworker - Make Eligible for Final Order
       .exec(
         //link with bulk case
-        CCDAPI.CreateEvent("Caseworker", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-link-with-bulk-case", "bodies/events/LinkWithBulkCase.json"),
         //set case hearing and decision dates to a date in the past
-        CCDAPI.CreateEvent("Caseworker", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-update-case-court-hearing", "bodies/events/UpdateCaseWithCourtHearing.json"),
         //set judge details, CO granted and issued dates in the past
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetCODetails.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-amend-case", "bodies/events/SetCODetails.json"),
         //pronounce case
-        CCDAPI.CreateEvent("Caseworker", "system-pronounce-case", "bodies/events/PronounceCase.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-pronounce-case", "bodies/events/PronounceCase.json"),
         //set final order eligibility dates
-        CCDAPI.CreateEvent("Caseworker", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-amend-case", "bodies/events/SetFOEligibilityDates.json"),
         //set case as awaiting final order
-        CCDAPI.CreateEvent("Caseworker", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "system-progress-case-awaiting-final-order", "bodies/events/AwaitingFinalOrder.json"))
       //Applicant 1 - Apply for Final Order
       .exec(
         Homepage.NFDHomepage(""),
@@ -261,7 +269,7 @@ class NFD_Simulation extends Simulation {
         Logout.NFDLogout)
       //Caseworker - Grant Final Order
       .exec(
-        CCDAPI.CreateEvent("Caseworker", "caseworker-grant-final-order", "bodies/events/GrantFinalOrder.json"))
+        CcdHelper.addCaseEvent("#{cw-user}", "#{cw-password}", CcdCaseTypes.DIVORCE_NFD, "#{caseId}", "caseworker-grant-final-order", "bodies/events/GrantFinalOrder.json"))
     }
 
     .doIf("#{Applicant1EmailAddress.exists()}") {
