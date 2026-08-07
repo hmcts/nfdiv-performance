@@ -305,14 +305,15 @@ class NFD_Simulation extends Simulation {
     simulationType match {
       case "perftest" =>
         if (debugMode == "off") {
-          Seq(global.successfulRequests.percent.gte(95))
+          Seq(global.successfulRequests.percent.gte(95),
+            details("CCD_SubmitEvent_caseworker-grant-final-order").successfulRequests.percent.gte(80))
         }
         else {
           Seq(global.successfulRequests.percent.is(100))
         }
       case "pipeline" =>
         Seq(global.successfulRequests.percent.gte(95),
-          details("NFD_000_CCDEvent-caseworker-grant-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
+          details("CCD_SubmitEvent_caseworker-grant-final-order").successfulRequests.count.gte(((numberOfPipelineUsersSole + numberOfPipelineUsersJoint) * 0.8).ceil.toInt)
         )
       case _ =>
         Seq()
