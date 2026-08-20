@@ -533,7 +533,7 @@ object NFD_01_CitizenApplication {
 
     group("NFD01CitApp_270_DocumentUpload") {
       exec(http("Upload your documents")
-        .post(BaseURL + "/document-manager?_csrf=#{csrf}")
+        .post(BaseURL + "/document-manager")
         .header("accept", "application/json")
         .header("accept-encoding", "gzip, deflate, br")
         .header("accept-language", "en-GB,en;q=0.9")
@@ -542,6 +542,7 @@ object NFD_01_CitizenApplication {
         .header("sec-fetch-mode", "cors")
         .header("sec-fetch-site", "same-origin")
         .header("x-requested-with", "XMLHttpRequest")
+        .header("csrf-token", "#{csrf}")
         .bodyPart(RawFileBodyPart("files[]", "2MB.pdf")
           .fileName("2MB.pdf")
           .transferEncoding("binary"))
