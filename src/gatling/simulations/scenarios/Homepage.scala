@@ -26,7 +26,6 @@ object Homepage {
         .get(BaseURL + "/" + URLSuffix)
         .headers(CommonHeader)
         .header("sec-fetch-site", "none")
-        .check(CsrfCheck.save)
         .check(substring("Sign in or create an account")))
 
     }
