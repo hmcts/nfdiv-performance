@@ -31,13 +31,34 @@ object Login {
 
     .group("NFD_000_Login") {
         exec(http("Login Applicant1")
-          .post(IdamURL + "/login?client_id=divorce&response_type=code&redirect_uri=" + BaseURL + "/oauth2/" + redirectURLSuffix)
+          .get(IdamURL + "/enter-email")
+          .headers(CommonHeader)
+          .check(CsrfCheck.save)
+          .check(substring("Enter your email address")))
+    }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+    .group("NFD_003_Login_EnterEmail") {
+        exec(http("Login Applicant1Email")
+          .post(IdamURL + "/enter-email")
           .headers(CommonHeader)
           .headers(PostHeader)
-          .formParam("username", "#{emailAddress}")
+          .formParam("email", "#{emailAddress}")
+          .formParam("_csrf", "#{csrf}")
+          .check(CsrfCheck.save)
+          .check(substring("Enter your password")))
+    }
+
+    .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
+
+    .group("NFD_006_Login_EnterPassword") {
+        exec(http("Login Applicant1Password")
+          .post(IdamURL + "/enter-password")
+          .headers(CommonHeader)
+          .headers(PostHeader)
+          .formParam("action", "_submit")
           .formParam("password", "#{password}")
-          .formParam("save", "Sign in")
-          .formParam("selfRegistrationEnabled", "true")
           .formParam("_csrf", "#{csrf}")
           .check(CsrfCheck.save)
           .check(substring(nextPageTextCheck)))
