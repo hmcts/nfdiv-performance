@@ -89,7 +89,7 @@ object NFD_01_CitizenApplication {
         .formParam("_csrf", "#{csrf}")
         .formParam("hasCertificate", Case.YesOrNo.Yes)
         .check(CsrfCheck.save)
-        .check(substring("Do you need help paying the fee for your divorce?")))
+        .check(substring("Will you be using help with fees to pay for this application?")))
     }
 
     .pause(MinThinkTime.seconds, MaxThinkTime.seconds)
